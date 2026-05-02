@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Tasks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── CONFIG ─────────────────────────────────────────────
+   Fill in your GitHub PAT before using.
+   This file should NOT be committed to a public repo.
+   Keep in jchromchak/dovetell/personal/ or run locally.
+────────────────────────────────────────────────────── */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+–blurple:#5865F2;–blurple-dark:#3B45C4;–blurple-light:#D8DAFD;
+–near-black:#1A1A2E;–surface:#161625;–surface-2:#1E1E30;
+–surface-3:#252538;–border:rgba(255,255,255,0.07);
+–border-2:rgba(255,255,255,0.12);–text:#E8E9F8;–muted:#6B6B8A;
+–muted-2:#9999BB;–cream:#F5F4EF;
+–sans:‘Plus Jakarta Sans’,sans-serif;–mono:‘JetBrains Mono’,monospace;
+–green:#22C55E;–amber:#F59E0B;–red:#EF4444;
+}
+html,body{height:100%;margin:0}
+body{font-family:var(–sans);background:var(–near-black);color:var(–text);min-height:100vh;display:flex;flex-direction:column}
+
+/* DEMO BANNER */
+.demo-banner{height:24px;width:100%;flex-shrink:0;background:var(–cream);border-bottom:1px solid rgba(88,101,242,0.15);display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(–mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(–blurple)}
+.demo-banner-divider{opacity:0.3}
+
+/* TOP NAV */
+.topbar{background:var(–surface);border-bottom:1px solid var(–border);padding:0 32px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:26px;height:26px;border-radius:6px;background:var(–blurple);display:flex;align-items:center;justify-content:center;font-size:13px}
+.logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(–text)}
+.logo-wordmark span{color:var(–blurple)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.repo-link{font-family:var(–mono);font-size:11px;color:var(–muted);text-decoration:none;transition:color 0.15s}
+.repo-link:hover{color:var(–blurple-light)}
+.sync-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:7px;background:transparent;border:1px solid var(–border-2);color:var(–muted-2);font-family:var(–sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.sync-btn:hover{border-color:var(–blurple);color:var(–blurple-light)}
+.sync-btn.syncing{opacity:0.6;pointer-events:none}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(–green);flex-shrink:0}
+.status-dot.loading{background:var(–amber);animation:pulse 1s infinite}
+.status-dot.error{background:var(–red)}
+
+/* MAIN */
+.main{flex:1;padding:32px;max-width:900px;width:100%;margin:0 auto}
+
+/* SECTION */
+.section{margin-bottom:40px}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(–border)}
+.section-title{font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(–muted-2)}
+.section-count{font-family:var(–mono);font-size:11px;color:var(–muted);background:var(–surface-2);padding:2px 8px;border-radius:10px}
+
+/* TASK CARD */
+.task-card{
+display:flex;align-items:flex-start;gap:14px;
+background:var(–surface);border:1px solid var(–border);
+border-radius:10px;padding:14px 16px;margin-bottom:8px;
+transition:all 0.15s;cursor:pointer;
+}
+.task-card:hover{border-color:rgba(88,101,242,0.25);background:var(–surface-2)}
+.task-card.done{opacity:0.45}
+.task-card.done:hover{opacity:0.65}
+.task-card.writing{opacity:0.7;pointer-events:none}
+
+/* CHECKBOX */
+.task-checkbox{
+width:18px;height:18px;border-radius:5px;
+border:2px solid var(–border-2);flex-shrink:0;
+display:flex;align-items:center;justify-content:center;
+transition:all 0.15s;margin-top:1px;
+background:transparent;cursor:pointer;
+}
+.task-card:hover .task-checkbox{border-color:var(–blurple)}
+.task-checkbox.checked{background:var(–blurple);border-color:var(–blurple)}
+.task-checkbox.checked::after{content:‘✓’;font-size:11px;font-weight:700;color:#fff;line-height:1}
+
+/* TASK BODY */
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:600;color:var(–text);margin-bottom:6px;line-height:1.4}
+.task-card.done .task-title{text-decoration:line-through;color:var(–muted)}
+.task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* CHIPS */
+.chip{font-family:var(–mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;letter-spacing:0.03em}
+.chip-tag{background:rgba(88,101,242,0.1);color:var(–blurple-light)}
+.chip-due{background:rgba(245,158,11,0.1);color:var(–amber)}
+.chip-due.overdue{background:rgba(239,68,68,0.1);color:var(–red)}
+.chip-done{background:rgba(34,197,94,0.1);color:var(–green)}
+.chip-source{background:rgba(255,255,255,0.05);color:var(–muted-2)}
+
+/* TASK RIGHT */
+.task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.task-time{font-family:var(–mono);font-size:10px;color:var(–muted);white-space:nowrap}
+
+/* TOAST */
+.toast{
+position:fixed;bottom:24px;right:24px;
+background:var(–surface-2);border:1px solid var(–border-2);
+border-radius:9px;padding:12px 18px;
+font-size:13px;font-weight:500;color:var(–text);
+display:flex;align-items:center;gap:10px;
+opacity:0;transform:translateY(8px);
+transition:all 0.25s;pointer-events:none;
+z-index:100;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error-state{border-color:rgba(239,68,68,0.3)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px;color:var(–muted)}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.empty-text{font-size:14px}
+
+/* FOOTER */
+.footer{padding:16px 32px;border-top:1px solid var(–border);display:flex;align-items:center;justify-content:space-between;font-family:var(–mono);font-size:10px;color:var(–muted);flex-shrink:0}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin 1s linear infinite;display:inline-block}
+</style>
+
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Task tracker</span>
+  <span class="demo-banner-divider">·</span>
+  <span>Reads and writes .dovetell-context/tasks.md via GitHub API</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-mark">🕊</div>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </div>
+  <div class="topbar-right">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span style="font-size:12px;color:var(--muted)" id="status-text">Loading…</span>
+    </div>
+    <button class="sync-btn" id="sync-btn" onclick="loadTasks()">
+      ↻ Sync
+    </button>
+  </div>
+</div>
+
+<div class="main" id="main">
+  <div class="empty">
+    <div class="empty-icon">⋯</div>
+    <div class="empty-text">Loading tasks…</div>
+  </div>
+</div>
+
+<div class="footer">
+  <span id="footer-path">—</span>
+  <span id="footer-sha">—</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────
+//
+// TOKEN SETUP — use a fine-grained PAT, not a classic token:
+//
+//   1. Go to github.com/settings/tokens?type=beta
+//   2. Generate new token
+//   3. Resource owner: your account (jchromchak)
+//   4. Repository access: Only selected → dovetell-io/dovetell
+//   5. Permissions → Repository permissions:
+//        Contents → Read and Write
+//        (everything else: No access)
+//   6. Set expiration: 1 year or no expiration
+//   7. Copy the token and paste below
+//
+// This scopes the token to ONE repo and ONE permission.
+// Even if someone reads your page source, they can only
+// read/write files in dovetell-io/dovetell. Nothing else.
+//
+// HOSTING: commit this file to a public GitHub Pages repo
+// (e.g. jchromchak/tasks or jchromchak.github.io)
+// It will be publicly readable — that's fine, the token only
+// touches the public dovetell repo anyway. The tasks.md it
+// reads/writes is already public markdown.
+//
+// ─────────────────────────────────────────
+const CONFIG = {
+  owner: 'dovetell-io',
+  repo: 'dovetell',
+  path: '.dovetell-context/tasks.md',
+  token: 'github_pat_YOUR_TOKEN_HERE',  // fine-grained PAT
+  timezone: 'America/New_York',
+  tzLabel: 'ET'
+}
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let currentSha = null
+let currentContent = ''
+let isSaving = false
+
+// ─────────────────────────────────────────
+// GITHUB API
+// ─────────────────────────────────────────
+async function githubGet(path) {
+  const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`, {
+    headers: {
+      'Authorization': `Bearer ${CONFIG.token}`,
+      'Accept': 'application/vnd.github.v3+json'
+    }
+  })
+  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`)
+  return res.json()
+}
+
+async function githubPut(path, content, sha, message) {
+  const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${CONFIG.token}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message,
+      content: btoa(unescape(encodeURIComponent(content))),
+      sha
+    })
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.message || `GitHub API ${res.status}`)
+  }
+  return res.json()
+}
+
+// ─────────────────────────────────────────
+// TIMESTAMP
+// ─────────────────────────────────────────
+function nowTimestamp() {
+  const now = new Date()
+  const opts = {
+    timeZone: CONFIG.timezone,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }
+  const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
+  const get = t => parts.find(p => p.type === t).value
+  return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')} ${CONFIG.tzLabel}`
+}
+
+function todayDate() {
+  const now = new Date()
+  const opts = { timeZone: CONFIG.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }
+  const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
+  const get = t => parts.find(p => p.type === t).value
+  return `${get('year')}-${get('month')}-${get('day')}`
+}
+
+// ─────────────────────────────────────────
+// MARKDOWN PARSER
+// ─────────────────────────────────────────
+function parseTasks(md) {
+  const lines = md.split('\n')
+  const sections = []
+  let currentSection = null
+  let currentTask = null
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+
+    // Section header (## Now, ## This week, etc.)
+    if (/^## /.test(line)) {
+      if (currentTask && currentSection) currentSection.tasks.push(currentTask)
+      currentTask = null
+      currentSection = { title: line.replace('## ', '').trim(), tasks: [], lineIndex: i }
+      sections.push(currentSection)
+      continue
+    }
+
+    // Task line
+    const taskMatch = line.match(/^- \[([ x])\] (.+)/)
+    if (taskMatch && currentSection) {
+      if (currentTask) currentSection.tasks.push(currentTask)
+      currentTask = {
+        checked: taskMatch[1] === 'x',
+        title: taskMatch[2].trim(),
+        lineIndex: i,
+        tags: [],
+        due: null,
+        completed: null,
+        source: null,
+        owner: null
+      }
+      continue
+    }
+
+    // Task metadata (indented lines after a task)
+    if (currentTask && /^  /.test(line) && line.trim()) {
+      const meta = line.trim()
+      // Tags: #tag
+      const tags = meta.match(/#[\w-]+/g)
+      if (tags) currentTask.tags.push(...tags)
+      // due:
+      const due = meta.match(/due:([\d-]+)/)
+      if (due) currentTask.due = due[1]
+      // completed:
+      const comp = meta.match(/completed:([\S]+(?:\s+\S+)?)/)
+      if (comp) currentTask.completed = comp[1]
+      // source:
+      const src = meta.match(/source:([\S]+)/)
+      if (src) currentTask.source = src[1]
+      // owner:
+      const own = meta.match(/owner:(@[\w-]+)/)
+      if (own) currentTask.owner = own[1]
+    }
+  }
+
+  if (currentTask && currentSection) currentSection.tasks.push(currentTask)
+  return sections
+}
+
+// ─────────────────────────────────────────
+// TOGGLE TASK IN MARKDOWN
+// ─────────────────────────────────────────
+function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
+  const lines = md.split('\n')
+  const line = lines[lineIndex]
+  const ts = nowTimestamp()
+
+  if (nowChecked) {
+    // Check it off
+    lines[lineIndex] = line.replace('- [ ]', '- [x]')
+    // Add completed timestamp to meta line below, or insert one
+    const nextLine = lines[lineIndex + 1]
+    if (nextLine && /^  /.test(nextLine)) {
+      // There's already a meta line — find the right place to add
+      // Check if completed: already exists
+      let inserted = false
+      for (let j = lineIndex + 1; j < lines.length; j++) {
+        if (!/^  /.test(lines[j]) && lines[j].trim()) break
+        if (lines[j].includes('completed:')) {
+          lines[j] = lines[j].replace(/completed:[\S]+(\s+\S+)?/, `completed:${ts}`)
+          inserted = true
+          break
+        }
+      }
+      if (!inserted) {
+        // Insert after last meta line for this task
+        let lastMeta = lineIndex
+        for (let j = lineIndex + 1; j < lines.length; j++) {
+          if (/^  /.test(lines[j])) lastMeta = j
+          else break
+        }
+        lines.splice(lastMeta + 1, 0, `  completed:${ts}`)
+      }
+    } else {
+      // No meta lines yet — insert one
+      lines.splice(lineIndex + 1, 0, `  completed:${ts}`)
+    }
+  } else {
+    // Uncheck it
+    lines[lineIndex] = line.replace('- [x]', '- [ ]')
+    // Remove completed: line if present
+    for (let j = lineIndex + 1; j < lines.length; j++) {
+      if (!/^  /.test(lines[j]) && lines[j].trim()) break
+      if (lines[j].includes('completed:')) {
+        lines.splice(j, 1)
+        break
+      }
+    }
+  }
+
+  return lines.join('\n')
+}
+
+// ─────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────
+function isDue(dateStr) {
+  if (!dateStr) return false
+  return dateStr < todayDate()
+}
+
+function renderTasks(sections) {
+  const main = document.getElementById('main')
+
+  if (!sections.length) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No tasks found in tasks.md</div></div>`
+    return
+  }
+
+  let html = ''
+  let totalOpen = 0
+  let totalDone = 0
+
+  for (const section of sections) {
+    const open = section.tasks.filter(t => !t.checked)
+    const done = section.tasks.filter(t => t.checked)
+    totalOpen += open.length
+    totalDone += done.length
+
+    if (!section.tasks.length) continue
+
+    html += `
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">${section.title}</span>
+          <span class="section-count">${open.length} open${done.length ? ` · ${done.length} done` : ''}</span>
+        </div>
+    `
+
+    // Open tasks first, then done
+    const ordered = [...open, ...done]
+    for (const task of ordered) {
+      const overdue = !task.checked && isDue(task.due)
+
+      html += `
+        <div class="task-card ${task.checked ? 'done' : ''}" 
+             onclick="handleToggle(${task.lineIndex})"
+             id="task-${task.lineIndex}">
+          <div class="task-checkbox ${task.checked ? 'checked' : ''}"></div>
+          <div class="task-body">
+            <div class="task-title">${task.title}</div>
+            <div class="task-meta">
+              ${task.tags.map(t => `<span class="chip chip-tag">${t}</span>`).join('')}
+              ${task.due ? `<span class="chip chip-due ${overdue ? 'overdue' : ''}">due ${task.due}</span>` : ''}
+              ${task.source ? `<span class="chip chip-source">${task.source}</span>` : ''}
+              ${task.owner ? `<span class="chip chip-source">${task.owner}</span>` : ''}
+              ${task.completed ? `<span class="chip chip-done">✓ ${task.completed}</span>` : ''}
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    html += `</div>`
+  }
+
+  main.innerHTML = html
+
+  // Footer stats
+  document.getElementById('footer-path').textContent = `${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`
+  document.getElementById('footer-sha').textContent = currentSha ? `sha: ${currentSha.slice(0,7)}` : '—'
+
+  setStatus('ready', `${totalOpen} open · ${totalDone} done`)
+}
+
+// ─────────────────────────────────────────
+// HANDLE TOGGLE
+// ─────────────────────────────────────────
+async function handleToggle(lineIndex) {
+  if (isSaving) return
+  isSaving = true
+
+  // Find the task
+  const sections = parseTasks(currentContent)
+  let task = null
+  for (const s of sections) {
+    task = s.tasks.find(t => t.lineIndex === lineIndex)
+    if (task) break
+  }
+  if (!task) { isSaving = false; return }
+
+  const nowChecked = !task.checked
+  const ts = nowTimestamp()
+
+  // Optimistic UI update
+  const card = document.getElementById(`task-${lineIndex}`)
+  if (card) {
+    card.classList.add('writing')
+    card.classList.toggle('done', nowChecked)
+    const cb = card.querySelector('.task-checkbox')
+    cb.classList.toggle('checked', nowChecked)
+  }
+
+  try {
+    // Update markdown
+    const newContent = toggleTaskInMarkdown(currentContent, lineIndex, nowChecked)
+
+    // Commit message
+    const action = nowChecked ? 'complete' : 'reopen'
+    const shortTitle = task.title.length > 50 ? task.title.slice(0, 47) + '…' : task.title
+    const commitMsg = `tasks: ${action} "${shortTitle}" · ${ts}`
+
+    // Write to GitHub
+    const result = await githubPut(CONFIG.path, newContent, currentSha, commitMsg)
+
+    // Update state
+    currentContent = newContent
+    currentSha = result.content.sha
+
+    // Re-render
+    const updatedSections = parseTasks(currentContent)
+    renderTasks(updatedSections)
+
+    showToast(nowChecked ? `✓ Marked done · committed` : `↩ Reopened · committed`, 'success')
+  } catch (err) {
+    // Revert optimistic update
+    if (card) {
+      card.classList.remove('writing')
+      card.classList.toggle('done', task.checked)
+      const cb = card.querySelector('.task-checkbox')
+      cb.classList.toggle('checked', task.checked)
+    }
+    showToast(`Error: ${err.message}`, 'error-state')
+    console.error(err)
+  }
+
+  isSaving = false
+}
+
+// ─────────────────────────────────────────
+// LOAD
+// ─────────────────────────────────────────
+async function loadTasks() {
+  setStatus('loading', 'Syncing…')
+  document.getElementById('sync-btn').classList.add('syncing')
+
+  try {
+    const file = await githubGet(CONFIG.path)
+    currentSha = file.sha
+    currentContent = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))))
+    const sections = parseTasks(currentContent)
+    renderTasks(sections)
+  } catch (err) {
+    setStatus('error', err.message)
+    document.getElementById('main').innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⚠</div>
+        <div class="empty-text">${err.message}<br><br>
+        Check your CONFIG token and repo path.</div>
+      </div>`
+    console.error(err)
+  }
+
+  document.getElementById('sync-btn').classList.remove('syncing')
+}
+
+// ─────────────────────────────────────────
+// UI HELPERS
+// ─────────────────────────────────────────
+function setStatus(state, text) {
+  const dot = document.getElementById('status-dot')
+  const label = document.getElementById('status-text')
+  dot.className = 'status-dot'
+  if (state === 'loading') dot.classList.add('loading')
+  if (state === 'error') dot.classList.add('error')
+  label.textContent = text
+}
+
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast')
+  toast.textContent = msg
+  toast.className = `toast ${type} show`
+  setTimeout(() => toast.classList.remove('show'), 3000)
+}
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+if (CONFIG.token === 'github_pat_YOUR_TOKEN_HERE') {
+  setStatus('error', 'Token not configured')
+  document.getElementById('main').innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">🔑</div>
+      <div class="empty-text">
+        Set your fine-grained GitHub PAT in CONFIG.token<br><br>
+        <strong style="color:var(--text)">github.com/settings/tokens?type=beta</strong><br><br>
+        Scope it to: <code style="font-family:var(--mono);font-size:12px">dovetell-io/dovetell</code>
+        → Contents: Read and Write<br>
+        Everything else: No access
+      </div>
+    </div>`
+} else {
+  loadTasks()
+}
+</script>
+
+</body>
+</html>
