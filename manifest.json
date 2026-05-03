@@ -1,0 +1,23 @@
+{
+  "name": "dovetell",
+  "short_name": "dovetell",
+  "description": "dovetell task and decision tracker",
+  "start_url": "/tasks/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1A1A2E",
+  "theme_color": "#1A1A2E",
+  "icons": [
+    {
+      "src": "/assets/sandbox-favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/sandbox-apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
