@@ -33,12 +33,9 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 /* TOP NAV */
 .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
 .topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-mark{width:26px;height:26px;border-radius:6px;background:var(--blurple);display:flex;align-items:center;justify-content:center;font-size:13px}
 .logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
 .logo-wordmark span{color:var(--blurple)}
 .topbar-right{display:flex;align-items:center;gap:16px}
-.repo-link{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;transition:color 0.15s}
-.repo-link:hover{color:var(--blurple-light)}
 .sync-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
 .sync-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
 .sync-btn.syncing{opacity:0.6;pointer-events:none}
@@ -56,25 +53,14 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .section-count{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);padding:2px 8px;border-radius:10px}
 
 /* TASK CARD */
-.task-card{
-  display:flex;align-items:flex-start;gap:14px;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:14px 16px;margin-bottom:8px;
-  transition:all 0.15s;cursor:pointer;
-}
+.task-card{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;transition:all 0.15s;cursor:pointer}
 .task-card:hover{border-color:rgba(88,101,242,0.25);background:var(--surface-2)}
 .task-card.done{opacity:0.45}
 .task-card.done:hover{opacity:0.65}
 .task-card.writing{opacity:0.7;pointer-events:none}
 
 /* CHECKBOX */
-.task-checkbox{
-  width:18px;height:18px;border-radius:5px;
-  border:2px solid var(--border-2);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.15s;margin-top:1px;
-  background:transparent;cursor:pointer;
-}
+.task-checkbox{width:18px;height:18px;border-radius:5px;border:2px solid var(--border-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px;background:transparent}
 .task-card:hover .task-checkbox{border-color:var(--blurple)}
 .task-checkbox.checked{background:var(--blurple);border-color:var(--blurple)}
 .task-checkbox.checked::after{content:'✓';font-size:11px;font-weight:700;color:#fff;line-height:1}
@@ -93,49 +79,36 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .chip-done{background:rgba(34,197,94,0.1);color:var(--green)}
 .chip-source{background:rgba(255,255,255,0.05);color:var(--muted-2)}
 
-/* TASK RIGHT */
-.task-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
-.task-time{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap}
-
 /* TOAST */
-.toast{
-  position:fixed;bottom:24px;right:24px;
-  background:var(--surface-2);border:1px solid var(--border-2);
-  border-radius:9px;padding:12px 18px;
-  font-size:13px;font-weight:500;color:var(--text);
-  display:flex;align-items:center;gap:10px;
-  opacity:0;transform:translateY(8px);
-  transition:all 0.25s;pointer-events:none;
-  z-index:100;
-}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:100}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.success{border-color:rgba(34,197,94,0.3)}
 .toast.error-state{border-color:rgba(239,68,68,0.3)}
 
 /* EMPTY STATE */
-.empty{text-align:center;padding:48px;color:var(--muted)}
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
 .empty-icon{font-size:32px;margin-bottom:12px}
-.empty-text{font-size:14px}
+.empty-text{font-size:14px;line-height:1.6}
 
 /* FOOTER */
 .footer{padding:16px 32px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinning{animation:spin 1s linear infinite;display:inline-block}
 </style>
 </head>
 <body>
 
+<!-- BANNER -->
 <div class="demo-banner">
   <span>// Task tracker</span>
   <span class="demo-banner-divider">·</span>
-  <span>Reads and writes .dovetell-context/tasks.md via GitHub API</span>
+  <span>dovetell-io/sandbox · tasks.md</span>
 </div>
 
+<!-- NAV -->
 <div class="topbar">
   <div class="topbar-logo">
-    <div class="logo-mark"><img src="assets/sandbox-apple-touch-icon.png"/></div>
+    <img src="assets/sandbox-apple-touch-icon.png" width="28" height="28" style="border-radius:7px;display:block;" alt="dovetell"/>
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
   <div class="topbar-right">
@@ -143,12 +116,11 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
       <div class="status-dot loading" id="status-dot"></div>
       <span style="font-size:12px;color:var(--muted)" id="status-text">Loading…</span>
     </div>
-    <button class="sync-btn" id="sync-btn" onclick="loadTasks()">
-      ↻ Sync
-    </button>
+    <button class="sync-btn" id="sync-btn" onclick="loadTasks()">↻ Sync</button>
   </div>
 </div>
 
+<!-- MAIN -->
 <div class="main" id="main">
   <div class="empty">
     <div class="empty-icon">⋯</div>
@@ -156,11 +128,13 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
   </div>
 </div>
 
+<!-- FOOTER -->
 <div class="footer">
   <span id="footer-path">—</span>
   <span id="footer-sha">—</span>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -174,7 +148,7 @@ const CONFIG = {
   owner: 'dovetell-io',
   repo: 'sandbox',
   path: 'tasks.md',
-  token: null,              // loaded from localStorage — never hardcoded
+  token: null,
   timezone: 'America/New_York',
   tzLabel: 'ET'
 }
@@ -190,58 +164,55 @@ let isSaving = false
 // GITHUB API
 // ─────────────────────────────────────────
 async function githubGet(path) {
-  const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`, {
-    headers: {
-      'Authorization': `Bearer ${CONFIG.token}`,
-      'Accept': 'application/vnd.github.v3+json'
-    }
-  })
-  if (!res.ok) throw new Error(`GitHub API ${res.status}: ${res.statusText}`)
+  const res = await fetch(
+    `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,
+    { headers: { 'Authorization': `Bearer ${CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' } }
+  )
+  if (!res.ok) throw new Error(`GitHub ${res.status}: ${res.statusText}`)
   return res.json()
 }
 
 async function githubPut(path, content, sha, message) {
-  const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${CONFIG.token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message,
-      content: btoa(unescape(encodeURIComponent(content))),
-      sha
-    })
-  })
+  const res = await fetch(
+    `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${CONFIG.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message,
+        content: btoa(unescape(encodeURIComponent(content))),
+        sha
+      })
+    }
+  )
   if (!res.ok) {
     const err = await res.json()
-    throw new Error(err.message || `GitHub API ${res.status}`)
+    throw new Error(err.message || `GitHub ${res.status}`)
   }
   return res.json()
 }
 
 // ─────────────────────────────────────────
-// TIMESTAMP
+// TIMESTAMPS
 // ─────────────────────────────────────────
 function nowTimestamp() {
   const now = new Date()
-  const opts = {
-    timeZone: CONFIG.timezone,
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', hour12: false
-  }
-  const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
-  const get = t => parts.find(p => p.type === t).value
-  return `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')} ${CONFIG.tzLabel}`
+  const opts = { timeZone: CONFIG.timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }
+  const p = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
+  const g = t => p.find(x => x.type === t).value
+  return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`
 }
 
 function todayDate() {
   const now = new Date()
   const opts = { timeZone: CONFIG.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }
-  const parts = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
-  const get = t => parts.find(p => p.type === t).value
-  return `${get('year')}-${get('month')}-${get('day')}`
+  const p = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
+  const g = t => p.find(x => x.type === t).value
+  return `${g('year')}-${g('month')}-${g('day')}`
 }
 
 // ─────────────────────────────────────────
@@ -250,111 +221,68 @@ function todayDate() {
 function parseTasks(md) {
   const lines = md.split('\n')
   const sections = []
-  let currentSection = null
-  let currentTask = null
+  let section = null
+  let task = null
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
 
-    // Section header (## Now, ## This week, etc.)
     if (/^## /.test(line)) {
-      if (currentTask && currentSection) currentSection.tasks.push(currentTask)
-      currentTask = null
-      currentSection = { title: line.replace('## ', '').trim(), tasks: [], lineIndex: i }
-      sections.push(currentSection)
+      if (task && section) section.tasks.push(task)
+      task = null
+      section = { title: line.replace('## ', '').trim(), tasks: [], lineIndex: i }
+      sections.push(section)
       continue
     }
 
-    // Task line
-    const taskMatch = line.match(/^- \[([ x])\] (.+)/)
-    if (taskMatch && currentSection) {
-      if (currentTask) currentSection.tasks.push(currentTask)
-      currentTask = {
-        checked: taskMatch[1] === 'x',
-        title: taskMatch[2].trim(),
-        lineIndex: i,
-        tags: [],
-        due: null,
-        completed: null,
-        source: null,
-        owner: null
-      }
+    const m = line.match(/^- \[([ x])\] (.+)/)
+    if (m && section) {
+      if (task) section.tasks.push(task)
+      task = { checked: m[1] === 'x', title: m[2].trim(), lineIndex: i, tags: [], due: null, completed: null, source: null, owner: null }
       continue
     }
 
-    // Task metadata (indented lines after a task)
-    if (currentTask && /^  /.test(line) && line.trim()) {
+    if (task && /^  /.test(line) && line.trim()) {
       const meta = line.trim()
-      // Tags: #tag
       const tags = meta.match(/#[\w-]+/g)
-      if (tags) currentTask.tags.push(...tags)
-      // due:
-      const due = meta.match(/due:([\d-]+)/)
-      if (due) currentTask.due = due[1]
-      // completed:
-      const comp = meta.match(/completed:([\S]+(?:\s+\S+)?)/)
-      if (comp) currentTask.completed = comp[1]
-      // source:
-      const src = meta.match(/source:([\S]+)/)
-      if (src) currentTask.source = src[1]
-      // owner:
-      const own = meta.match(/owner:(@[\w-]+)/)
-      if (own) currentTask.owner = own[1]
+      if (tags) task.tags.push(...tags)
+      const due = meta.match(/due:([\d-]+)/); if (due) task.due = due[1]
+      const comp = meta.match(/completed:([\S]+(?:\s+\S+)?)/); if (comp) task.completed = comp[1]
+      const src = meta.match(/source:([\S]+)/); if (src) task.source = src[1]
+      const own = meta.match(/owner:(@[\w-]+)/); if (own) task.owner = own[1]
     }
   }
 
-  if (currentTask && currentSection) currentSection.tasks.push(currentTask)
+  if (task && section) section.tasks.push(task)
   return sections
 }
 
 // ─────────────────────────────────────────
-// TOGGLE TASK IN MARKDOWN
+// TOGGLE IN MARKDOWN
 // ─────────────────────────────────────────
 function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
   const lines = md.split('\n')
-  const line = lines[lineIndex]
   const ts = nowTimestamp()
 
   if (nowChecked) {
-    // Check it off
-    lines[lineIndex] = line.replace('- [ ]', '- [x]')
-    // Add completed timestamp to meta line below, or insert one
-    const nextLine = lines[lineIndex + 1]
-    if (nextLine && /^  /.test(nextLine)) {
-      // There's already a meta line — find the right place to add
-      // Check if completed: already exists
-      let inserted = false
-      for (let j = lineIndex + 1; j < lines.length; j++) {
-        if (!/^  /.test(lines[j]) && lines[j].trim()) break
-        if (lines[j].includes('completed:')) {
-          lines[j] = lines[j].replace(/completed:[\S]+(\s+\S+)?/, `completed:${ts}`)
-          inserted = true
-          break
-        }
-      }
-      if (!inserted) {
-        // Insert after last meta line for this task
-        let lastMeta = lineIndex
-        for (let j = lineIndex + 1; j < lines.length; j++) {
-          if (/^  /.test(lines[j])) lastMeta = j
-          else break
-        }
-        lines.splice(lastMeta + 1, 0, `  completed:${ts}`)
-      }
-    } else {
-      // No meta lines yet — insert one
-      lines.splice(lineIndex + 1, 0, `  completed:${ts}`)
-    }
-  } else {
-    // Uncheck it
-    lines[lineIndex] = line.replace('- [x]', '- [ ]')
-    // Remove completed: line if present
+    lines[lineIndex] = lines[lineIndex].replace('- [ ]', '- [x]')
+    let inserted = false
+    let lastMeta = lineIndex
     for (let j = lineIndex + 1; j < lines.length; j++) {
       if (!/^  /.test(lines[j]) && lines[j].trim()) break
+      lastMeta = j
       if (lines[j].includes('completed:')) {
-        lines.splice(j, 1)
+        lines[j] = lines[j].replace(/completed:[\S]+(\s+\S+)?/, `completed:${ts}`)
+        inserted = true
         break
       }
+    }
+    if (!inserted) lines.splice(lastMeta + 1, 0, `  completed:${ts}`)
+  } else {
+    lines[lineIndex] = lines[lineIndex].replace('- [x]', '- [ ]')
+    for (let j = lineIndex + 1; j < lines.length; j++) {
+      if (!/^  /.test(lines[j]) && lines[j].trim()) break
+      if (lines[j].includes('completed:')) { lines.splice(j, 1); break }
     }
   }
 
@@ -364,14 +292,8 @@ function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
 // ─────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────
-function isDue(dateStr) {
-  if (!dateStr) return false
-  return dateStr < todayDate()
-}
-
 function renderTasks(sections) {
   const main = document.getElementById('main')
-
   if (!sections.length) {
     main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No tasks found in tasks.md</div></div>`
     return
@@ -386,50 +308,37 @@ function renderTasks(sections) {
     const done = section.tasks.filter(t => t.checked)
     totalOpen += open.length
     totalDone += done.length
-
     if (!section.tasks.length) continue
 
-    html += `
-      <div class="section">
-        <div class="section-header">
-          <span class="section-title">${section.title}</span>
-          <span class="section-count">${open.length} open${done.length ? ` · ${done.length} done` : ''}</span>
-        </div>
-    `
+    html += `<div class="section">
+      <div class="section-header">
+        <span class="section-title">${section.title}</span>
+        <span class="section-count">${open.length} open${done.length ? ` · ${done.length} done` : ''}</span>
+      </div>`
 
-    // Open tasks first, then done
-    const ordered = [...open, ...done]
-    for (const task of ordered) {
-      const overdue = !task.checked && isDue(task.due)
-
+    for (const task of [...open, ...done]) {
+      const overdue = !task.checked && task.due && task.due < todayDate()
       html += `
-        <div class="task-card ${task.checked ? 'done' : ''}" 
-             onclick="handleToggle(${task.lineIndex})"
-             id="task-${task.lineIndex}">
+        <div class="task-card ${task.checked ? 'done' : ''}" onclick="handleToggle(${task.lineIndex})" id="task-${task.lineIndex}">
           <div class="task-checkbox ${task.checked ? 'checked' : ''}"></div>
           <div class="task-body">
             <div class="task-title">${task.title}</div>
             <div class="task-meta">
               ${task.tags.map(t => `<span class="chip chip-tag">${t}</span>`).join('')}
-              ${task.due ? `<span class="chip chip-due ${overdue ? 'overdue' : ''}">due ${task.due}</span>` : ''}
+              ${task.due ? `<span class="chip chip-due${overdue ? ' overdue' : ''}">due ${task.due}</span>` : ''}
               ${task.source ? `<span class="chip chip-source">${task.source}</span>` : ''}
               ${task.owner ? `<span class="chip chip-source">${task.owner}</span>` : ''}
               ${task.completed ? `<span class="chip chip-done">✓ ${task.completed}</span>` : ''}
             </div>
           </div>
-        </div>
-      `
+        </div>`
     }
-
     html += `</div>`
   }
 
   main.innerHTML = html
-
-  // Footer stats
   document.getElementById('footer-path').textContent = `${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`
   document.getElementById('footer-sha').textContent = currentSha ? `sha: ${currentSha.slice(0,7)}` : '—'
-
   setStatus('ready', `${totalOpen} open · ${totalDone} done`)
 }
 
@@ -440,7 +349,6 @@ async function handleToggle(lineIndex) {
   if (isSaving) return
   isSaving = true
 
-  // Find the task
   const sections = parseTasks(currentContent)
   let task = null
   for (const s of sections) {
@@ -450,48 +358,32 @@ async function handleToggle(lineIndex) {
   if (!task) { isSaving = false; return }
 
   const nowChecked = !task.checked
-  const ts = nowTimestamp()
-
-  // Optimistic UI update
   const card = document.getElementById(`task-${lineIndex}`)
+
+  // Optimistic update
   if (card) {
     card.classList.add('writing')
     card.classList.toggle('done', nowChecked)
-    const cb = card.querySelector('.task-checkbox')
-    cb.classList.toggle('checked', nowChecked)
+    card.querySelector('.task-checkbox').classList.toggle('checked', nowChecked)
   }
 
   try {
-    // Update markdown
     const newContent = toggleTaskInMarkdown(currentContent, lineIndex, nowChecked)
-
-    // Commit message
-    const action = nowChecked ? 'complete' : 'reopen'
     const shortTitle = task.title.length > 50 ? task.title.slice(0, 47) + '…' : task.title
-    const commitMsg = `tasks: ${action} "${shortTitle}" · ${ts}`
-
-    // Write to GitHub
+    const commitMsg = `tasks: ${nowChecked ? 'complete' : 'reopen'} "${shortTitle}" · ${nowTimestamp()}`
     const result = await githubPut(CONFIG.path, newContent, currentSha, commitMsg)
-
-    // Update state
     currentContent = newContent
     currentSha = result.content.sha
-
-    // Re-render
-    const updatedSections = parseTasks(currentContent)
-    renderTasks(updatedSections)
-
-    showToast(nowChecked ? `✓ Marked done · committed` : `↩ Reopened · committed`, 'success')
+    renderTasks(parseTasks(currentContent))
+    showToast(nowChecked ? '✓ Marked done · committed' : '↩ Reopened · committed', 'success')
   } catch (err) {
-    // Revert optimistic update
+    // Revert
     if (card) {
       card.classList.remove('writing')
       card.classList.toggle('done', task.checked)
-      const cb = card.querySelector('.task-checkbox')
-      cb.classList.toggle('checked', task.checked)
+      card.querySelector('.task-checkbox').classList.toggle('checked', task.checked)
     }
     showToast(`Error: ${err.message}`, 'error-state')
-    // If it's an auth error, the token may have expired
     if (err.message.includes('401') || err.message.includes('Bad credentials')) {
       localStorage.removeItem('dovetell_pat')
       CONFIG.token = null
@@ -509,25 +401,80 @@ async function handleToggle(lineIndex) {
 async function loadTasks() {
   setStatus('loading', 'Syncing…')
   document.getElementById('sync-btn').classList.add('syncing')
-
   try {
     const file = await githubGet(CONFIG.path)
     currentSha = file.sha
     currentContent = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))))
-    const sections = parseTasks(currentContent)
-    renderTasks(sections)
+    renderTasks(parseTasks(currentContent))
   } catch (err) {
     setStatus('error', err.message)
     document.getElementById('main').innerHTML = `
       <div class="empty">
         <div class="empty-icon">⚠</div>
-        <div class="empty-text">${err.message}<br><br>
-        Check your CONFIG token and repo path.</div>
+        <div class="empty-text">${err.message}<br><br>Check your token and repo path.</div>
       </div>`
     console.error(err)
   }
-
   document.getElementById('sync-btn').classList.remove('syncing')
+}
+
+// ─────────────────────────────────────────
+// TOKEN PROMPT
+// ─────────────────────────────────────────
+function showTokenPrompt() {
+  setStatus('error', 'Token required')
+  document.getElementById('main').innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">🔑</div>
+      <div class="empty-text" style="max-width:420px;margin:0 auto">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+          Stored in localStorage on this device only.<br>
+          Never sent anywhere except the GitHub API.<br>
+          You'll only need to do this once per device.
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <input id="token-input" type="password" placeholder="github_pat_…"
+            style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);
+              border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);
+              font-size:12px;color:var(--text);outline:none;"
+            onkeydown="if(event.key==='Enter')saveToken()"/>
+          <button onclick="saveToken()"
+            style="padding:10px 20px;background:var(--blurple);color:#fff;font-family:var(--sans);
+              font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;">
+            Save &amp; load →
+          </button>
+        </div>
+        <div style="margin-top:16px;font-size:11px;color:var(--muted)">
+          Fine-grained PAT · scoped to dovetell-io/sandbox · Contents: Read and Write<br>
+          <a href="https://github.com/settings/tokens?type=beta" target="_blank"
+            style="color:var(--blurple)">github.com/settings/tokens?type=beta</a>
+        </div>
+        <div style="margin-top:12px">
+          <button onclick="clearToken()"
+            style="background:transparent;border:none;color:var(--muted);font-size:11px;
+              cursor:pointer;font-family:var(--sans);">
+            Clear saved token
+          </button>
+        </div>
+      </div>
+    </div>`
+  setTimeout(() => { const i = document.getElementById('token-input'); if (i) i.focus() }, 50)
+}
+
+function saveToken() {
+  const input = document.getElementById('token-input')
+  const token = input ? input.value.trim() : ''
+  if (!token) return
+  localStorage.setItem('dovetell_pat', token)
+  CONFIG.token = token
+  loadTasks()
+}
+
+function clearToken() {
+  localStorage.removeItem('dovetell_pat')
+  CONFIG.token = null
+  showTokenPrompt()
 }
 
 // ─────────────────────────────────────────
@@ -547,78 +494,6 @@ function showToast(msg, type = '') {
   toast.textContent = msg
   toast.className = `toast ${type} show`
   setTimeout(() => toast.classList.remove('show'), 3000)
-}
-
-// ─────────────────────────────────────────
-// TOKEN PROMPT UI
-// ─────────────────────────────────────────
-function showTokenPrompt() {
-  setStatus('error', 'Token required')
-  document.getElementById('main').innerHTML = `
-    <div class="empty">
-      <div class="empty-icon">🔑</div>
-      <div class="empty-text" style="max-width:420px;margin:0 auto">
-        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">
-          Enter your GitHub token
-        </div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">
-          Stored in localStorage on this device only.<br>
-          Never sent anywhere except the GitHub API.<br>
-          You'll only need to do this once per device.
-        </div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <input
-            id="token-input"
-            type="password"
-            placeholder="github_pat_..."
-            style="flex:1;min-width:220px;padding:10px 14px;
-              background:var(--surface-2);border:1px solid var(--border-2);
-              border-radius:8px;font-family:var(--mono);font-size:12px;
-              color:var(--text);outline:none;"
-            onkeydown="if(event.key==='Enter')saveToken()"
-          />
-          <button
-            onclick="saveToken()"
-            style="padding:10px 20px;background:var(--blurple);color:#fff;
-              font-family:var(--sans);font-size:13px;font-weight:700;
-              border:none;border-radius:8px;cursor:pointer;white-space:nowrap;"
-          >Save & load →</button>
-        </div>
-        <div style="margin-top:16px;font-size:11px;color:var(--muted)">
-          Fine-grained PAT · scoped to dovetell-io/sandbox · Contents: Read and Write<br>
-          <a href="https://github.com/settings/tokens?type=beta"
-             target="_blank"
-             style="color:var(--blurple)">github.com/settings/tokens?type=beta</a>
-        </div>
-        <div style="margin-top:12px">
-          <button onclick="clearToken()"
-            style="background:transparent;border:none;color:var(--muted);
-              font-size:11px;cursor:pointer;font-family:var(--sans);">
-            Clear saved token
-          </button>
-        </div>
-      </div>
-    </div>`
-  // Focus the input
-  setTimeout(() => {
-    const input = document.getElementById('token-input')
-    if (input) input.focus()
-  }, 50)
-}
-
-function saveToken() {
-  const input = document.getElementById('token-input')
-  const token = input ? input.value.trim() : ''
-  if (!token) return
-  localStorage.setItem('dovetell_pat', token)
-  CONFIG.token = token
-  loadTasks()
-}
-
-function clearToken() {
-  localStorage.removeItem('dovetell_pat')
-  CONFIG.token = null
-  showTokenPrompt()
 }
 
 // ─────────────────────────────────────────
