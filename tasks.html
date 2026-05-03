@@ -21,128 +21,260 @@
   --border-2:rgba(255,255,255,0.12);--text:#E8E9F8;--muted:#6B6B8A;
   --muted-2:#9999BB;--cream:#F5F4EF;
   --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
-  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;--purple:#A855F7;
 }
 html,body{height:100%;margin:0}
 body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 
-/* DEMO BANNER */
+/* BANNER */
 .demo-banner{height:24px;width:100%;flex-shrink:0;background:var(--cream);border-bottom:1px solid rgba(88,101,242,0.15);display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple)}
 .demo-banner-divider{opacity:0.3}
 
-/* TOP NAV */
-.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
-.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+/* NAV */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
 .logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
 .logo-wordmark span{color:var(--blurple)}
-.topbar-right{display:flex;align-items:center;gap:16px}
-.sync-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
-.sync-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
-.sync-btn.syncing{opacity:0.6;pointer-events:none}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.topbar-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.btn-sm.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.btn-add{background:var(--blurple);color:#fff;border-color:var(--blurple)}
+.btn-add:hover{background:var(--blurple-dark);border-color:var(--blurple-dark);color:#fff}
+.status-row{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
 .status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
 .status-dot.error{background:var(--red)}
 
-/* MAIN */
-.main{flex:1;padding:32px;max-width:900px;width:100%;margin:0 auto}
+/* FILTER BAR */
+.filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.filter-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.filter-pill{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.filter-pill:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.filter-sep{width:1px;height:16px;background:var(--border);margin:0 4px}
 
-/* SECTION */
-.section{margin-bottom:40px}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.section-title{font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted-2)}
-.section-count{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-2);padding:2px 8px;border-radius:10px}
+/* MAIN */
+.main{flex:1;padding:24px;max-width:860px;width:100%;margin:0 auto}
+
+/* SECTION HEADERS */
+.section-head{display:flex;align-items:center;gap:10px;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-head:first-child{margin-top:0}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)}
+.section-count{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:2px 7px;border-radius:8px}
+.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-now{background:var(--red)}
+.dot-next{background:var(--amber)}
+.dot-later{background:var(--muted)}
 
 /* TASK CARD */
-.task-card{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;transition:all 0.15s;cursor:pointer}
-.task-card:hover{border-color:rgba(88,101,242,0.25);background:var(--surface-2)}
-.task-card.done{opacity:0.45}
-.task-card.done:hover{opacity:0.65}
-.task-card.writing{opacity:0.7;pointer-events:none}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden}
+.task-card:hover{border-color:rgba(88,101,242,0.2)}
+.task-card.done{opacity:0.4}
+.task-card.done:hover{opacity:0.6}
+.task-card.expanded{border-color:rgba(88,101,242,0.3)}
+.task-card.writing{opacity:0.6;pointer-events:none}
 
-/* CHECKBOX */
-.task-checkbox{width:18px;height:18px;border-radius:5px;border:2px solid var(--border-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px;background:transparent}
+/* TASK MAIN ROW */
+.task-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.task-checkbox{width:17px;height:17px;border-radius:4px;border:2px solid var(--border-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px}
 .task-card:hover .task-checkbox{border-color:var(--blurple)}
 .task-checkbox.checked{background:var(--blurple);border-color:var(--blurple)}
-.task-checkbox.checked::after{content:'✓';font-size:11px;font-weight:700;color:#fff;line-height:1}
-
-/* TASK BODY */
+.task-checkbox.checked::after{content:'✓';font-size:10px;font-weight:700;color:#fff;line-height:1}
 .task-body{flex:1;min-width:0}
-.task-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4}
+.task-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:4px}
 .task-card.done .task-title{text-decoration:line-through;color:var(--muted)}
-.task-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;margin-top:1px;opacity:0.6;transition:opacity 0.15s;user-select:none}
+.task-card:hover .task-expand-btn{opacity:1}
 
 /* CHIPS */
-.chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;letter-spacing:0.03em}
+.chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 6px;border-radius:3px}
 .chip-tag{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
 .chip-due{background:rgba(245,158,11,0.1);color:var(--amber)}
 .chip-due.overdue{background:rgba(239,68,68,0.1);color:var(--red)}
 .chip-done{background:rgba(34,197,94,0.1);color:var(--green)}
-.chip-source{background:rgba(255,255,255,0.05);color:var(--muted-2)}
+.chip-owner{background:rgba(255,255,255,0.05);color:var(--muted-2)}
+.chip-decision{background:rgba(168,85,247,0.12);color:#C084FC;cursor:pointer}
+.chip-decision:hover{background:rgba(168,85,247,0.2)}
+.chip-claude{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
+.chip-now{background:rgba(239,68,68,0.1);color:var(--red)}
+.chip-next{background:rgba(245,158,11,0.1);color:var(--amber)}
+.chip-later{background:rgba(107,107,138,0.15);color:var(--muted-2)}
+
+/* EXPANDED DETAILS */
+.task-details{padding:0 14px 14px 43px;border-top:1px solid var(--border);display:none}
+.task-card.expanded .task-details{display:block}
+.detail-grid{display:grid;grid-template-columns:80px 1fr;gap:4px 12px;margin-top:10px}
+.detail-label{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding-top:1px}
+.detail-value{font-size:12px;color:var(--muted-2);font-family:var(--mono)}
+.detail-value a{color:var(--blurple);text-decoration:none}
+.detail-value a:hover{text-decoration:underline}
+.detail-notes{margin-top:10px;padding:10px;background:var(--surface-2);border-radius:6px;font-size:13px;color:var(--muted-2);line-height:1.6}
+
+/* ADD TASK PANEL */
+.add-panel{background:var(--surface);border:1px solid var(--border-2);border-radius:12px;padding:20px;margin-bottom:24px;display:none}
+.add-panel.open{display:block}
+.add-panel-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:16px}
+.form-row{display:grid;gap:10px;margin-bottom:12px}
+.form-row-2{grid-template-columns:1fr 1fr}
+.form-row-3{grid-template-columns:2fr 1fr 1fr}
+label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+input[type=text],input[type=date],select,textarea{width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
+input[type=text]:focus,input[type=date]:focus,select:focus,textarea:focus{border-color:var(--blurple)}
+input[type=text]::placeholder,textarea::placeholder{color:var(--muted)}
+select option{background:var(--surface-2);color:var(--text)}
+textarea{resize:vertical;min-height:60px;font-family:var(--sans)}
+
+/* TAG PICKER */
+.tag-picker{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0}
+.tag-option{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none}
+.tag-option:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.tag-option.selected{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.tag-custom-row{display:flex;gap:8px;margin-top:6px}
+.tag-custom-input{flex:1;padding:5px 10px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none}
+.tag-custom-input:focus{border-color:var(--blurple)}
+.tag-add-btn{padding:5px 12px;background:transparent;border:1px solid var(--border-2);border-radius:6px;color:var(--muted-2);font-size:11px;cursor:pointer;transition:all 0.15s}
+.tag-add-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
+
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-cancel{padding:8px 16px;background:transparent;border:1px solid var(--border-2);border-radius:7px;color:var(--muted-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-save{padding:8px 20px;background:var(--blurple);border:none;border-radius:7px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s}
+.btn-save:hover{background:var(--blurple-dark)}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:100}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:12px 18px;font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:200}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.success{border-color:rgba(34,197,94,0.3)}
 .toast.error-state{border-color:rgba(239,68,68,0.3)}
 
-/* EMPTY STATE */
+/* EMPTY / TOKEN */
 .empty{text-align:center;padding:48px 24px;color:var(--muted)}
 .empty-icon{font-size:32px;margin-bottom:12px}
 .empty-text{font-size:14px;line-height:1.6}
 
 /* FOOTER */
-.footer{padding:16px 32px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
+.footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 </style>
 </head>
 <body>
 
-<!-- BANNER -->
 <div class="demo-banner">
   <span>// Task tracker</span>
   <span class="demo-banner-divider">·</span>
   <span>dovetell-io/dovetell-sandbox · tasks.md</span>
 </div>
 
-<!-- NAV -->
 <div class="topbar">
   <div class="topbar-logo">
-    <img src="assets/sandbox-apple-touch-icon.png" width="28" height="28" style="border-radius:7px;display:block;" alt="dovetell"/>
+    <img src="assets/sandbox-apple-touch-icon.png" width="26" height="26" style="border-radius:6px;display:block;" alt="dovetell"/>
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
-  <div class="topbar-right">
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="status-dot loading" id="status-dot"></div>
-      <span style="font-size:12px;color:var(--muted)" id="status-text">Loading…</span>
+  <div class="topbar-controls">
+    <button class="btn-sm btn-add" onclick="toggleAddPanel()">+ Add task</button>
+    <button class="btn-sm" id="toggle-done-btn" onclick="toggleDone()">Hide completed</button>
+    <button class="btn-sm" id="sync-btn" onclick="loadTasks()">↻ Sync</button>
+  </div>
+  <div class="status-row">
+    <div class="status-dot loading" id="status-dot"></div>
+    <span style="font-size:11px;color:var(--muted)" id="status-text">Loading…</span>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Priority</span>
+  <div class="filter-pill active" onclick="setFilter('priority','all')" data-filter="priority" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('priority','now')" data-filter="priority" data-val="now">🔴 Now</div>
+  <div class="filter-pill" onclick="setFilter('priority','next')" data-filter="priority" data-val="next">🟡 Next</div>
+  <div class="filter-pill" onclick="setFilter('priority','later')" data-filter="priority" data-val="later">⚪ Later</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Owner</span>
+  <div class="filter-pill active" onclick="setFilter('owner','all')" data-filter="owner" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('owner','john')" data-filter="owner" data-val="john">John</div>
+  <div class="filter-pill" onclick="setFilter('owner','claude')" data-filter="owner" data-val="claude">Claude</div>
+</div>
+
+<!-- ADD TASK PANEL -->
+<div style="max-width:860px;width:100%;margin:0 auto;padding:16px 24px 0">
+  <div class="add-panel" id="add-panel">
+    <div class="add-panel-title">New task</div>
+    <div class="form-row">
+      <div>
+        <label>Task title *</label>
+        <input type="text" id="new-title" placeholder="What needs to happen?"/>
+      </div>
     </div>
-    <button class="sync-btn" id="sync-btn" onclick="loadTasks()">↻ Sync</button>
+    <div class="form-row form-row-3">
+      <div>
+        <label>Priority *</label>
+        <select id="new-priority">
+          <option value="now">🔴 Now</option>
+          <option value="next" selected>🟡 Next</option>
+          <option value="later">⚪ Later</option>
+        </select>
+      </div>
+      <div>
+        <label>Owner</label>
+        <select id="new-owner">
+          <option value="john" selected>John</option>
+          <option value="claude">Claude</option>
+        </select>
+      </div>
+      <div>
+        <label>Due date (optional)</label>
+        <input type="date" id="new-due"/>
+      </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div>
+        <label>Decision ID (optional)</label>
+        <input type="text" id="new-decision" placeholder="decision-xxxxxxxx"/>
+      </div>
+      <div>
+        <label>Session / source</label>
+        <input type="text" id="new-source" placeholder="claude-2a2d3774" value="claude-2a2d3774"/>
+      </div>
+    </div>
+    <div>
+      <label>Tags</label>
+      <div class="tag-picker" id="tag-picker"></div>
+      <div class="tag-custom-row">
+        <input class="tag-custom-input" id="custom-tag-input" type="text" placeholder="#new-tag" onkeydown="if(event.key==='Enter')addCustomTag()"/>
+        <button class="tag-add-btn" onclick="addCustomTag()">+ Add</button>
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:10px">
+      <div>
+        <label>Notes (optional)</label>
+        <textarea id="new-notes" placeholder="Any additional context or details…"></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="toggleAddPanel()">Cancel</button>
+      <button class="btn-save" onclick="saveNewTask()">Save task →</button>
+    </div>
   </div>
 </div>
 
 <!-- MAIN -->
 <div class="main" id="main">
-  <div class="empty">
-    <div class="empty-icon">⋯</div>
-    <div class="empty-text">Loading tasks…</div>
-  </div>
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading tasks…</div></div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <span id="footer-path">—</span>
   <span id="footer-sha">—</span>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ─────────────────────────────────────────
 // CONFIG
-// Token loaded from localStorage — never hardcoded.
-// Repo: dovetell-io/dovetell-sandbox · path: tasks.md
-// Fine-grained PAT · Contents read/write only
 // ─────────────────────────────────────────
 const CONFIG = {
   owner: 'dovetell-io',
@@ -150,7 +282,8 @@ const CONFIG = {
   path: 'tasks.md',
   token: null,
   timezone: 'America/New_York',
-  tzLabel: 'ET'
+  tzLabel: 'ET',
+  sessionId: '2a2d3774'  // this session's hash — update at start of each session
 }
 
 // ─────────────────────────────────────────
@@ -159,6 +292,23 @@ const CONFIG = {
 let currentSha = null
 let currentContent = ''
 let isSaving = false
+let showDone = true
+let filters = { priority: 'all', owner: 'all' }
+let expandedTasks = new Set()
+let knownTags = new Set()
+let selectedTags = new Set()
+
+// ─────────────────────────────────────────
+// NANOID — short unique IDs
+// ─────────────────────────────────────────
+function nanoid(len = 8) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  let id = ''
+  const arr = new Uint8Array(len)
+  crypto.getRandomValues(arr)
+  arr.forEach(n => id += chars[n % chars.length])
+  return id
+}
 
 // ─────────────────────────────────────────
 // GITHUB API
@@ -190,7 +340,7 @@ async function githubPut(path, content, sha, message) {
     }
   )
   if (!res.ok) {
-    const err = await res.json()
+    const err = await res.json().catch(() => ({}))
     throw new Error(err.message || `GitHub ${res.status}`)
   }
   return res.json()
@@ -216,49 +366,193 @@ function todayDate() {
 }
 
 // ─────────────────────────────────────────
-// MARKDOWN PARSER
+// PARSER
 // ─────────────────────────────────────────
 function parseTasks(md) {
   const lines = md.split('\n')
-  const sections = []
-  let section = null
+  const tasks = []
   let task = null
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-
-    if (/^## /.test(line)) {
-      if (task && section) section.tasks.push(task)
-      task = null
-      section = { title: line.replace('## ', '').trim(), tasks: [], lineIndex: i }
-      sections.push(section)
-      continue
-    }
-
     const m = line.match(/^- \[([ x])\] (.+)/)
-    if (m && section) {
-      if (task) section.tasks.push(task)
-      task = { checked: m[1] === 'x', title: m[2].trim(), lineIndex: i, tags: [], due: null, completed: null, source: null, owner: null }
+    if (m) {
+      if (task) tasks.push(task)
+      task = {
+        checked: m[1] === 'x',
+        title: m[2].trim(),
+        lineIndex: i,
+        id: null, priority: 'later', tags: [], due: null,
+        completed: null, source: null, owner: null,
+        decision: null, notes: null
+      }
       continue
     }
-
     if (task && /^  /.test(line) && line.trim()) {
       const meta = line.trim()
-      const tags = meta.match(/#[\w-]+/g)
-      if (tags) task.tags.push(...tags)
-      const due = meta.match(/due:([\d-]+)/); if (due) task.due = due[1]
-      const comp = meta.match(/completed:([\S]+(?:\s+\S+)?)/); if (comp) task.completed = comp[1]
-      const src = meta.match(/source:([\S]+)/); if (src) task.source = src[1]
-      const own = meta.match(/owner:(@[\w-]+)/); if (own) task.owner = own[1]
+      const tags = meta.match(/#[\w-]+/g); if (tags) { task.tags.push(...tags); tags.forEach(t => knownTags.add(t)) }
+      const id = meta.match(/^id:(task-[\w-]+)/); if (id) task.id = id[1]
+      const pri = meta.match(/^priority:(\w+)/); if (pri) task.priority = pri[1]
+      const due = meta.match(/^due:([\d-]+)/); if (due) task.due = due[1]
+      const comp = meta.match(/^completed:([\S]+(?:\s+\S+)?)/); if (comp) task.completed = comp[1]
+      const src = meta.match(/^source:([\S]+)/); if (src) task.source = src[1]
+      const own = meta.match(/^owner:(\w+)/); if (own) task.owner = own[1]
+      const dec = meta.match(/^decision:([\w-]+)/); if (dec) task.decision = dec[1]
+      const notes = meta.match(/^notes:(.+)/); if (notes) task.notes = notes[1]
+    }
+    if (task && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      if (task) tasks.push(task)
+      task = null
     }
   }
-
-  if (task && section) section.tasks.push(task)
-  return sections
+  if (task) tasks.push(task)
+  return tasks
 }
 
 // ─────────────────────────────────────────
-// TOGGLE IN MARKDOWN
+// RENDER
+// ─────────────────────────────────────────
+const PRIORITY_ORDER = { now: 0, next: 1, later: 2 }
+
+function renderTasks(tasks) {
+  const main = document.getElementById('main')
+  if (!tasks.length) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No tasks in tasks.md</div></div>`
+    return
+  }
+
+  // Apply filters
+  let filtered = tasks.filter(t => {
+    if (filters.priority !== 'all' && t.priority !== filters.priority) return false
+    if (filters.owner !== 'all' && t.owner !== filters.owner) return false
+    return true
+  })
+
+  // Separate open and done
+  const open = filtered.filter(t => !t.checked).sort((a,b) => PRIORITY_ORDER[a.priority||'later'] - PRIORITY_ORDER[b.priority||'later'])
+  const done = filtered.filter(t => t.checked)
+
+  let html = ''
+  let openCount = open.length
+  let doneCount = done.length
+
+  // Group open by priority
+  const groups = [
+    { key: 'now', label: 'Now', dot: 'dot-now', tasks: open.filter(t => t.priority === 'now') },
+    { key: 'next', label: 'Next', dot: 'dot-next', tasks: open.filter(t => t.priority === 'next') },
+    { key: 'later', label: 'Later', dot: 'dot-later', tasks: open.filter(t => t.priority === 'later' || !t.priority) },
+  ]
+
+  for (const group of groups) {
+    if (!group.tasks.length) continue
+    html += `<div class="section-head">
+      <div class="priority-dot ${group.dot}"></div>
+      <span class="section-title">${group.label}</span>
+      <span class="section-count">${group.tasks.length}</span>
+    </div>`
+    group.tasks.forEach(t => { html += renderCard(t) })
+  }
+
+  // Done section
+  if (done.length) {
+    html += `<div class="section-head" style="margin-top:32px">
+      <span class="section-title" style="color:var(--muted)">Completed</span>
+      <span class="section-count">${done.length}</span>
+    </div>`
+    if (showDone) {
+      done.forEach(t => { html += renderCard(t) })
+    } else {
+      html += `<div style="font-size:12px;color:var(--muted);padding:8px 0;">${done.length} completed task${done.length!==1?'s':''} hidden</div>`
+    }
+  }
+
+  main.innerHTML = html
+
+  document.getElementById('footer-path').textContent = `${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`
+  document.getElementById('footer-sha').textContent = currentSha ? `sha: ${currentSha.slice(0,7)}` : '—'
+  setStatus('ready', `${openCount} open · ${doneCount} done`)
+
+  // Restore expanded state
+  expandedTasks.forEach(id => {
+    const el = document.getElementById(`task-${id}`)
+    if (el) el.classList.add('expanded')
+  })
+}
+
+function renderCard(task) {
+  const overdue = !task.checked && task.due && task.due < todayDate()
+  const isExpanded = expandedTasks.has(task.lineIndex)
+  const hasDetails = task.id || task.source || task.decision || task.notes || task.owner
+
+  return `
+    <div class="task-card ${task.checked?'done':''} ${isExpanded?'expanded':''}" id="task-${task.lineIndex}">
+      <div class="task-row">
+        <div class="task-checkbox ${task.checked?'checked':''}" onclick="event.stopPropagation();handleToggle(${task.lineIndex})"></div>
+        <div class="task-body" onclick="toggleExpand(${task.lineIndex})">
+          <div class="task-title">${task.title}</div>
+          <div class="task-meta">
+            ${task.priority ? `<span class="chip chip-${task.priority}">${task.priority}</span>` : ''}
+            ${task.tags.map(t=>`<span class="chip chip-tag">${t}</span>`).join('')}
+            ${task.due ? `<span class="chip chip-due${overdue?' overdue':''}">${task.due}</span>` : ''}
+            ${task.owner === 'claude' ? `<span class="chip chip-claude">claude</span>` : task.owner ? `<span class="chip chip-owner">${task.owner}</span>` : ''}
+            ${task.decision ? `<span class="chip chip-decision" title="${task.decision}">↗ decision</span>` : ''}
+            ${task.completed ? `<span class="chip chip-done">✓ ${task.completed}</span>` : ''}
+          </div>
+        </div>
+        ${hasDetails ? `<div class="task-expand-btn" onclick="toggleExpand(${task.lineIndex})">${isExpanded?'▲':'▼'}</div>` : ''}
+      </div>
+      ${hasDetails ? `
+      <div class="task-details">
+        <div class="detail-grid">
+          ${task.id ? `<span class="detail-label">ID</span><span class="detail-value">${task.id}</span>` : ''}
+          ${task.source ? `<span class="detail-label">Source</span><span class="detail-value">${task.source}</span>` : ''}
+          ${task.decision ? `<span class="detail-label">Decision</span><span class="detail-value"><a href="#${task.decision}">${task.decision}</a></span>` : ''}
+          ${task.owner ? `<span class="detail-label">Owner</span><span class="detail-value">${task.owner}</span>` : ''}
+          ${task.due ? `<span class="detail-label">Due</span><span class="detail-value">${task.due}${overdue?' ⚠':''}</span>` : ''}
+        </div>
+        ${task.notes ? `<div class="detail-notes">${task.notes}</div>` : ''}
+      </div>` : ''}
+    </div>`
+}
+
+// ─────────────────────────────────────────
+// EXPAND / COLLAPSE
+// ─────────────────────────────────────────
+function toggleExpand(lineIndex) {
+  if (expandedTasks.has(lineIndex)) {
+    expandedTasks.delete(lineIndex)
+  } else {
+    expandedTasks.add(lineIndex)
+  }
+  const card = document.getElementById(`task-${lineIndex}`)
+  if (card) card.classList.toggle('expanded', expandedTasks.has(lineIndex))
+  const btn = card?.querySelector('.task-expand-btn')
+  if (btn) btn.textContent = expandedTasks.has(lineIndex) ? '▲' : '▼'
+}
+
+// ─────────────────────────────────────────
+// TOGGLE DONE VISIBILITY
+// ─────────────────────────────────────────
+function toggleDone() {
+  showDone = !showDone
+  const btn = document.getElementById('toggle-done-btn')
+  btn.textContent = showDone ? 'Hide completed' : 'Show completed'
+  renderTasks(parseTasks(currentContent))
+}
+
+// ─────────────────────────────────────────
+// FILTERS
+// ─────────────────────────────────────────
+function setFilter(type, val) {
+  filters[type] = val
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(el => {
+    el.classList.toggle('active', el.dataset.val === val)
+  })
+  renderTasks(parseTasks(currentContent))
+}
+
+// ─────────────────────────────────────────
+// TOGGLE TASK (checkbox)
 // ─────────────────────────────────────────
 function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
   const lines = md.split('\n')
@@ -272,9 +566,8 @@ function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
       if (!/^  /.test(lines[j]) && lines[j].trim()) break
       lastMeta = j
       if (lines[j].includes('completed:')) {
-        lines[j] = lines[j].replace(/completed:[\S]+(\s+\S+)?/, `completed:${ts}`)
-        inserted = true
-        break
+        lines[j] = `  completed:${ts}`
+        inserted = true; break
       }
     }
     if (!inserted) lines.splice(lastMeta + 1, 0, `  completed:${ts}`)
@@ -285,113 +578,139 @@ function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
       if (lines[j].includes('completed:')) { lines.splice(j, 1); break }
     }
   }
-
   return lines.join('\n')
 }
 
-// ─────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────
-function renderTasks(sections) {
-  const main = document.getElementById('main')
-  if (!sections.length) {
-    main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No tasks found in tasks.md</div></div>`
-    return
-  }
-
-  let html = ''
-  let totalOpen = 0
-  let totalDone = 0
-
-  for (const section of sections) {
-    const open = section.tasks.filter(t => !t.checked)
-    const done = section.tasks.filter(t => t.checked)
-    totalOpen += open.length
-    totalDone += done.length
-    if (!section.tasks.length) continue
-
-    html += `<div class="section">
-      <div class="section-header">
-        <span class="section-title">${section.title}</span>
-        <span class="section-count">${open.length} open${done.length ? ` · ${done.length} done` : ''}</span>
-      </div>`
-
-    for (const task of [...open, ...done]) {
-      const overdue = !task.checked && task.due && task.due < todayDate()
-      html += `
-        <div class="task-card ${task.checked ? 'done' : ''}" onclick="handleToggle(${task.lineIndex})" id="task-${task.lineIndex}">
-          <div class="task-checkbox ${task.checked ? 'checked' : ''}"></div>
-          <div class="task-body">
-            <div class="task-title">${task.title}</div>
-            <div class="task-meta">
-              ${task.tags.map(t => `<span class="chip chip-tag">${t}</span>`).join('')}
-              ${task.due ? `<span class="chip chip-due${overdue ? ' overdue' : ''}">due ${task.due}</span>` : ''}
-              ${task.source ? `<span class="chip chip-source">${task.source}</span>` : ''}
-              ${task.owner ? `<span class="chip chip-source">${task.owner}</span>` : ''}
-              ${task.completed ? `<span class="chip chip-done">✓ ${task.completed}</span>` : ''}
-            </div>
-          </div>
-        </div>`
-    }
-    html += `</div>`
-  }
-
-  main.innerHTML = html
-  document.getElementById('footer-path').textContent = `${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`
-  document.getElementById('footer-sha').textContent = currentSha ? `sha: ${currentSha.slice(0,7)}` : '—'
-  setStatus('ready', `${totalOpen} open · ${totalDone} done`)
-}
-
-// ─────────────────────────────────────────
-// HANDLE TOGGLE
-// ─────────────────────────────────────────
 async function handleToggle(lineIndex) {
   if (isSaving) return
   isSaving = true
 
-  const sections = parseTasks(currentContent)
-  let task = null
-  for (const s of sections) {
-    task = s.tasks.find(t => t.lineIndex === lineIndex)
-    if (task) break
-  }
+  const tasks = parseTasks(currentContent)
+  const task = tasks.find(t => t.lineIndex === lineIndex)
   if (!task) { isSaving = false; return }
 
   const nowChecked = !task.checked
   const card = document.getElementById(`task-${lineIndex}`)
-
-  // Optimistic update
   if (card) {
     card.classList.add('writing')
     card.classList.toggle('done', nowChecked)
-    card.querySelector('.task-checkbox').classList.toggle('checked', nowChecked)
+    card.querySelector('.task-checkbox')?.classList.toggle('checked', nowChecked)
   }
 
   try {
     const newContent = toggleTaskInMarkdown(currentContent, lineIndex, nowChecked)
-    const shortTitle = task.title.length > 50 ? task.title.slice(0, 47) + '…' : task.title
-    const commitMsg = `tasks: ${nowChecked ? 'complete' : 'reopen'} "${shortTitle}" · ${nowTimestamp()}`
-    const result = await githubPut(CONFIG.path, newContent, currentSha, commitMsg)
+    const shortTitle = task.title.length > 50 ? task.title.slice(0,47)+'…' : task.title
+    const result = await githubPut(CONFIG.path, newContent, currentSha,
+      `tasks: ${nowChecked?'complete':'reopen'} "${shortTitle}" · ${nowTimestamp()}`)
     currentContent = newContent
     currentSha = result.content.sha
     renderTasks(parseTasks(currentContent))
-    showToast(nowChecked ? '✓ Marked done · committed' : '↩ Reopened · committed', 'success')
+    showToast(nowChecked ? '✓ Done · committed' : '↩ Reopened · committed', 'success')
   } catch (err) {
-    // Revert
     if (card) {
       card.classList.remove('writing')
       card.classList.toggle('done', task.checked)
-      card.querySelector('.task-checkbox').classList.toggle('checked', task.checked)
+      card.querySelector('.task-checkbox')?.classList.toggle('checked', task.checked)
     }
     showToast(`Error: ${err.message}`, 'error-state')
-    if (err.message.includes('401') || err.message.includes('Bad credentials')) {
+    if (err.message.includes('401') || err.message.toLowerCase().includes('bad credentials')) {
       localStorage.removeItem('dovetell_pat')
       CONFIG.token = null
       setTimeout(() => showTokenPrompt(), 1500)
     }
     console.error(err)
   }
+  isSaving = false
+}
 
+// ─────────────────────────────────────────
+// ADD TASK
+// ─────────────────────────────────────────
+function toggleAddPanel() {
+  const panel = document.getElementById('add-panel')
+  panel.classList.toggle('open')
+  if (panel.classList.contains('open')) {
+    renderTagPicker()
+    document.getElementById('new-title').focus()
+    document.getElementById('new-source').value = `claude-${CONFIG.sessionId}`
+  }
+}
+
+function renderTagPicker() {
+  const picker = document.getElementById('tag-picker')
+  const allTags = [...knownTags].sort()
+  picker.innerHTML = allTags.map(tag => `
+    <div class="tag-option ${selectedTags.has(tag)?'selected':''}"
+         onclick="toggleTag('${tag}')">${tag}</div>
+  `).join('')
+}
+
+function toggleTag(tag) {
+  if (selectedTags.has(tag)) selectedTags.delete(tag)
+  else selectedTags.add(tag)
+  renderTagPicker()
+}
+
+function addCustomTag() {
+  const input = document.getElementById('custom-tag-input')
+  let tag = input.value.trim()
+  if (!tag) return
+  if (!tag.startsWith('#')) tag = '#' + tag
+  tag = tag.replace(/\s+/g, '-').toLowerCase()
+  knownTags.add(tag)
+  selectedTags.add(tag)
+  input.value = ''
+  renderTagPicker()
+}
+
+async function saveNewTask() {
+  const title = document.getElementById('new-title').value.trim()
+  if (!title) { showToast('Title is required', 'error-state'); return }
+  if (isSaving) return
+  isSaving = true
+
+  const priority = document.getElementById('new-priority').value
+  const owner = document.getElementById('new-owner').value
+  const due = document.getElementById('new-due').value
+  const decision = document.getElementById('new-decision').value.trim()
+  const source = document.getElementById('new-source').value.trim() || `claude-${CONFIG.sessionId}`
+  const notes = document.getElementById('new-notes').value.trim()
+  const tags = [...selectedTags]
+  const id = `task-${nanoid(8)}`
+  const ts = nowTimestamp()
+
+  // Build the markdown block
+  let block = `\n- [ ] ${title}\n`
+  block += `  id:${id}\n`
+  block += `  priority:${priority}\n`
+  if (tags.length) block += `  tags:${tags.join(' ')}\n`
+  if (due) block += `  due:${due}\n`
+  block += `  owner:${owner}\n`
+  block += `  source:${source}\n`
+  if (decision) block += `  decision:${decision}\n`
+  if (notes) block += `  notes:${notes}\n`
+
+  try {
+    const newContent = currentContent.trimEnd() + block
+    const result = await githubPut(CONFIG.path, newContent, currentSha,
+      `tasks: add "${title.slice(0,50)}" · ${ts}`)
+    currentContent = newContent
+    currentSha = result.content.sha
+    // Reset form
+    document.getElementById('new-title').value = ''
+    document.getElementById('new-due').value = ''
+    document.getElementById('new-decision').value = ''
+    document.getElementById('new-notes').value = ''
+    document.getElementById('new-priority').value = 'next'
+    document.getElementById('new-owner').value = 'john'
+    selectedTags.clear()
+    document.getElementById('add-panel').classList.remove('open')
+    renderTasks(parseTasks(currentContent))
+    showToast('✓ Task added · committed', 'success')
+  } catch (err) {
+    showToast(`Error: ${err.message}`, 'error-state')
+    console.error(err)
+  }
   isSaving = false
 }
 
@@ -400,22 +719,22 @@ async function handleToggle(lineIndex) {
 // ─────────────────────────────────────────
 async function loadTasks() {
   setStatus('loading', 'Syncing…')
-  document.getElementById('sync-btn').classList.add('syncing')
+  document.getElementById('sync-btn').textContent = '↻ Syncing…'
   try {
     const file = await githubGet(CONFIG.path)
     currentSha = file.sha
-    currentContent = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))))
-    renderTasks(parseTasks(currentContent))
+    currentContent = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))))
+    knownTags.clear()
+    const tasks = parseTasks(currentContent)
+    renderTasks(tasks)
   } catch (err) {
     setStatus('error', err.message)
     document.getElementById('main').innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">⚠</div>
-        <div class="empty-text">${err.message}<br><br>Check your token and repo path.</div>
-      </div>`
+      <div class="empty"><div class="empty-icon">⚠</div>
+      <div class="empty-text">${err.message}<br><br>Check your token and repo path.</div></div>`
     console.error(err)
   }
-  document.getElementById('sync-btn').classList.remove('syncing')
+  document.getElementById('sync-btn').textContent = '↻ Sync'
 }
 
 // ─────────────────────────────────────────
@@ -446,20 +765,19 @@ function showTokenPrompt() {
           </button>
         </div>
         <div style="margin-top:16px;font-size:11px;color:var(--muted)">
-          Fine-grained PAT · scoped to dovetell-io/sandbox · Contents: Read and Write<br>
+          Fine-grained PAT · dovetell-io/dovetell-sandbox · Contents: Read and Write<br>
           <a href="https://github.com/settings/tokens?type=beta" target="_blank"
             style="color:var(--blurple)">github.com/settings/tokens?type=beta</a>
         </div>
         <div style="margin-top:12px">
           <button onclick="clearToken()"
-            style="background:transparent;border:none;color:var(--muted);font-size:11px;
-              cursor:pointer;font-family:var(--sans);">
+            style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">
             Clear saved token
           </button>
         </div>
       </div>
     </div>`
-  setTimeout(() => { const i = document.getElementById('token-input'); if (i) i.focus() }, 50)
+  setTimeout(() => { const i = document.getElementById('token-input'); if(i) i.focus() }, 50)
 }
 
 function saveToken() {
