@@ -8,12 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-/* ── CONFIG ─────────────────────────────────────────────
-   Fill in your GitHub PAT before using.
-   This file should NOT be committed to a public repo.
-   Keep in jchromchak/dovetell/personal/ or run locally.
-────────────────────────────────────────────────────── */
-
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
@@ -167,36 +161,15 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 <script>
 // ─────────────────────────────────────────
 // CONFIG
-// ─────────────────────────────────────────
-//
-// TOKEN SETUP — use a fine-grained PAT, not a classic token:
-//
-//   1. Go to github.com/settings/tokens?type=beta
-//   2. Generate new token
-//   3. Resource owner: your account (jchromchak)
-//   4. Repository access: Only selected → dovetell-io/dovetell
-//   5. Permissions → Repository permissions:
-//        Contents → Read and Write
-//        (everything else: No access)
-//   6. Set expiration: 1 year or no expiration
-//   7. Copy the token and paste below
-//
-// This scopes the token to ONE repo and ONE permission.
-// Even if someone reads your page source, they can only
-// read/write files in dovetell-io/dovetell. Nothing else.
-//
-// HOSTING: commit this file to a public GitHub Pages repo
-// (e.g. jchromchak/tasks or jchromchak.github.io)
-// It will be publicly readable — that's fine, the token only
-// touches the public dovetell repo anyway. The tasks.md it
-// reads/writes is already public markdown.
-//
+// Token loaded from localStorage — never hardcoded.
+// Repo: dovetell-io/sandbox · path: tasks.md
+// Fine-grained PAT · Contents read/write only
 // ─────────────────────────────────────────
 const CONFIG = {
   owner: 'dovetell-io',
-  repo: 'dovetell',
-  path: '.dovetell-context/tasks.md',
-  token: 'github_pat_YOUR_TOKEN_HERE',  // fine-grained PAT
+  repo: 'sandbox',
+  path: 'tasks.md',
+  token: null,              // loaded from localStorage — never hardcoded
   timezone: 'America/New_York',
   tzLabel: 'ET'
 }
@@ -513,6 +486,12 @@ async function handleToggle(lineIndex) {
       cb.classList.toggle('checked', task.checked)
     }
     showToast(`Error: ${err.message}`, 'error-state')
+    // If it's an auth error, the token may have expired
+    if (err.message.includes('401') || err.message.includes('Bad credentials')) {
+      localStorage.removeItem('dovetell_pat')
+      CONFIG.token = null
+      setTimeout(() => showTokenPrompt(), 1500)
+    }
     console.error(err)
   }
 
@@ -566,23 +545,86 @@ function showToast(msg, type = '') {
 }
 
 // ─────────────────────────────────────────
-// INIT
+// TOKEN PROMPT UI
 // ─────────────────────────────────────────
-if (CONFIG.token === 'github_pat_YOUR_TOKEN_HERE') {
-  setStatus('error', 'Token not configured')
+function showTokenPrompt() {
+  setStatus('error', 'Token required')
   document.getElementById('main').innerHTML = `
     <div class="empty">
       <div class="empty-icon">🔑</div>
-      <div class="empty-text">
-        Set your fine-grained GitHub PAT in CONFIG.token<br><br>
-        <strong style="color:var(--text)">github.com/settings/tokens?type=beta</strong><br><br>
-        Scope it to: <code style="font-family:var(--mono);font-size:12px">dovetell-io/dovetell</code>
-        → Contents: Read and Write<br>
-        Everything else: No access
+      <div class="empty-text" style="max-width:420px;margin:0 auto">
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">
+          Enter your GitHub token
+        </div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+          Stored in localStorage on this device only.<br>
+          Never sent anywhere except the GitHub API.<br>
+          You'll only need to do this once per device.
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+          <input
+            id="token-input"
+            type="password"
+            placeholder="github_pat_..."
+            style="flex:1;min-width:220px;padding:10px 14px;
+              background:var(--surface-2);border:1px solid var(--border-2);
+              border-radius:8px;font-family:var(--mono);font-size:12px;
+              color:var(--text);outline:none;"
+            onkeydown="if(event.key==='Enter')saveToken()"
+          />
+          <button
+            onclick="saveToken()"
+            style="padding:10px 20px;background:var(--blurple);color:#fff;
+              font-family:var(--sans);font-size:13px;font-weight:700;
+              border:none;border-radius:8px;cursor:pointer;white-space:nowrap;"
+          >Save & load →</button>
+        </div>
+        <div style="margin-top:16px;font-size:11px;color:var(--muted)">
+          Fine-grained PAT · scoped to dovetell-io/sandbox · Contents: Read and Write<br>
+          <a href="https://github.com/settings/tokens?type=beta"
+             target="_blank"
+             style="color:var(--blurple)">github.com/settings/tokens?type=beta</a>
+        </div>
+        <div style="margin-top:12px">
+          <button onclick="clearToken()"
+            style="background:transparent;border:none;color:var(--muted);
+              font-size:11px;cursor:pointer;font-family:var(--sans);">
+            Clear saved token
+          </button>
+        </div>
       </div>
     </div>`
-} else {
+  // Focus the input
+  setTimeout(() => {
+    const input = document.getElementById('token-input')
+    if (input) input.focus()
+  }, 50)
+}
+
+function saveToken() {
+  const input = document.getElementById('token-input')
+  const token = input ? input.value.trim() : ''
+  if (!token) return
+  localStorage.setItem('dovetell_pat', token)
+  CONFIG.token = token
   loadTasks()
+}
+
+function clearToken() {
+  localStorage.removeItem('dovetell_pat')
+  CONFIG.token = null
+  showTokenPrompt()
+}
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+const savedToken = localStorage.getItem('dovetell_pat')
+if (savedToken) {
+  CONFIG.token = savedToken
+  loadTasks()
+} else {
+  showTokenPrompt()
 }
 </script>
 </body>
