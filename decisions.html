@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>dovetell — Tasks</title>
+<title>dovetell — Decisions</title>
 <link rel="icon" type="image/png" href="assets/sandbox-favicon.png">
 <link rel="apple-touch-icon" href="assets/sandbox-apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="dovetell tasks">
+<meta name="apple-mobile-web-app-title" content="dovetell decisions">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -22,6 +22,7 @@
   --muted-2:#9999BB;--cream:#F5F4EF;
   --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
   --green:#22C55E;--amber:#F59E0B;--red:#EF4444;--purple:#A855F7;
+  --teal:#14B8A6;--sky:#38BDF8;
 }
 html,body{height:100%;margin:0}
 body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
@@ -36,19 +37,20 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .logo-img{width:26px;height:26px;border-radius:6px;display:block}
 .logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
 .logo-wordmark span{color:var(--blurple)}
-.nav-links{display:flex;align-items:center;gap:4px}
-.nav-link{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all 0.15s}
-.nav-link:hover{color:var(--text);background:var(--surface-2)}
-.nav-link.active{color:var(--blurple-light);background:rgba(88,101,242,0.1)}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
 .btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
-.btn-sm.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
 .status-row{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
 .status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
 .status-dot.error{background:var(--red)}
 .status-text{font-size:11px;color:var(--muted)}
+
+/* NAV LINKS */
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all 0.15s}
+.nav-link:hover{color:var(--text);background:var(--surface-2)}
+.nav-link.active{color:var(--blurple-light);background:rgba(88,101,242,0.1)}
 
 /* FILTER BAR */
 .filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -59,6 +61,12 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .filter-pill.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
 .filter-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
 
+/* STATUS COLOR PILLS */
+.filter-pill[data-val="active"].active{background:rgba(34,197,94,0.12);border-color:var(--green);color:var(--green)}
+.filter-pill[data-val="deferred"].active{background:rgba(245,158,11,0.12);border-color:var(--amber);color:var(--amber)}
+.filter-pill[data-val="superseded"].active{background:rgba(107,107,138,0.15);border-color:var(--muted);color:var(--muted-2)}
+.filter-pill[data-val="closed"].active{background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red)}
+
 /* MAIN */
 .main{flex:1;padding:16px;max-width:860px;width:100%;margin:0 auto;padding-bottom:80px}
 
@@ -67,87 +75,92 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .section-head:first-child{margin-top:0}
 .section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)}
 .section-count{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:2px 7px;border-radius:8px}
-.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-now{background:var(--red)}
-.dot-next{background:var(--amber)}
-.dot-later{background:var(--muted)}
+.status-indicator{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ind-active{background:var(--green)}
+.ind-deferred{background:var(--amber)}
+.ind-superseded{background:var(--muted)}
+.ind-closed{background:var(--red)}
 
-/* TASK CARD */
-.task-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden}
-.task-card:hover{border-color:rgba(88,101,242,0.2)}
-.task-card.done{opacity:0.4}
-.task-card.done:hover{opacity:0.6}
-.task-card.expanded{border-color:rgba(88,101,242,0.3)}
-.task-card.editing{border-color:rgba(88,101,242,0.4)}
-.task-card.writing{opacity:0.5;pointer-events:none}
+/* DECISION CARD */
+.dec-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden}
+.dec-card:hover{border-color:rgba(88,101,242,0.2)}
+.dec-card.expanded{border-color:rgba(88,101,242,0.3)}
+.dec-card.status-closed{opacity:0.5}
+.dec-card.status-superseded{opacity:0.6}
+.dec-card.writing{opacity:0.5;pointer-events:none}
 
-/* TASK MAIN ROW */
-.task-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
-.task-checkbox{width:17px;height:17px;border-radius:4px;border:2px solid var(--border-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:2px}
-.task-card:hover .task-checkbox{border-color:var(--blurple)}
-.task-checkbox.checked{background:var(--blurple);border-color:var(--blurple)}
-.task-checkbox.checked::after{content:'✓';font-size:10px;font-weight:700;color:#fff;line-height:1}
-.task-body{flex:1;min-width:0}
-.task-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:5px}
-.task-card.done .task-title{text-decoration:line-through;color:var(--muted)}
-.task-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.task-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;margin-top:1px;opacity:0.5;transition:opacity 0.15s;user-select:none;padding:2px 4px}
-.task-card:hover .task-expand-btn{opacity:1}
+/* CARD MAIN ROW */
+.dec-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.dec-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dec-body{flex:1;min-width:0}
+.dec-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:5px}
+.dec-card.status-closed .dec-title{text-decoration:line-through;color:var(--muted)}
+.dec-card.status-superseded .dec-title{color:var(--muted-2)}
+.dec-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.dec-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;margin-top:1px;opacity:0.5;transition:opacity 0.15s;user-select:none;padding:2px 4px}
+.dec-card:hover .dec-expand-btn{opacity:1}
 
 /* CHIPS */
 .chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;display:inline-flex;align-items:center}
-.chip-tag{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
-.chip-due{background:rgba(245,158,11,0.1);color:var(--amber)}
-.chip-due.overdue{background:rgba(239,68,68,0.1);color:var(--red)}
-.chip-done{background:rgba(34,197,94,0.1);color:var(--green)}
-.chip-owner{background:rgba(255,255,255,0.05);color:var(--muted-2)}
-.chip-decision{background:rgba(168,85,247,0.12);color:#C084FC;cursor:pointer}
-.chip-decision:hover{background:rgba(168,85,247,0.2)}
-.chip-claude{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
-.chip-now{background:rgba(239,68,68,0.1);color:var(--red)}
-.chip-next{background:rgba(245,158,11,0.1);color:var(--amber)}
-.chip-later{background:rgba(107,107,138,0.15);color:var(--muted-2)}
+.chip-active{background:rgba(34,197,94,0.1);color:var(--green)}
+.chip-deferred{background:rgba(245,158,11,0.1);color:var(--amber)}
+.chip-superseded{background:rgba(107,107,138,0.15);color:var(--muted-2)}
+.chip-closed{background:rgba(239,68,68,0.1);color:var(--red)}
+.chip-category{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
+.chip-date{background:rgba(255,255,255,0.04);color:var(--muted-2)}
+.chip-source{background:rgba(168,85,247,0.1);color:#C084FC}
+.chip-trigger{background:rgba(20,184,166,0.1);color:var(--teal)}
 
 /* EXPANDED DETAILS */
-.task-details{padding:0 14px 14px 43px;border-top:1px solid var(--border);display:none}
-.task-card.expanded .task-details{display:block}
-.detail-grid{display:grid;grid-template-columns:80px 1fr;gap:5px 12px;margin-top:10px}
+.dec-details{padding:0 14px 14px 34px;border-top:1px solid var(--border);display:none}
+.dec-card.expanded .dec-details{display:block}
+.detail-grid{display:grid;grid-template-columns:100px 1fr;gap:5px 12px;margin-top:12px}
 .detail-label{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding-top:1px;align-self:start}
 .detail-value{font-size:12px;color:var(--muted-2);font-family:var(--mono);word-break:break-word}
-.detail-value a{color:var(--blurple);text-decoration:none}
-.detail-value a:hover{text-decoration:underline}
-.detail-notes{margin-top:10px;padding:10px 12px;background:var(--surface-2);border-radius:6px;font-size:13px;color:var(--text);line-height:1.6;border-left:2px solid rgba(88,101,242,0.3)}
+.detail-rationale{margin-top:10px;padding:10px 12px;background:var(--surface-2);border-radius:6px;font-size:13px;color:var(--text);line-height:1.6;border-left:2px solid rgba(88,101,242,0.3)}
+.detail-closure{margin-top:8px;padding:10px 12px;background:rgba(239,68,68,0.05);border-radius:6px;font-size:12px;color:var(--muted-2);line-height:1.6;border-left:2px solid rgba(239,68,68,0.3)}
+.detail-closure-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--red);opacity:0.7;margin-bottom:4px;letter-spacing:0.06em}
 .detail-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
 .btn-action{font-size:11px;font-weight:600;font-family:var(--sans);padding:5px 12px;border-radius:6px;border:1px solid var(--border-2);color:var(--muted-2);background:transparent;cursor:pointer;transition:all 0.15s}
 .btn-action:hover{border-color:var(--blurple);color:var(--blurple-light)}
 .btn-action.danger:hover{border-color:var(--red);color:var(--red)}
+.btn-action.primary{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
 
 /* EDIT MODE */
-.edit-panel{padding:10px 14px 14px 43px;border-top:1px solid var(--border);display:none;background:var(--surface-2)}
-.task-card.editing .edit-panel{display:block}
-.task-card.editing .task-details{display:none}
+.edit-panel{padding:12px 14px 14px 34px;border-top:1px solid var(--border);display:none;background:var(--surface-2)}
+.dec-card.editing .edit-panel{display:block}
+.dec-card.editing .dec-details{display:none}
 .edit-field{margin-bottom:10px}
 .edit-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
-.edit-input{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
+.edit-input{width:100%;padding:7px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
 .edit-input:focus{border-color:var(--blurple)}
-.edit-textarea{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:64px;transition:border-color 0.15s;line-height:1.5}
+.edit-textarea{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:60px;transition:border-color 0.15s;line-height:1.5}
 .edit-textarea:focus{border-color:var(--blurple)}
-.edit-select{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer}
+.edit-select{width:100%;padding:7px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;appearance:none;cursor:pointer}
 .edit-select:focus{border-color:var(--blurple)}
 .edit-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.edit-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
 .edit-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .btn-edit-cancel{padding:7px 14px;background:transparent;border:1px solid var(--border-2);border-radius:6px;color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
 .btn-edit-cancel:hover{border-color:var(--red);color:var(--red)}
 .btn-edit-save{padding:7px 18px;background:var(--blurple);border:none;border-radius:6px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s}
 .btn-edit-save:hover{background:var(--blurple-dark)}
 
+/* CLOSE DECISION PANEL */
+.close-panel{margin-top:10px;padding:12px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;display:none}
+.close-panel.open{display:block}
+.close-panel-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--red);opacity:0.8;margin-bottom:8px;letter-spacing:0.06em}
+.close-panel textarea{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid rgba(239,68,68,0.2);border-radius:6px;font-family:var(--sans);font-size:12px;color:var(--text);outline:none;resize:vertical;min-height:56px;line-height:1.5}
+.close-panel textarea:focus{border-color:var(--red)}
+.close-panel-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
+.btn-close-decision{padding:6px 14px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:var(--red);font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.btn-close-decision:hover{background:rgba(239,68,68,0.25)}
+
 /* FAB */
 .fab{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blurple);border:none;color:#fff;font-size:24px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,101,242,0.4);transition:all 0.2s;z-index:100;line-height:1}
 .fab:hover{background:var(--blurple-dark);transform:scale(1.05);box-shadow:0 6px 24px rgba(88,101,242,0.5)}
 .fab:active{transform:scale(0.97)}
 
-/* ADD SHEET — slides up from bottom */
+/* ADD SHEET — slides up from bottom on mobile */
 .add-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.25s}
 .add-sheet-overlay.open{opacity:1;pointer-events:all}
 .add-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-2);border-radius:16px 16px 0 0;padding:20px 16px 32px;z-index:160;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -164,7 +177,6 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .form-textarea{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:80px;line-height:1.5;transition:border-color 0.15s}
 .form-textarea:focus{border-color:var(--blurple)}
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
 .tag-picker{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
 .tag-option{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none}
 .tag-option:hover{border-color:var(--blurple);color:var(--blurple-light)}
@@ -195,8 +207,6 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .bulk-textarea:focus{border-color:var(--blurple)}
 .bulk-parse-btn{width:100%;margin-top:10px;padding:11px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
 .bulk-parse-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
-
-/* BULK PREVIEW */
 .bulk-preview{margin-top:14px;display:none}
 .bulk-preview.visible{display:block}
 .preview-head{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px}
@@ -237,9 +247,9 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <!-- build:2 · 2026-05-03 · bulk import + rev log -->
 <div class="demo-banner">
-  <span>// Task tracker</span>
+  <span>// Decisions</span>
   <span class="demo-banner-divider">·</span>
-  <span>dovetell-io/dovetell-sandbox · tasks.md</span>
+  <span>dovetell-io/dovetell-sandbox · decisions.md</span>
 </div>
 
 <div class="topbar">
@@ -248,13 +258,12 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
   <div class="nav-links">
-    <a href="index.html" class="nav-link active">Tasks</a>
-    <a href="decisions.html" class="nav-link">Decisions</a>
+    <a href="index.html" class="nav-link">Tasks</a>
+    <a href="decisions.html" class="nav-link active">Decisions</a>
   </div>
   <div class="topbar-right">
     <button class="btn-sm" onclick="openBulkSheet()">⬆ Import</button>
-    <button class="btn-sm" id="toggle-done-btn" onclick="toggleDone()">Hide done</button>
-    <button class="btn-sm" id="sync-btn" onclick="loadTasks()">↻</button>
+    <button class="btn-sm" id="sync-btn" onclick="loadDecisions()">↻</button>
     <div class="status-row">
       <div class="status-dot loading" id="status-dot"></div>
       <span class="status-text" id="status-text">Loading…</span>
@@ -263,20 +272,19 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 </div>
 
 <div class="filter-bar">
-  <span class="filter-label">Priority</span>
-  <div class="filter-pill active" onclick="setFilter('priority','all')" data-filter="priority" data-val="all">All</div>
-  <div class="filter-pill" onclick="setFilter('priority','now')" data-filter="priority" data-val="now">🔴 Now</div>
-  <div class="filter-pill" onclick="setFilter('priority','next')" data-filter="priority" data-val="next">🟡 Next</div>
-  <div class="filter-pill" onclick="setFilter('priority','later')" data-filter="priority" data-val="later">⚪ Later</div>
+  <span class="filter-label">Status</span>
+  <div class="filter-pill active" onclick="setFilter('status','all')" data-filter="status" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('status','active')" data-filter="status" data-val="active">Active</div>
+  <div class="filter-pill" onclick="setFilter('status','deferred')" data-filter="status" data-val="deferred">Deferred</div>
+  <div class="filter-pill" onclick="setFilter('status','superseded')" data-filter="status" data-val="superseded">Superseded</div>
+  <div class="filter-pill" onclick="setFilter('status','closed')" data-filter="status" data-val="closed">Closed</div>
   <div class="filter-sep"></div>
-  <span class="filter-label">Owner</span>
-  <div class="filter-pill active" onclick="setFilter('owner','all')" data-filter="owner" data-val="all">All</div>
-  <div class="filter-pill" onclick="setFilter('owner','john')" data-filter="owner" data-val="john">John</div>
-  <div class="filter-pill" onclick="setFilter('owner','claude')" data-filter="owner" data-val="claude">Claude</div>
+  <span class="filter-label">Category</span>
+  <div class="filter-pill active" onclick="setFilter('category','all')" data-filter="category" data-val="all">All</div>
 </div>
 
 <div class="main" id="main">
-  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading tasks…</div></div>
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading decisions…</div></div>
 </div>
 
 <div class="footer">
@@ -289,9 +297,9 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 <div class="add-sheet-overlay" id="bulk-overlay" onclick="closeBulkSheet()"></div>
 <div class="bulk-sheet" id="bulk-sheet">
   <div class="sheet-handle"></div>
-  <div class="bulk-title">Bulk import tasks</div>
-  <div class="bulk-sub">Paste markdown task blocks. Preview before committing.</div>
-  <textarea class="bulk-textarea" id="bulk-input" placeholder="- [ ] Task title&#10;  id:task-xxxxxxxx&#10;  priority:next&#10;  tags:#tag&#10;  owner:john&#10;  source:claude-a3f7c291&#10;&#10;- [ ] Another task&#10;  ..."></textarea>
+  <div class="bulk-title">Bulk import decisions</div>
+  <div class="bulk-sub">Paste markdown decision blocks. Preview before committing.</div>
+  <textarea class="bulk-textarea" id="bulk-input" placeholder="- [ ] Decision title&#10;  id:decision-xxxxxxxx&#10;  date:2026-05-03&#10;  category:#product #strategy&#10;  rationale:Why this was decided&#10;  status:active&#10;  source:claude-a3f7c291&#10;&#10;- [ ] Another decision&#10;  ..."></textarea>
   <button class="bulk-parse-btn" onclick="parseBulkInput()">Preview import →</button>
   <div class="bulk-preview" id="bulk-preview">
     <div class="preview-summary" id="preview-summary"></div>
@@ -304,64 +312,50 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 </div>
 
 <!-- FAB -->
-<button class="fab" onclick="openAddSheet()" title="Add task">+</button>
+<button class="fab" onclick="openAddSheet()" title="Add decision">+</button>
 
 <!-- ADD SHEET -->
 <div class="add-sheet-overlay" id="sheet-overlay" onclick="closeAddSheet()"></div>
 <div class="add-sheet" id="add-sheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title">New task</div>
+  <div class="sheet-title">New decision</div>
 
   <div class="form-field">
-    <label class="form-label">Task title *</label>
-    <input class="form-input" type="text" id="new-title" placeholder="What needs to happen?"/>
+    <label class="form-label">Decision *</label>
+    <input class="form-input" type="text" id="new-decision" placeholder="What was decided?"/>
   </div>
-  <div class="form-row-3">
-    <div class="form-field">
-      <label class="form-label">Priority *</label>
-      <select class="form-select" id="new-priority">
-        <option value="now">🔴 Now</option>
-        <option value="next" selected>🟡 Next</option>
-        <option value="later">⚪ Later</option>
-      </select>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Owner</label>
-      <select class="form-select" id="new-owner">
-        <option value="john" selected>John</option>
-        <option value="claude">Claude</option>
-      </select>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Due date</label>
-      <input class="form-input" type="date" id="new-due"/>
-    </div>
+  <div class="form-field">
+    <label class="form-label">Rationale</label>
+    <textarea class="form-textarea" id="new-rationale" placeholder="Why was this decided?"></textarea>
   </div>
   <div class="form-row-2">
     <div class="form-field">
-      <label class="form-label">Decision ID</label>
-      <input class="form-input" type="text" id="new-decision-ref" placeholder="decision-xxxxxxxx"/>
+      <label class="form-label">Status</label>
+      <select class="form-select" id="new-status">
+        <option value="active" selected>Active</option>
+        <option value="deferred">Deferred</option>
+      </select>
     </div>
     <div class="form-field">
-      <label class="form-label">Session / source</label>
-      <input class="form-input" type="text" id="new-source" placeholder="claude-a3f7c291"/>
+      <label class="form-label">Source</label>
+      <input class="form-input" type="text" id="new-source" placeholder="john or claude-xxxxxxxx"/>
     </div>
   </div>
+  <div class="form-field" id="trigger-field" style="display:none">
+    <label class="form-label">Trigger (deferred only)</label>
+    <input class="form-input" type="text" id="new-trigger" placeholder="When to revisit…"/>
+  </div>
   <div class="form-field">
-    <label class="form-label">Tags</label>
-    <div class="tag-picker" id="tag-picker"></div>
+    <label class="form-label">Categories</label>
+    <div class="tag-picker" id="cat-picker"></div>
     <div class="tag-custom-row">
-      <input class="tag-custom-input" id="custom-tag-input" type="text" placeholder="#new-tag" onkeydown="if(event.key==='Enter')addCustomTag()"/>
-      <button class="tag-add-btn" onclick="addCustomTag()">+ Add</button>
+      <input class="tag-custom-input" id="custom-cat-input" type="text" placeholder="#new-category" onkeydown="if(event.key==='Enter')addCustomCat()"/>
+      <button class="tag-add-btn" onclick="addCustomCat()">+ Add</button>
     </div>
-  </div>
-  <div class="form-field">
-    <label class="form-label">Notes</label>
-    <textarea class="form-textarea" id="new-notes" placeholder="Supporting context, steps, links…"></textarea>
   </div>
   <div class="sheet-actions">
     <button class="btn-sheet-cancel" onclick="closeAddSheet()">Cancel</button>
-    <button class="btn-sheet-save" onclick="saveNewTask()">Save task →</button>
+    <button class="btn-sheet-save" onclick="saveNewDecision()">Save →</button>
   </div>
 </div>
 
@@ -374,7 +368,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 const CONFIG = {
   owner: 'dovetell-io',
   repo: 'dovetell-sandbox',
-  path: 'tasks.md',
+  path: 'decisions.md',
   token: null,
   timezone: 'America/New_York',
   tzLabel: 'ET',
@@ -387,12 +381,12 @@ const CONFIG = {
 let currentSha = null
 let currentContent = ''
 let isSaving = false
-let showDone = true
-let filters = { priority: 'all', owner: 'all' }
-let expandedTasks = new Set()
-let editingTask = null
-let knownTags = new Set()
-let selectedTags = new Set()
+let filters = { status: 'all', category: 'all' }
+let expandedDecisions = new Set()
+let editingDecision = null
+let closingDecision = null
+let knownCategories = new Set()
+let selectedCats = new Set()
 
 // ─────────────────────────────────────────
 // NANOID
@@ -464,368 +458,257 @@ function todayDate() {
 // ─────────────────────────────────────────
 // PARSER
 // ─────────────────────────────────────────
-function parseTasks(md) {
+function parseDecisions(md) {
   const lines = md.split('\n')
-  const tasks = []
-  let task = null
+  const decisions = []
+  let dec = null
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const m = line.match(/^- \[([ x])\] (.+)/)
+    // Match bullet decisions: - [ ] or - [x] or just - 
+    const m = line.match(/^- \[([ x])\] (.+)/) || line.match(/^- ([^[\n].+)/)
     if (m) {
-      if (task) tasks.push(task)
-      task = {
-        checked: m[1] === 'x',
-        title: m[2].trim(),
+      if (dec) decisions.push(dec)
+      const isCheckbox = line.match(/^- \[([ x])\] (.+)/)
+      dec = {
+        closed: isCheckbox ? isCheckbox[1] === 'x' : false,
+        title: isCheckbox ? isCheckbox[2].trim() : m[1].trim(),
         lineIndex: i,
-        id: null, priority: 'later', tags: [], due: null,
-        completed: null, source: null, owner: null,
-        decision: null, notes: null
+        id: null,
+        date: null,
+        category: [],
+        rationale: null,
+        status: 'active',
+        source: null,
+        closedBy: null,
+        closedDate: null,
+        closureStatement: null,
+        trigger: null
       }
       continue
     }
-    if (task && /^  /.test(line) && line.trim()) {
+    if (dec && /^  /.test(line) && line.trim()) {
       const meta = line.trim()
-      const tags = meta.match(/#[\w-]+/g); if (tags) { task.tags.push(...tags); tags.forEach(t => knownTags.add(t)) }
-      const id = meta.match(/^id:(task-[\w-]+)/); if (id) task.id = id[1]
-      const pri = meta.match(/^priority:(\w+)/); if (pri) task.priority = pri[1]
-      const due = meta.match(/^due:([\d-]+)/); if (due) task.due = due[1]
-      const comp = meta.match(/^completed:([\S]+(?:\s+\S+)?)/); if (comp) task.completed = comp[1]
-      const src = meta.match(/^source:([\S]+)/); if (src) task.source = src[1]
-      const own = meta.match(/^owner:(\w+)/); if (own) task.owner = own[1]
-      const dec = meta.match(/^decision:([\w-]+)/); if (dec) task.decision = dec[1]
-      const notes = meta.match(/^notes:(.+)/); if (notes) task.notes = notes[1]
+      const cats = meta.match(/#[\w-]+/g)
+      if (cats) { dec.category.push(...cats); cats.forEach(c => knownCategories.add(c)) }
+      const id = meta.match(/^id:(decision-[\w-]+)/); if (id) dec.id = id[1]
+      const date = meta.match(/^date:([\d-]+)/); if (date) dec.date = date[1]
+      const rat = meta.match(/^rationale:(.+)/); if (rat) dec.rationale = rat[1]
+      const status = meta.match(/^status:(\w+)/); if (status) dec.status = status[1].toLowerCase()
+      const src = meta.match(/^source:([\S]+)/); if (src) dec.source = src[1]
+      const closedBy = meta.match(/^closed-by:([\S]+)/); if (closedBy) dec.closedBy = closedBy[1]
+      const closedDate = meta.match(/^closed-date:([\S]+)/); if (closedDate) dec.closedDate = closedDate[1]
+      const cs = meta.match(/^closure-statement:(.+)/); if (cs) dec.closureStatement = cs[1]
+      const trigger = meta.match(/^trigger:(.+)/); if (trigger) dec.trigger = trigger[1]
     }
-    if (task && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
-      tasks.push(task); task = null
+    if (dec && !/^  /.test(line) && line.trim() && !/^- /.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      if (dec) decisions.push(dec)
+      dec = null
     }
   }
-  if (task) tasks.push(task)
-  return tasks
+  if (dec) decisions.push(dec)
+  return decisions
 }
 
 // ─────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────
-const PRIORITY_ORDER = { now: 0, next: 1, later: 2 }
+const STATUS_ORDER = { active: 0, deferred: 1, superseded: 2, closed: 3 }
 
-function renderTasks(tasks) {
+function renderDecisions(decisions) {
   const main = document.getElementById('main')
-  if (!tasks.length) {
-    main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No tasks in tasks.md</div></div>`
+  if (!decisions.length) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No decisions in decisions.md</div></div>`
     return
   }
 
-  let filtered = tasks.filter(t => {
-    if (filters.priority !== 'all' && t.priority !== filters.priority) return false
-    if (filters.owner !== 'all' && t.owner !== filters.owner) return false
+  // Update category filters dynamically
+  renderCategoryFilters()
+
+  let filtered = decisions.filter(d => {
+    if (filters.status !== 'all' && d.status !== filters.status) return false
+    if (filters.category !== 'all' && !d.category.includes(filters.category)) return false
     return true
   })
 
-  const open = filtered.filter(t => !t.checked).sort((a,b) => PRIORITY_ORDER[a.priority||'later'] - PRIORITY_ORDER[b.priority||'later'])
-  const done = filtered.filter(t => t.checked)
+  // Sort by status order, then by date desc within status
+  filtered.sort((a, b) => {
+    const so = STATUS_ORDER[a.status||'active'] - STATUS_ORDER[b.status||'active']
+    if (so !== 0) return so
+    return (b.date||'').localeCompare(a.date||'')
+  })
 
   const groups = [
-    { key: 'now', label: 'Now', dot: 'dot-now', tasks: open.filter(t => t.priority === 'now') },
-    { key: 'next', label: 'Next', dot: 'dot-next', tasks: open.filter(t => t.priority === 'next') },
-    { key: 'later', label: 'Later', dot: 'dot-later', tasks: open.filter(t => t.priority === 'later' || !t.priority) },
+    { key: 'active', label: 'Active', ind: 'ind-active', items: filtered.filter(d => d.status === 'active') },
+    { key: 'deferred', label: 'Deferred', ind: 'ind-deferred', items: filtered.filter(d => d.status === 'deferred') },
+    { key: 'superseded', label: 'Superseded', ind: 'ind-superseded', items: filtered.filter(d => d.status === 'superseded') },
+    { key: 'closed', label: 'Closed', ind: 'ind-closed', items: filtered.filter(d => d.status === 'closed') },
   ]
 
   let html = ''
+  let totalShown = 0
+
   for (const group of groups) {
-    if (!group.tasks.length) continue
-    html += `<div class="section-head">
-      <div class="priority-dot ${group.dot}"></div>
-      <span class="section-title">${group.label}</span>
-      <span class="section-count">${group.tasks.length}</span>
-    </div>`
-    group.tasks.forEach(t => { html += renderCard(t) })
+    if (!group.items.length) continue
+    // If filtering by status, skip section headers
+    if (filters.status === 'all') {
+      html += `<div class="section-head">
+        <div class="status-indicator ${group.ind}"></div>
+        <span class="section-title">${group.label}</span>
+        <span class="section-count">${group.items.length}</span>
+      </div>`
+    }
+    group.items.forEach(d => { html += renderCard(d) })
+    totalShown += group.items.length
   }
 
-  if (done.length) {
-    html += `<div class="section-head" style="margin-top:32px">
-      <span class="section-title" style="color:var(--muted)">Completed</span>
-      <span class="section-count">${done.length}</span>
-    </div>`
-    if (showDone) {
-      done.forEach(t => { html += renderCard(t) })
-    } else {
-      html += `<div style="font-size:12px;color:var(--muted);padding:8px 0;">${done.length} completed task${done.length!==1?'s':''} hidden</div>`
-    }
+  if (!totalShown) {
+    html = `<div class="empty"><div class="empty-icon">—</div><div class="empty-text">No decisions match this filter</div></div>`
   }
 
   main.innerHTML = html
   document.getElementById('footer-path').textContent = `${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`
   document.getElementById('footer-sha').textContent = currentSha ? `sha: ${currentSha.slice(0,7)}` : '—'
-  setStatus('ready', `${open.length} open · ${done.length} done`)
+  
+  const active = decisions.filter(d => d.status === 'active').length
+  const deferred = decisions.filter(d => d.status === 'deferred').length
+  setStatus('ready', `${active} active · ${deferred} deferred`)
 
-  expandedTasks.forEach(id => {
-    const el = document.getElementById(`task-${id}`)
+  expandedDecisions.forEach(idx => {
+    const el = document.getElementById(`dec-${idx}`)
     if (el) el.classList.add('expanded')
   })
+}
+
+function renderCard(dec) {
+  const isExpanded = expandedDecisions.has(dec.lineIndex)
+  const statusDotClass = {active:'ind-active',deferred:'ind-deferred',superseded:'ind-superseded',closed:'ind-closed'}[dec.status] || 'ind-active'
+  const isEditing = editingDecision === dec.lineIndex
+  const isClosing = closingDecision === dec.lineIndex
+
+  return `
+    <div class="dec-card status-${dec.status} ${isExpanded||isEditing?'expanded':''} ${isEditing?'editing':''}" id="dec-${dec.lineIndex}">
+      <div class="dec-row" onclick="toggleExpand(${dec.lineIndex})">
+        <div class="dec-status-dot ${statusDotClass}"></div>
+        <div class="dec-body">
+          <div class="dec-title">${dec.title}</div>
+          <div class="dec-meta">
+            <span class="chip chip-${dec.status}">${dec.status}</span>
+            ${dec.category.map(c=>`<span class="chip chip-category">${c}</span>`).join('')}
+            ${dec.date ? `<span class="chip chip-date">${dec.date}</span>` : ''}
+            ${dec.source ? `<span class="chip chip-source">${dec.source}</span>` : ''}
+            ${dec.trigger ? `<span class="chip chip-trigger">⏎ ${dec.trigger}</span>` : ''}
+          </div>
+        </div>
+        <div class="dec-expand-btn">${isExpanded||isEditing?'▲':'▼'}</div>
+      </div>
+
+      <div class="dec-details">
+        ${dec.rationale ? `<div class="detail-rationale">${dec.rationale}</div>` : ''}
+        <div class="detail-grid">
+          ${dec.id ? `<span class="detail-label">ID</span><span class="detail-value">${dec.id}</span>` : ''}
+          ${dec.date ? `<span class="detail-label">Date</span><span class="detail-value">${dec.date}</span>` : ''}
+          ${dec.source ? `<span class="detail-label">Source</span><span class="detail-value">${dec.source}</span>` : ''}
+          ${dec.trigger ? `<span class="detail-label">Trigger</span><span class="detail-value">${dec.trigger}</span>` : ''}
+        </div>
+        ${dec.closureStatement ? `
+          <div class="detail-closure">
+            <div class="detail-closure-label">Closure · ${dec.closedBy||'—'} · ${dec.closedDate||'—'}</div>
+            ${dec.closureStatement}
+          </div>` : ''}
+        <div class="detail-actions">
+          <button class="btn-action" onclick="event.stopPropagation();startEdit(${dec.lineIndex})">Edit</button>
+          ${dec.status !== 'closed' && dec.status !== 'superseded' ? `
+            <button class="btn-action danger" onclick="event.stopPropagation();toggleClosePanel(${dec.lineIndex})">Close decision</button>
+            ${dec.status === 'active' ? `<button class="btn-action" onclick="event.stopPropagation();markSuperseded(${dec.lineIndex})">Mark superseded</button>` : ''}
+          ` : ''}
+        </div>
+        <div class="close-panel ${isClosing?'open':''}" id="close-panel-${dec.lineIndex}" onclick="event.stopPropagation()">
+          <div class="close-panel-label">Close this decision</div>
+          <textarea id="closure-text-${dec.lineIndex}" placeholder="Why is this decision being closed?"></textarea>
+          <div class="close-panel-actions">
+            <button class="btn-action" onclick="toggleClosePanel(${dec.lineIndex})">Cancel</button>
+            <button class="btn-close-decision" onclick="confirmClose(${dec.lineIndex})">Confirm close</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-panel" onclick="event.stopPropagation()">
+        <div class="edit-field">
+          <label class="edit-label">Decision</label>
+          <input class="edit-input" id="edit-title-${dec.lineIndex}" type="text" value="${escHtml(dec.title)}"/>
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">Rationale</label>
+          <textarea class="edit-textarea" id="edit-rationale-${dec.lineIndex}">${escHtml(dec.rationale||'')}</textarea>
+        </div>
+        <div class="edit-row-2">
+          <div class="edit-field">
+            <label class="edit-label">Status</label>
+            <select class="edit-select" id="edit-status-${dec.lineIndex}">
+              <option value="active" ${dec.status==='active'?'selected':''}>Active</option>
+              <option value="deferred" ${dec.status==='deferred'?'selected':''}>Deferred</option>
+              <option value="superseded" ${dec.status==='superseded'?'selected':''}>Superseded</option>
+              <option value="closed" ${dec.status==='closed'?'selected':''}>Closed</option>
+            </select>
+          </div>
+          <div class="edit-field">
+            <label class="edit-label">Source</label>
+            <input class="edit-input" id="edit-source-${dec.lineIndex}" type="text" value="${escHtml(dec.source||'')}"/>
+          </div>
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">Trigger (deferred only)</label>
+          <input class="edit-input" id="edit-trigger-${dec.lineIndex}" type="text" value="${escHtml(dec.trigger||'')}"/>
+        </div>
+        <div class="edit-actions">
+          <button class="btn-edit-cancel" onclick="cancelEdit(${dec.lineIndex})">Cancel</button>
+          <button class="btn-edit-save" onclick="saveEdit(${dec.lineIndex})">Save →</button>
+        </div>
+      </div>
+    </div>`
 }
 
 function escHtml(str) {
   return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
 }
 
-function renderCard(task) {
-  const overdue = !task.checked && task.due && task.due < todayDate()
-  const isExpanded = expandedTasks.has(task.lineIndex)
-  const isEditing = editingTask === task.lineIndex
-  const hasDetails = task.id || task.source || task.decision || task.notes || task.owner || task.due
-
-  return `
-    <div class="task-card ${task.checked?'done':''} ${isExpanded&&!isEditing?'expanded':''} ${isEditing?'editing expanded':''}" id="task-${task.lineIndex}">
-      <div class="task-row">
-        <div class="task-checkbox ${task.checked?'checked':''}" onclick="event.stopPropagation();handleToggle(${task.lineIndex})"></div>
-        <div class="task-body" onclick="toggleExpand(${task.lineIndex})">
-          <div class="task-title">${escHtml(task.title)}</div>
-          <div class="task-meta">
-            ${task.priority ? `<span class="chip chip-${task.priority}">${task.priority}</span>` : ''}
-            ${task.tags.map(t=>`<span class="chip chip-tag">${t}</span>`).join('')}
-            ${task.due ? `<span class="chip chip-due${overdue?' overdue':''}">${task.due}</span>` : ''}
-            ${task.owner === 'claude' ? `<span class="chip chip-claude">claude</span>` : task.owner ? `<span class="chip chip-owner">${task.owner}</span>` : ''}
-            ${task.decision ? `<span class="chip chip-decision">↗ decision</span>` : ''}
-            ${task.completed ? `<span class="chip chip-done">✓</span>` : ''}
-          </div>
-        </div>
-        ${hasDetails ? `<div class="task-expand-btn" onclick="toggleExpand(${task.lineIndex})">${isExpanded||isEditing?'▲':'▼'}</div>` : ''}
-      </div>
-
-      ${hasDetails ? `
-      <div class="task-details">
-        <div class="detail-grid">
-          ${task.id ? `<span class="detail-label">ID</span><span class="detail-value">${task.id}</span>` : ''}
-          ${task.source ? `<span class="detail-label">Source</span><span class="detail-value">${task.source}</span>` : ''}
-          ${task.decision ? `<span class="detail-label">Decision</span><span class="detail-value">${task.decision}</span>` : ''}
-          ${task.owner ? `<span class="detail-label">Owner</span><span class="detail-value">${task.owner}</span>` : ''}
-          ${task.due ? `<span class="detail-label">Due</span><span class="detail-value">${task.due}${overdue?' ⚠':''}</span>` : ''}
-          ${task.completed ? `<span class="detail-label">Done</span><span class="detail-value">${task.completed}</span>` : ''}
-        </div>
-        ${task.notes ? `<div class="detail-notes">${escHtml(task.notes)}</div>` : ''}
-        <div class="detail-actions">
-          <button class="btn-action" onclick="event.stopPropagation();startEdit(${task.lineIndex})">Edit</button>
-        </div>
-      </div>` : ''}
-
-      <div class="edit-panel" onclick="event.stopPropagation()">
-        <div class="edit-field">
-          <label class="edit-label">Title</label>
-          <input class="edit-input" id="edit-title-${task.lineIndex}" type="text" value="${escHtml(task.title)}"/>
-        </div>
-        <div class="edit-row-3">
-          <div class="edit-field">
-            <label class="edit-label">Priority</label>
-            <select class="edit-select" id="edit-priority-${task.lineIndex}">
-              <option value="now" ${task.priority==='now'?'selected':''}>🔴 Now</option>
-              <option value="next" ${task.priority==='next'?'selected':''}>🟡 Next</option>
-              <option value="later" ${task.priority==='later'?'selected':''}>⚪ Later</option>
-            </select>
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">Owner</label>
-            <select class="edit-select" id="edit-owner-${task.lineIndex}">
-              <option value="john" ${task.owner==='john'?'selected':''}>John</option>
-              <option value="claude" ${task.owner==='claude'?'selected':''}>Claude</option>
-            </select>
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">Due date</label>
-            <input class="edit-input" type="date" id="edit-due-${task.lineIndex}" value="${task.due||''}"/>
-          </div>
-        </div>
-        <div class="edit-row-2">
-          <div class="edit-field">
-            <label class="edit-label">Decision ID</label>
-            <input class="edit-input" id="edit-decision-${task.lineIndex}" type="text" value="${escHtml(task.decision||'')}"/>
-          </div>
-          <div class="edit-field">
-            <label class="edit-label">Source</label>
-            <input class="edit-input" id="edit-source-${task.lineIndex}" type="text" value="${escHtml(task.source||'')}"/>
-          </div>
-        </div>
-        <div class="edit-field">
-          <label class="edit-label">Notes</label>
-          <textarea class="edit-textarea" id="edit-notes-${task.lineIndex}">${escHtml(task.notes||'')}</textarea>
-        </div>
-        <div class="edit-actions">
-          <button class="btn-edit-cancel" onclick="cancelEdit(${task.lineIndex})">Cancel</button>
-          <button class="btn-edit-save" onclick="saveEdit(${task.lineIndex})">Save →</button>
-        </div>
-      </div>
-    </div>`
+// ─────────────────────────────────────────
+// CATEGORY FILTERS (dynamic)
+// ─────────────────────────────────────────
+function renderCategoryFilters() {
+  const bar = document.querySelector('.filter-bar')
+  // Remove existing dynamic cat pills
+  bar.querySelectorAll('[data-filter="category"]:not([data-val="all"])').forEach(el => el.remove())
+  const allCats = [...knownCategories].sort()
+  const sep = bar.querySelector('.filter-sep')
+  allCats.forEach(cat => {
+    const pill = document.createElement('div')
+    pill.className = `filter-pill${filters.category === cat ? ' active' : ''}`
+    pill.setAttribute('data-filter', 'category')
+    pill.setAttribute('data-val', cat)
+    pill.textContent = cat
+    pill.onclick = () => setFilter('category', cat)
+    bar.appendChild(pill)
+  })
 }
 
 // ─────────────────────────────────────────
 // EXPAND / COLLAPSE
 // ─────────────────────────────────────────
 function toggleExpand(lineIndex) {
-  if (editingTask === lineIndex) return
-  if (expandedTasks.has(lineIndex)) expandedTasks.delete(lineIndex)
-  else expandedTasks.add(lineIndex)
-  const card = document.getElementById(`task-${lineIndex}`)
-  if (card) {
-    card.classList.toggle('expanded', expandedTasks.has(lineIndex))
-    const btn = card.querySelector('.task-expand-btn')
-    if (btn) btn.textContent = expandedTasks.has(lineIndex) ? '▲' : '▼'
-  }
-}
-
-// ─────────────────────────────────────────
-// EDIT
-// ─────────────────────────────────────────
-function startEdit(lineIndex) {
-  expandedTasks.add(lineIndex)
-  editingTask = lineIndex
-  renderTasks(parseTasks(currentContent))
-  const input = document.getElementById(`edit-title-${lineIndex}`)
-  if (input) { input.focus(); input.select() }
-}
-
-function cancelEdit(lineIndex) {
-  editingTask = null
-  renderTasks(parseTasks(currentContent))
-}
-
-async function saveEdit(lineIndex) {
-  if (isSaving) return
-  const tasks = parseTasks(currentContent)
-  const task = tasks.find(t => t.lineIndex === lineIndex)
-  if (!task) return
-
-  const newTitle = document.getElementById(`edit-title-${lineIndex}`)?.value.trim()
-  const newPriority = document.getElementById(`edit-priority-${lineIndex}`)?.value
-  const newOwner = document.getElementById(`edit-owner-${lineIndex}`)?.value
-  const newDue = document.getElementById(`edit-due-${lineIndex}`)?.value
-  const newDecision = document.getElementById(`edit-decision-${lineIndex}`)?.value.trim()
-  const newSource = document.getElementById(`edit-source-${lineIndex}`)?.value.trim()
-  const newNotes = document.getElementById(`edit-notes-${lineIndex}`)?.value.trim()
-
-  if (!newTitle) { showToast('Title is required', 'error-state'); return }
-
-  isSaving = true
-  const card = document.getElementById(`task-${lineIndex}`)
-  if (card) card.classList.add('writing')
-
-  try {
-    const newContent = rewriteTaskInMarkdown(currentContent, task, {
-      title: newTitle,
-      priority: newPriority || task.priority,
-      owner: newOwner || task.owner,
-      due: newDue || null,
-      decision: newDecision || null,
-      source: newSource || task.source,
-      notes: newNotes || null,
-      tags: task.tags,
-      completed: task.completed
-    })
-    const result = await githubPut(CONFIG.path, newContent, currentSha,
-      `tasks: edit "${newTitle.slice(0,50)}" · ${nowTimestamp()}`)
-    currentContent = newContent
-    currentSha = result.content.sha
-    editingTask = null
-    renderTasks(parseTasks(currentContent))
-    showToast('✓ Task updated · committed', 'success')
-  } catch (err) {
-    showToast(`Error: ${err.message}`, 'error-state')
-    if (err.message.includes('401')) { handleAuthError() }
-  }
-  isSaving = false
-}
-
-function rewriteTaskInMarkdown(md, task, updates) {
-  const lines = md.split('\n')
-  let endLine = lines.length
-  for (let i = task.lineIndex + 1; i < lines.length; i++) {
-    if (!/^  /.test(lines[i]) && lines[i].trim() && !/^<!--/.test(lines[i].trim())) {
-      endLine = i; break
-    }
-  }
-  const checkbox = task.checked ? '[x]' : '[ ]'
-  let block = `- ${checkbox} ${updates.title}\n`
-  if (task.id) block += `  id:${task.id}\n`
-  block += `  priority:${updates.priority}\n`
-  if (updates.tags && updates.tags.length) block += `  tags:${updates.tags.join(' ')}\n`
-  if (updates.due) block += `  due:${updates.due}\n`
-  block += `  owner:${updates.owner}\n`
-  if (updates.source) block += `  source:${updates.source}\n`
-  if (updates.decision) block += `  decision:${updates.decision}\n`
-  if (updates.notes) block += `  notes:${updates.notes}\n`
-  if (updates.completed) block += `  completed:${updates.completed}\n`
-
-  lines.splice(task.lineIndex, endLine - task.lineIndex, ...block.trimEnd().split('\n'))
-  return lines.join('\n')
-}
-
-// ─────────────────────────────────────────
-// TOGGLE DONE (checkbox)
-// ─────────────────────────────────────────
-function toggleTaskInMarkdown(md, lineIndex, nowChecked) {
-  const lines = md.split('\n')
-  const ts = nowTimestamp()
-  if (nowChecked) {
-    lines[lineIndex] = lines[lineIndex].replace('- [ ]', '- [x]')
-    let inserted = false; let lastMeta = lineIndex
-    for (let j = lineIndex + 1; j < lines.length; j++) {
-      if (!/^  /.test(lines[j]) && lines[j].trim()) break
-      lastMeta = j
-      if (lines[j].includes('completed:')) { lines[j] = `  completed:${ts}`; inserted = true; break }
-    }
-    if (!inserted) lines.splice(lastMeta + 1, 0, `  completed:${ts}`)
+  if (editingDecision === lineIndex) return
+  if (expandedDecisions.has(lineIndex)) {
+    expandedDecisions.delete(lineIndex)
   } else {
-    lines[lineIndex] = lines[lineIndex].replace('- [x]', '- [ ]')
-    for (let j = lineIndex + 1; j < lines.length; j++) {
-      if (!/^  /.test(lines[j]) && lines[j].trim()) break
-      if (lines[j].includes('completed:')) { lines.splice(j, 1); break }
-    }
+    expandedDecisions.add(lineIndex)
   }
-  return lines.join('\n')
-}
-
-async function handleToggle(lineIndex) {
-  if (isSaving) return
-  isSaving = true
-  const tasks = parseTasks(currentContent)
-  const task = tasks.find(t => t.lineIndex === lineIndex)
-  if (!task) { isSaving = false; return }
-
-  const nowChecked = !task.checked
-  const card = document.getElementById(`task-${lineIndex}`)
+  const card = document.getElementById(`dec-${lineIndex}`)
   if (card) {
-    card.classList.add('writing')
-    card.classList.toggle('done', nowChecked)
-    card.querySelector('.task-checkbox')?.classList.toggle('checked', nowChecked)
+    card.classList.toggle('expanded', expandedDecisions.has(lineIndex))
+    const btn = card.querySelector('.dec-expand-btn')
+    if (btn) btn.textContent = expandedDecisions.has(lineIndex) ? '▲' : '▼'
   }
-
-  try {
-    const newContent = toggleTaskInMarkdown(currentContent, lineIndex, nowChecked)
-    const shortTitle = task.title.length > 50 ? task.title.slice(0,47)+'…' : task.title
-    const result = await githubPut(CONFIG.path, newContent, currentSha,
-      `tasks: ${nowChecked?'complete':'reopen'} "${shortTitle}" · ${nowTimestamp()}`)
-    currentContent = newContent
-    currentSha = result.content.sha
-    renderTasks(parseTasks(currentContent))
-    showToast(nowChecked ? '✓ Done · committed' : '↩ Reopened · committed', 'success')
-  } catch (err) {
-    if (card) {
-      card.classList.remove('writing')
-      card.classList.toggle('done', task.checked)
-      card.querySelector('.task-checkbox')?.classList.toggle('checked', task.checked)
-    }
-    showToast(`Error: ${err.message}`, 'error-state')
-    if (err.message.includes('401')) { handleAuthError() }
-  }
-  isSaving = false
-}
-
-// ─────────────────────────────────────────
-// TOGGLE DONE VISIBILITY
-// ─────────────────────────────────────────
-function toggleDone() {
-  showDone = !showDone
-  document.getElementById('toggle-done-btn').textContent = showDone ? 'Hide done' : 'Show done'
-  renderTasks(parseTasks(currentContent))
 }
 
 // ─────────────────────────────────────────
@@ -836,7 +719,174 @@ function setFilter(type, val) {
   document.querySelectorAll(`[data-filter="${type}"]`).forEach(el => {
     el.classList.toggle('active', el.dataset.val === val)
   })
-  renderTasks(parseTasks(currentContent))
+  renderDecisions(parseDecisions(currentContent))
+}
+
+// ─────────────────────────────────────────
+// EDIT
+// ─────────────────────────────────────────
+function startEdit(lineIndex) {
+  expandedDecisions.add(lineIndex)
+  editingDecision = lineIndex
+  closingDecision = null
+  renderDecisions(parseDecisions(currentContent))
+  const input = document.getElementById(`edit-title-${lineIndex}`)
+  if (input) { input.focus(); input.select() }
+}
+
+function cancelEdit(lineIndex) {
+  editingDecision = null
+  renderDecisions(parseDecisions(currentContent))
+}
+
+async function saveEdit(lineIndex) {
+  if (isSaving) return
+  const decisions = parseDecisions(currentContent)
+  const dec = decisions.find(d => d.lineIndex === lineIndex)
+  if (!dec) return
+
+  const newTitle = document.getElementById(`edit-title-${lineIndex}`)?.value.trim()
+  const newRationale = document.getElementById(`edit-rationale-${lineIndex}`)?.value.trim()
+  const newStatus = document.getElementById(`edit-status-${lineIndex}`)?.value
+  const newSource = document.getElementById(`edit-source-${lineIndex}`)?.value.trim()
+  const newTrigger = document.getElementById(`edit-trigger-${lineIndex}`)?.value.trim()
+
+  if (!newTitle) { showToast('Decision title is required', 'error-state'); return }
+
+  isSaving = true
+  const card = document.getElementById(`dec-${lineIndex}`)
+  if (card) card.classList.add('writing')
+
+  try {
+    const newContent = rewriteDecisionInMarkdown(currentContent, dec, {
+      title: newTitle,
+      rationale: newRationale || dec.rationale,
+      status: newStatus || dec.status,
+      source: newSource || dec.source,
+      trigger: newTrigger || null,
+      closedBy: dec.closedBy,
+      closedDate: dec.closedDate,
+      closureStatement: dec.closureStatement
+    })
+    const result = await githubPut(CONFIG.path, newContent, currentSha,
+      `decisions: edit "${newTitle.slice(0,50)}" · ${nowTimestamp()}`)
+    currentContent = newContent
+    currentSha = result.content.sha
+    editingDecision = null
+    renderDecisions(parseDecisions(currentContent))
+    showToast('✓ Decision updated · committed', 'success')
+  } catch (err) {
+    showToast(`Error: ${err.message}`, 'error-state')
+    if (err.message.includes('401')) { handleAuthError() }
+  }
+  isSaving = false
+}
+
+// ─────────────────────────────────────────
+// CLOSE DECISION
+// ─────────────────────────────────────────
+function toggleClosePanel(lineIndex) {
+  closingDecision = closingDecision === lineIndex ? null : lineIndex
+  const panel = document.getElementById(`close-panel-${lineIndex}`)
+  if (panel) panel.classList.toggle('open', closingDecision === lineIndex)
+  if (closingDecision === lineIndex) {
+    const ta = document.getElementById(`closure-text-${lineIndex}`)
+    if (ta) setTimeout(() => ta.focus(), 50)
+  }
+}
+
+async function confirmClose(lineIndex) {
+  if (isSaving) return
+  const decisions = parseDecisions(currentContent)
+  const dec = decisions.find(d => d.lineIndex === lineIndex)
+  if (!dec) return
+
+  const statement = document.getElementById(`closure-text-${lineIndex}`)?.value.trim()
+  if (!statement) { showToast('Closure statement is required', 'error-state'); return }
+
+  isSaving = true
+  const card = document.getElementById(`dec-${lineIndex}`)
+  if (card) card.classList.add('writing')
+
+  try {
+    const newContent = rewriteDecisionInMarkdown(currentContent, dec, {
+      title: dec.title,
+      rationale: dec.rationale,
+      status: 'closed',
+      source: dec.source,
+      trigger: null,
+      closedBy: `claude-${CONFIG.sessionId}`,
+      closedDate: todayDate(),
+      closureStatement: statement
+    })
+    const result = await githubPut(CONFIG.path, newContent, currentSha,
+      `decisions: close "${dec.title.slice(0,50)}" · ${nowTimestamp()}`)
+    currentContent = newContent
+    currentSha = result.content.sha
+    closingDecision = null
+    expandedDecisions.delete(lineIndex)
+    renderDecisions(parseDecisions(currentContent))
+    showToast('✓ Decision closed · committed', 'success')
+  } catch (err) {
+    showToast(`Error: ${err.message}`, 'error-state')
+    if (err.message.includes('401')) { handleAuthError() }
+  }
+  isSaving = false
+}
+
+async function markSuperseded(lineIndex) {
+  if (isSaving) return
+  const decisions = parseDecisions(currentContent)
+  const dec = decisions.find(d => d.lineIndex === lineIndex)
+  if (!dec) return
+
+  isSaving = true
+  try {
+    const newContent = rewriteDecisionInMarkdown(currentContent, dec, {
+      ...dec, status: 'superseded'
+    })
+    const result = await githubPut(CONFIG.path, newContent, currentSha,
+      `decisions: supersede "${dec.title.slice(0,50)}" · ${nowTimestamp()}`)
+    currentContent = newContent
+    currentSha = result.content.sha
+    renderDecisions(parseDecisions(currentContent))
+    showToast('✓ Marked superseded · committed', 'success')
+  } catch (err) {
+    showToast(`Error: ${err.message}`, 'error-state')
+    if (err.message.includes('401')) { handleAuthError() }
+  }
+  isSaving = false
+}
+
+// ─────────────────────────────────────────
+// MARKDOWN REWRITER
+// ─────────────────────────────────────────
+function rewriteDecisionInMarkdown(md, dec, updates) {
+  const lines = md.split('\n')
+  // Find the end of this decision's block
+  let endLine = lines.length
+  for (let i = dec.lineIndex + 1; i < lines.length; i++) {
+    if (!/^  /.test(lines[i]) && lines[i].trim() && !/^<!--/.test(lines[i].trim())) {
+      endLine = i
+      break
+    }
+  }
+
+  // Build new block
+  let block = `- [ ] ${updates.title}\n`
+  if (dec.id) block += `  id:${dec.id}\n`
+  if (dec.date) block += `  date:${dec.date}\n`
+  if (dec.category.length) block += `  category:${dec.category.join(' ')}\n`
+  if (updates.rationale) block += `  rationale:${updates.rationale}\n`
+  block += `  status:${updates.status}\n`
+  if (updates.source) block += `  source:${updates.source}\n`
+  if (updates.trigger && updates.status === 'deferred') block += `  trigger:${updates.trigger}\n`
+  if (updates.closedBy) block += `  closed-by:${updates.closedBy}\n`
+  if (updates.closedDate) block += `  closed-date:${updates.closedDate}\n`
+  if (updates.closureStatement) block += `  closure-statement:${updates.closureStatement}\n`
+
+  lines.splice(dec.lineIndex, endLine - dec.lineIndex, ...block.trimEnd().split('\n'))
+  return lines.join('\n')
 }
 
 // ─────────────────────────────────────────
@@ -846,9 +896,14 @@ function openAddSheet() {
   document.getElementById('add-sheet').classList.add('open')
   document.getElementById('sheet-overlay').classList.add('open')
   document.body.style.overflow = 'hidden'
-  renderTagPicker()
+  renderCatPicker()
   document.getElementById('new-source').value = `claude-${CONFIG.sessionId}`
-  setTimeout(() => document.getElementById('new-title').focus(), 300)
+  setTimeout(() => document.getElementById('new-decision').focus(), 300)
+
+  // Show/hide trigger field based on status
+  document.getElementById('new-status').onchange = function() {
+    document.getElementById('trigger-field').style.display = this.value === 'deferred' ? 'block' : 'none'
+  }
 }
 
 function closeAddSheet() {
@@ -857,74 +912,72 @@ function closeAddSheet() {
   document.body.style.overflow = ''
 }
 
-function renderTagPicker() {
-  const picker = document.getElementById('tag-picker')
-  const allTags = [...knownTags].sort()
-  picker.innerHTML = allTags.map(tag => `
-    <div class="tag-option ${selectedTags.has(tag)?'selected':''}" onclick="toggleTag('${tag}')">${tag}</div>
+function renderCatPicker() {
+  const picker = document.getElementById('cat-picker')
+  const allCats = [...knownCategories].sort()
+  picker.innerHTML = allCats.map(cat => `
+    <div class="tag-option ${selectedCats.has(cat)?'selected':''}" onclick="toggleCat('${cat}')">${cat}</div>
   `).join('')
 }
 
-function toggleTag(tag) {
-  if (selectedTags.has(tag)) selectedTags.delete(tag)
-  else selectedTags.add(tag)
-  renderTagPicker()
+function toggleCat(cat) {
+  if (selectedCats.has(cat)) selectedCats.delete(cat)
+  else selectedCats.add(cat)
+  renderCatPicker()
 }
 
-function addCustomTag() {
-  const input = document.getElementById('custom-tag-input')
-  let tag = input.value.trim()
-  if (!tag) return
-  if (!tag.startsWith('#')) tag = '#' + tag
-  tag = tag.replace(/\s+/g, '-').toLowerCase()
-  knownTags.add(tag); selectedTags.add(tag)
+function addCustomCat() {
+  const input = document.getElementById('custom-cat-input')
+  let cat = input.value.trim()
+  if (!cat) return
+  if (!cat.startsWith('#')) cat = '#' + cat
+  cat = cat.replace(/\s+/g, '-').toLowerCase()
+  knownCategories.add(cat)
+  selectedCats.add(cat)
   input.value = ''
-  renderTagPicker()
+  renderCatPicker()
 }
 
-async function saveNewTask() {
-  const title = document.getElementById('new-title').value.trim()
-  if (!title) { showToast('Title is required', 'error-state'); return }
+async function saveNewDecision() {
+  const title = document.getElementById('new-decision').value.trim()
+  if (!title) { showToast('Decision title is required', 'error-state'); return }
   if (isSaving) return
   isSaving = true
 
-  const priority = document.getElementById('new-priority').value
-  const owner = document.getElementById('new-owner').value
-  const due = document.getElementById('new-due').value
-  const decisionRef = document.getElementById('new-decision-ref').value.trim()
+  const rationale = document.getElementById('new-rationale').value.trim()
+  const status = document.getElementById('new-status').value
   const source = document.getElementById('new-source').value.trim() || `claude-${CONFIG.sessionId}`
-  const notes = document.getElementById('new-notes').value.trim()
-  const tags = [...selectedTags]
-  const id = `task-${nanoid(8)}`
-  const ts = nowTimestamp()
+  const trigger = document.getElementById('new-trigger').value.trim()
+  const cats = [...selectedCats]
+  const id = `decision-${nanoid(8)}`
+  const today = todayDate()
 
   let block = `\n- [ ] ${title}\n`
   block += `  id:${id}\n`
-  block += `  priority:${priority}\n`
-  if (tags.length) block += `  tags:${tags.join(' ')}\n`
-  if (due) block += `  due:${due}\n`
-  block += `  owner:${owner}\n`
+  block += `  date:${today}\n`
+  if (cats.length) block += `  category:${cats.join(' ')}\n`
+  if (rationale) block += `  rationale:${rationale}\n`
+  block += `  status:${status}\n`
   block += `  source:${source}\n`
-  if (decisionRef) block += `  decision:${decisionRef}\n`
-  if (notes) block += `  notes:${notes}\n`
+  if (trigger && status === 'deferred') block += `  trigger:${trigger}\n`
 
   try {
     const newContent = currentContent.trimEnd() + block
     const result = await githubPut(CONFIG.path, newContent, currentSha,
-      `tasks: add "${title.slice(0,50)}" · ${ts}`)
+      `decisions: add "${title.slice(0,50)}" · ${nowTimestamp()}`)
     currentContent = newContent
     currentSha = result.content.sha
     // Reset form
-    document.getElementById('new-title').value = ''
-    document.getElementById('new-due').value = ''
-    document.getElementById('new-decision-ref').value = ''
-    document.getElementById('new-notes').value = ''
-    document.getElementById('new-priority').value = 'next'
-    document.getElementById('new-owner').value = 'john'
-    selectedTags.clear()
+    document.getElementById('new-decision').value = ''
+    document.getElementById('new-rationale').value = ''
+    document.getElementById('new-status').value = 'active'
+    document.getElementById('new-source').value = ''
+    document.getElementById('new-trigger').value = ''
+    document.getElementById('trigger-field').style.display = 'none'
+    selectedCats.clear()
     closeAddSheet()
-    renderTasks(parseTasks(currentContent))
-    showToast('✓ Task added · committed', 'success')
+    renderDecisions(parseDecisions(currentContent))
+    showToast('✓ Decision added · committed', 'success')
   } catch (err) {
     showToast(`Error: ${err.message}`, 'error-state')
     if (err.message.includes('401')) { handleAuthError() }
@@ -935,14 +988,16 @@ async function saveNewTask() {
 // ─────────────────────────────────────────
 // LOAD
 // ─────────────────────────────────────────
-async function loadTasks() {
+async function loadDecisions() {
   setStatus('loading', 'Syncing…')
+  document.getElementById('sync-btn').textContent = '↻'
   try {
     const file = await githubGet(CONFIG.path)
     currentSha = file.sha
     currentContent = decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))))
-    knownTags.clear()
-    renderTasks(parseTasks(currentContent))
+    knownCategories.clear()
+    const decisions = parseDecisions(currentContent)
+    renderDecisions(decisions)
   } catch (err) {
     setStatus('error', err.message)
     document.getElementById('main').innerHTML = `
@@ -952,7 +1007,7 @@ async function loadTasks() {
 }
 
 // ─────────────────────────────────────────
-// TOKEN
+// TOKEN PROMPT
 // ─────────────────────────────────────────
 function showTokenPrompt() {
   setStatus('error', 'Token required')
@@ -964,7 +1019,7 @@ function showTokenPrompt() {
         <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">
           Stored in localStorage on this device only.<br>
           Never sent anywhere except the GitHub API.<br>
-          Shared with decisions.html on the same device.
+          Shared with tasks.html on the same device.
         </div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <input id="token-input" type="password" placeholder="github_pat_…"
@@ -998,7 +1053,7 @@ function saveToken() {
   if (!token) return
   localStorage.setItem('dovetell_pat', token)
   CONFIG.token = token
-  loadTasks()
+  loadDecisions()
 }
 
 function clearToken() {
@@ -1055,39 +1110,39 @@ function closeBulkSheet() {
 
 function parseBulkInput() {
   const raw = document.getElementById('bulk-input').value.trim()
-  if (!raw) { showToast('Paste some tasks first', 'error-state'); return }
+  if (!raw) { showToast('Paste some decisions first', 'error-state'); return }
 
-  const parsed = parseTasks(raw)
-  if (!parsed.length) { showToast('No valid tasks found', 'error-state'); return }
+  const parsed = parseDecisions(raw)
+  if (!parsed.length) { showToast('No valid decisions found', 'error-state'); return }
 
-  const existingTasks = parseTasks(currentContent)
-  const existingIds = new Set(existingTasks.map(t => t.id).filter(Boolean))
-  const existingTitles = new Set(existingTasks.map(t => t.title.toLowerCase().trim()))
+  const existing = parseDecisions(currentContent)
+  const existingIds = new Set(existing.map(d => d.id).filter(Boolean))
+  const existingTitles = new Set(existing.map(d => d.title.toLowerCase().trim()))
 
-  bulkParsed = parsed.map(t => {
-    const dupeById = t.id && existingIds.has(t.id)
-    const dupeByTitle = existingTitles.has(t.title.toLowerCase().trim())
-    return { ...t, isDupe: dupeById || dupeByTitle, selected: !dupeById && !dupeByTitle }
+  bulkParsed = parsed.map(d => {
+    const dupeById = d.id && existingIds.has(d.id)
+    const dupeByTitle = existingTitles.has(d.title.toLowerCase().trim())
+    return { ...d, isDupe: dupeById || dupeByTitle, selected: !dupeById && !dupeByTitle }
   })
 
-  const newCount = bulkParsed.filter(t => !t.isDupe).length
-  const dupeCount = bulkParsed.filter(t => t.isDupe).length
+  const newCount = bulkParsed.filter(d => !d.isDupe).length
+  const dupeCount = bulkParsed.filter(d => d.isDupe).length
 
   document.getElementById('preview-summary').textContent =
-    `${parsed.length} tasks found · ${newCount} new · ${dupeCount} duplicate${dupeCount !== 1 ? 's' : ''}`
+    `${parsed.length} decisions found · ${newCount} new · ${dupeCount} duplicate${dupeCount !== 1 ? 's' : ''}`
 
   const list = document.getElementById('preview-list')
-  list.innerHTML = bulkParsed.map((t, i) => `
-    <div class="preview-item ${t.isDupe ? 'is-dupe' : 'is-new'}" id="preview-item-${i}">
-      <div class="preview-check ${t.selected ? 'checked' : ''} ${t.isDupe ? 'dupe-check' : ''}"
+  list.innerHTML = bulkParsed.map((d, i) => `
+    <div class="preview-item ${d.isDupe ? 'is-dupe' : 'is-new'}">
+      <div class="preview-check ${d.selected ? 'checked' : ''} ${d.isDupe ? 'dupe-check' : ''}"
            onclick="toggleBulkItem(${i})" id="preview-check-${i}"></div>
       <div class="preview-body">
-        <div class="preview-title">${escHtml(t.title)}</div>
+        <div class="preview-title">${escHtml(d.title)}</div>
         <div class="preview-meta">
-          ${t.isDupe ? '<span class="preview-badge badge-dupe">⚠ duplicate</span>' : '<span class="preview-badge badge-new">new</span>'}
-          ${t.id ? `<span class="preview-badge badge-id">${t.id}</span>` : ''}
-          ${t.priority ? `<span class="preview-badge" style="background:rgba(255,255,255,0.05);color:var(--muted-2)">${t.priority}</span>` : ''}
-          ${t.tags.map(tag => `<span class="preview-badge badge-id">${tag}</span>`).join('')}
+          ${d.isDupe ? '<span class="preview-badge badge-dupe">⚠ duplicate</span>' : '<span class="preview-badge badge-new">new</span>'}
+          ${d.id ? `<span class="preview-badge badge-id">${d.id}</span>` : ''}
+          ${d.status ? `<span class="preview-badge chip-${d.status}">${d.status}</span>` : ''}
+          ${d.category.map(c => `<span class="preview-badge badge-id">${c}</span>`).join('')}
         </div>
       </div>
     </div>`).join('')
@@ -1104,45 +1159,45 @@ function toggleBulkItem(i) {
 }
 
 function updateBulkCommitBtn() {
-  const count = bulkParsed.filter(t => t.selected).length
+  const count = bulkParsed.filter(d => d.selected).length
   const btn = document.getElementById('bulk-commit-btn')
-  btn.textContent = count > 0 ? `Commit ${count} task${count !== 1 ? 's' : ''} →` : 'Select tasks to commit'
+  btn.textContent = count > 0 ? `Commit ${count} decision${count !== 1 ? 's' : ''} →` : 'Select decisions to commit'
   btn.disabled = count === 0
 }
 
 async function commitBulkImport() {
   if (isSaving) return
-  const toCommit = bulkParsed.filter(t => t.selected)
-  if (!toCommit.length) { showToast('No tasks selected', 'error-state'); return }
+  const toCommit = bulkParsed.filter(d => d.selected)
+  if (!toCommit.length) { showToast('No decisions selected', 'error-state'); return }
 
   isSaving = true
   document.getElementById('bulk-commit-btn').textContent = 'Committing…'
   document.getElementById('bulk-commit-btn').disabled = true
 
   try {
-    // Rebuild each selected task as a markdown block
     let appended = currentContent.trimEnd()
-    for (const t of toCommit) {
-      let block = `\n- ${t.checked ? '[x]' : '[ ]'} ${t.title}\n`
-      if (t.id) block += `  id:${t.id}\n`
-      if (t.priority) block += `  priority:${t.priority}\n`
-      if (t.tags.length) block += `  tags:${t.tags.join(' ')}\n`
-      if (t.due) block += `  due:${t.due}\n`
-      if (t.owner) block += `  owner:${t.owner}\n`
-      if (t.source) block += `  source:${t.source}\n`
-      if (t.decision) block += `  decision:${t.decision}\n`
-      if (t.notes) block += `  notes:${t.notes}\n`
-      if (t.completed) block += `  completed:${t.completed}\n`
+    for (const d of toCommit) {
+      let block = `\n- [ ] ${d.title}\n`
+      if (d.id) block += `  id:${d.id}\n`
+      if (d.date) block += `  date:${d.date}\n`
+      if (d.category.length) block += `  category:${d.category.join(' ')}\n`
+      if (d.rationale) block += `  rationale:${d.rationale}\n`
+      block += `  status:${d.status || 'active'}\n`
+      if (d.source) block += `  source:${d.source}\n`
+      if (d.trigger) block += `  trigger:${d.trigger}\n`
+      if (d.closedBy) block += `  closed-by:${d.closedBy}\n`
+      if (d.closedDate) block += `  closed-date:${d.closedDate}\n`
+      if (d.closureStatement) block += `  closure-statement:${d.closureStatement}\n`
       appended += block
     }
 
     const result = await githubPut(CONFIG.path, appended, currentSha,
-      `tasks: bulk import ${toCommit.length} task${toCommit.length !== 1 ? 's' : ''} · ${nowTimestamp()}`)
+      `decisions: bulk import ${toCommit.length} decision${toCommit.length !== 1 ? 's' : ''} · ${nowTimestamp()}`)
     currentContent = appended
     currentSha = result.content.sha
     closeBulkSheet()
-    renderTasks(parseTasks(currentContent))
-    showToast(`✓ ${toCommit.length} task${toCommit.length !== 1 ? 's' : ''} imported · committed`, 'success')
+    renderDecisions(parseDecisions(currentContent))
+    showToast(`✓ ${toCommit.length} decision${toCommit.length !== 1 ? 's' : ''} imported · committed`, 'success')
   } catch (err) {
     showToast(`Error: ${err.message}`, 'error-state')
     if (err.message.includes('401')) { handleAuthError() }
@@ -1153,12 +1208,12 @@ async function commitBulkImport() {
 }
 
 // ─────────────────────────────────────────
-// INIT
+// INIT — share PAT with tasks.html
 // ─────────────────────────────────────────
 const savedToken = localStorage.getItem('dovetell_pat')
 if (savedToken) {
   CONFIG.token = savedToken
-  loadTasks()
+  loadDecisions()
 } else {
   showTokenPrompt()
 }
