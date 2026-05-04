@@ -106,7 +106,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .xref-chip:hover{background:rgba(168,85,247,0.2)}
 
 /* FAB */
-.fab{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blurple);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,101,242,0.4);transition:all 0.2s;z-index:100;line-height:1}
+.fab{position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blurple);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,101,242,0.4);transition:all 0.2s;z-index:100;line-height:1}
 .fab:hover{background:var(--blurple-dark);transform:scale(1.05)}
 .fab:active{transform:scale(0.97)}
 
@@ -167,6 +167,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
   <div class="topbar-right">
+    <button class="btn-sm" onclick="openBulkSheet()">⬆ Import</button>
     <button class="btn-sm" id="sync-btn" onclick="loadRules()">↻</button>
     <div class="status-row">
       <div class="status-dot loading" id="status-dot"></div>
@@ -521,6 +522,24 @@ function handleDeepLink(items, prefix) {
 const savedToken=localStorage.getItem('dovetell_pat');
 if(savedToken){CONFIG.token=savedToken;loadRules();}else{showTokenPrompt();}
 </script>
+
+<!-- BULK IMPORT SHEET -->
+<div class="add-sheet-overlay" id="bulk-overlay" onclick="closeBulkSheet()"></div>
+<div class="bulk-sheet" id="bulk-sheet">
+  <div class="sheet-handle"></div>
+  <div class="bulk-title">Bulk import rules</div>
+  <div class="bulk-sub">Paste markdown blocks. Preview before committing.</div>
+  <textarea class="bulk-textarea" id="bulk-input" placeholder="- [ ] Rule title\n  id:rule-xxxxxxxx\n  rule:The rule statement\n  applies-to:all\n  status:active\n  source:claude-a3f7c291"></textarea>
+  <button class="bulk-parse-btn" onclick="parseBulkInput()">Preview import →</button>
+  <div class="bulk-preview" id="bulk-preview">
+    <div class="preview-summary" id="preview-summary"></div>
+    <div id="preview-list"></div>
+    <div class="bulk-actions">
+      <button class="btn-bulk-cancel" onclick="closeBulkSheet()">Cancel</button>
+      <button class="btn-bulk-commit" id="bulk-commit-btn" onclick="commitBulkImport()">Commit selected →</button>
+    </div>
+  </div>
+</div>
 <nav class="tab-bar">
   <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
   <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
