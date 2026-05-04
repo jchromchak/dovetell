@@ -236,7 +236,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 </head>
 <body>
 
-<!-- build:3 · 2026-05-03 · PWA manifest, folder structure, nav fix -->
+<!-- build:4 · 2026-05-03 · smart bulk import — reconcile, review, skip classification -->
 <div class="demo-banner">
   <span>// Task tracker</span>
   <span class="demo-banner-divider">·</span>
@@ -282,7 +282,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="footer">
   <span id="footer-path">—</span>
-  <span id="footer-build" style="color:var(--muted)">build 3</span>
+  <span id="footer-build" style="color:var(--muted)">build 4</span>
   <span id="footer-sha">—</span>
 </div>
 
@@ -1062,39 +1062,81 @@ function parseBulkInput() {
   if (!parsed.length) { showToast('No valid tasks found', 'error-state'); return }
 
   const existingTasks = parseTasks(currentContent)
-  const existingIds = new Set(existingTasks.map(t => t.id).filter(Boolean))
-  const existingTitles = new Set(existingTasks.map(t => t.title.toLowerCase().trim()))
-
-  bulkParsed = parsed.map(t => {
-    const dupeById = t.id && existingIds.has(t.id)
-    const dupeByTitle = existingTitles.has(t.title.toLowerCase().trim())
-    return { ...t, isDupe: dupeById || dupeByTitle, selected: !dupeById && !dupeByTitle }
+  const existingById = {}
+  const existingByTitle = {}
+  existingTasks.forEach(t => {
+    if (t.id) existingById[t.id] = t
+    existingByTitle[t.title.toLowerCase().trim()] = t
   })
 
-  const newCount = bulkParsed.filter(t => !t.isDupe).length
-  const dupeCount = bulkParsed.filter(t => t.isDupe).length
+  bulkParsed = parsed.map(t => {
+    const existingMatch = (t.id && existingById[t.id]) || existingByTitle[t.title.toLowerCase().trim()]
+    if (!existingMatch) return { ...t, classification: 'new', selected: true }
+
+    // Status reconciliation — only status/completed differs
+    const statusDiffers = existingMatch.checked !== t.checked
+    const otherFieldsDiffer = (
+      existingMatch.priority !== t.priority ||
+      existingMatch.owner !== t.owner ||
+      existingMatch.notes !== t.notes ||
+      JSON.stringify(existingMatch.tags) !== JSON.stringify(t.tags)
+    )
+
+    if (statusDiffers && !otherFieldsDiffer) {
+      return { ...t, classification: 'reconcile', existing: existingMatch, selected: true }
+    }
+    if (otherFieldsDiffer) {
+      return { ...t, classification: 'review', existing: existingMatch, selected: false }
+    }
+    return { ...t, classification: 'skip', existing: existingMatch, selected: false }
+  })
+
+  const counts = { new: 0, reconcile: 0, review: 0, skip: 0 }
+  bulkParsed.forEach(t => counts[t.classification]++)
 
   document.getElementById('preview-summary').textContent =
-    `${parsed.length} tasks found · ${newCount} new · ${dupeCount} duplicate${dupeCount !== 1 ? 's' : ''}`
+    `${parsed.length} found · ${counts.new} new · ${counts.reconcile} reconcile · ${counts.review} needs review · ${counts.skip} skip`
 
   const list = document.getElementById('preview-list')
-  list.innerHTML = bulkParsed.map((t, i) => `
-    <div class="preview-item ${t.isDupe ? 'is-dupe' : 'is-new'}" id="preview-item-${i}">
-      <div class="preview-check ${t.selected ? 'checked' : ''} ${t.isDupe ? 'dupe-check' : ''}"
+  list.innerHTML = bulkParsed.map((t, i) => {
+    const badges = {
+      new: '<span class="preview-badge badge-new">new</span>',
+      reconcile: '<span class="preview-badge" style="background:rgba(56,189,248,0.12);color:#38BDF8">↻ reconcile</span>',
+      review: '<span class="preview-badge badge-dupe">⚠ needs review</span>',
+      skip: '<span class="preview-badge" style="background:rgba(107,107,138,0.15);color:var(--muted-2)">= skip</span>'
+    }
+    const diff = t.existing ? buildTaskDiff(t.existing, t) : ''
+    return `
+    <div class="preview-item ${t.classification === 'skip' ? '' : t.classification === 'new' ? 'is-new' : 'is-dupe'}">
+      <div class="preview-check ${t.selected ? 'checked' : ''} ${t.classification === 'review' ? 'dupe-check' : ''}"
            onclick="toggleBulkItem(${i})" id="preview-check-${i}"></div>
       <div class="preview-body">
         <div class="preview-title">${escHtml(t.title)}</div>
         <div class="preview-meta">
-          ${t.isDupe ? '<span class="preview-badge badge-dupe">⚠ duplicate</span>' : '<span class="preview-badge badge-new">new</span>'}
+          ${badges[t.classification]}
           ${t.id ? `<span class="preview-badge badge-id">${t.id}</span>` : ''}
           ${t.priority ? `<span class="preview-badge" style="background:rgba(255,255,255,0.05);color:var(--muted-2)">${t.priority}</span>` : ''}
-          ${t.tags.map(tag => `<span class="preview-badge badge-id">${tag}</span>`).join('')}
         </div>
+        ${diff ? `<div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--muted-2);line-height:1.8">${diff}</div>` : ''}
       </div>
-    </div>`).join('')
+    </div>`
+  }).join('')
 
   document.getElementById('bulk-preview').classList.add('visible')
   updateBulkCommitBtn()
+}
+
+function buildTaskDiff(existing, incoming) {
+  const lines = []
+  if (existing.checked !== incoming.checked)
+    lines.push(`status: <span style="color:var(--red)">${existing.checked ? '[x]' : '[ ]'}</span> → <span style="color:var(--green)">${incoming.checked ? '[x]' : '[ ]'}</span>`)
+  if (existing.priority !== incoming.priority)
+    lines.push(`priority: <span style="color:var(--red)">${existing.priority}</span> → <span style="color:var(--green)">${incoming.priority}</span>`)
+  if (existing.owner !== incoming.owner)
+    lines.push(`owner: <span style="color:var(--red)">${existing.owner}</span> → <span style="color:var(--green)">${incoming.owner}</span>`)
+  if (existing.notes !== incoming.notes)
+    lines.push(`notes: <span style="color:var(--amber)">changed</span>`)
+  return lines.join('<br>')
 }
 
 function toggleBulkItem(i) {

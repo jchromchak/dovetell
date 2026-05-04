@@ -246,7 +246,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 </head>
 <body>
 
-<!-- build:3 · 2026-05-03 · PWA manifest, folder structure, nav fix -->
+<!-- build:4 · 2026-05-03 · smart bulk import — reconcile, review, skip classification -->
 <div class="demo-banner">
   <span>// Decisions</span>
   <span class="demo-banner-divider">·</span>
@@ -290,7 +290,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="footer">
   <span id="footer-path">—</span>
-  <span id="footer-build" style="color:var(--muted)">build 3</span>
+  <span id="footer-build" style="color:var(--muted)">build 4</span>
   <span id="footer-sha">—</span>
 </div>
 
@@ -1117,39 +1117,78 @@ function parseBulkInput() {
   if (!parsed.length) { showToast('No valid decisions found', 'error-state'); return }
 
   const existing = parseDecisions(currentContent)
-  const existingIds = new Set(existing.map(d => d.id).filter(Boolean))
-  const existingTitles = new Set(existing.map(d => d.title.toLowerCase().trim()))
-
-  bulkParsed = parsed.map(d => {
-    const dupeById = d.id && existingIds.has(d.id)
-    const dupeByTitle = existingTitles.has(d.title.toLowerCase().trim())
-    return { ...d, isDupe: dupeById || dupeByTitle, selected: !dupeById && !dupeByTitle }
+  const existingById = {}
+  const existingByTitle = {}
+  existing.forEach(d => {
+    if (d.id) existingById[d.id] = d
+    existingByTitle[d.title.toLowerCase().trim()] = d
   })
 
-  const newCount = bulkParsed.filter(d => !d.isDupe).length
-  const dupeCount = bulkParsed.filter(d => d.isDupe).length
+  bulkParsed = parsed.map(d => {
+    const existingMatch = (d.id && existingById[d.id]) || existingByTitle[d.title.toLowerCase().trim()]
+    if (!existingMatch) return { ...d, classification: 'new', selected: true }
+
+    const statusDiffers = existingMatch.status !== d.status
+    const otherFieldsDiffer = (
+      existingMatch.rationale !== d.rationale ||
+      existingMatch.source !== d.source ||
+      JSON.stringify(existingMatch.category) !== JSON.stringify(d.category)
+    )
+
+    if (statusDiffers && !otherFieldsDiffer) {
+      return { ...d, classification: 'reconcile', existing: existingMatch, selected: true }
+    }
+    if (otherFieldsDiffer) {
+      return { ...d, classification: 'review', existing: existingMatch, selected: false }
+    }
+    return { ...d, classification: 'skip', existing: existingMatch, selected: false }
+  })
+
+  const counts = { new: 0, reconcile: 0, review: 0, skip: 0 }
+  bulkParsed.forEach(d => counts[d.classification]++)
 
   document.getElementById('preview-summary').textContent =
-    `${parsed.length} decisions found · ${newCount} new · ${dupeCount} duplicate${dupeCount !== 1 ? 's' : ''}`
+    `${parsed.length} found · ${counts.new} new · ${counts.reconcile} reconcile · ${counts.review} needs review · ${counts.skip} skip`
 
   const list = document.getElementById('preview-list')
-  list.innerHTML = bulkParsed.map((d, i) => `
-    <div class="preview-item ${d.isDupe ? 'is-dupe' : 'is-new'}">
-      <div class="preview-check ${d.selected ? 'checked' : ''} ${d.isDupe ? 'dupe-check' : ''}"
+  list.innerHTML = bulkParsed.map((d, i) => {
+    const badges = {
+      new: '<span class="preview-badge badge-new">new</span>',
+      reconcile: '<span class="preview-badge" style="background:rgba(56,189,248,0.12);color:#38BDF8">↻ reconcile</span>',
+      review: '<span class="preview-badge badge-dupe">⚠ needs review</span>',
+      skip: '<span class="preview-badge" style="background:rgba(107,107,138,0.15);color:var(--muted-2)">= skip</span>'
+    }
+    const diff = d.existing ? buildDecisionDiff(d.existing, d) : ''
+    return `
+    <div class="preview-item ${d.classification === 'new' ? 'is-new' : d.classification === 'skip' ? '' : 'is-dupe'}">
+      <div class="preview-check ${d.selected ? 'checked' : ''} ${d.classification === 'review' ? 'dupe-check' : ''}"
            onclick="toggleBulkItem(${i})" id="preview-check-${i}"></div>
       <div class="preview-body">
         <div class="preview-title">${escHtml(d.title)}</div>
         <div class="preview-meta">
-          ${d.isDupe ? '<span class="preview-badge badge-dupe">⚠ duplicate</span>' : '<span class="preview-badge badge-new">new</span>'}
+          ${badges[d.classification]}
           ${d.id ? `<span class="preview-badge badge-id">${d.id}</span>` : ''}
           ${d.status ? `<span class="preview-badge chip-${d.status}">${d.status}</span>` : ''}
           ${d.category.map(c => `<span class="preview-badge badge-id">${c}</span>`).join('')}
         </div>
+        ${diff ? `<div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--muted-2);line-height:1.8">${diff}</div>` : ''}
       </div>
-    </div>`).join('')
+    </div>`
+  }).join('')
 
   document.getElementById('bulk-preview').classList.add('visible')
   updateBulkCommitBtn()
+}
+
+function buildDecisionDiff(existing, incoming) {
+  const lines = []
+  if (existing.status !== incoming.status)
+    lines.push(`status: <span style="color:var(--red)">${existing.status}</span> → <span style="color:var(--green)">${incoming.status}</span>`)
+  if (existing.rationale !== incoming.rationale)
+    lines.push(`rationale: <span style="color:var(--amber)">changed</span>`)
+  if (JSON.stringify(existing.category) !== JSON.stringify(incoming.category))
+    lines.push(`category: <span style="color:var(--amber)">changed</span>`)
+  return lines.join('<br>')
 }
 
 function toggleBulkItem(i) {
