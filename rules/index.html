@@ -358,18 +358,17 @@ async function loadOppContentForXref(){
 }
 function findCrossRefs(rule){
   if(!rule.id || !oppContent) return []
-  const lines = oppContent.split('\n')
+  const blocks = oppContent.split(/(?=^- \[)/m)
   const refs = []
-  let current = null
-  for(const line of lines){
-    const m = line.match(/^- \[([ x])\] (.+)/)
-    if(m) current = { title: m[2].trim(), id: null }
-    if(current && /^  id:(opp-[\w-]+)/.test(line.trim())){
-      current.id = line.trim().replace('id:','')
+  for(const block of blocks){
+    if(!block.includes(rule.id)) continue
+    const titleM = block.match(/^- \[([ x])\] (.+)/)
+    const idM = block.match(/id:(opp-[\w-]+)/)
+    if(titleM && idM){
+      refs.push({ title: titleM[2].trim(), id: idM[1] })
     }
-    if(current && current.id && line.includes(rule.id)) refs.push({...current})
   }
-  return [...new Map(refs.map(r=>[r.id,r])).values()]
+  return refs
 }
 
 function renderDynamicFilters(){
