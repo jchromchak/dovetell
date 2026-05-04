@@ -1,0 +1,758 @@
+<!-- build:1 · 2026-05-03 · initial build — opportunity viewer -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Opportunities</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../assets/sandbox-favicon.png">
+<link rel="apple-touch-icon" href="../assets/sandbox-apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="dovetell opportunities">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
+  --near-black:#1A1A2E;--surface:#161625;--surface-2:#1E1E30;
+  --surface-3:#252538;--border:rgba(255,255,255,0.07);
+  --border-2:rgba(255,255,255,0.12);--text:#E8E9F8;--muted:#6B6B8A;
+  --muted-2:#9999BB;--cream:#F5F4EF;
+  --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;--purple:#A855F7;
+  --teal:#14B8A6;--sky:#38BDF8;
+}
+html,body{height:100%;margin:0}
+body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+/* BANNER */
+.demo-banner{height:24px;width:100%;flex-shrink:0;background:var(--cream);border-bottom:1px solid rgba(88,101,242,0.15);display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple)}
+
+/* NAV */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.logo-img{width:26px;height:26px;border-radius:6px;display:block}
+.logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.logo-wordmark span{color:var(--blurple)}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all 0.15s}
+.nav-link:hover{color:var(--text);background:var(--surface-2)}
+.nav-link.active{color:var(--blurple-light);background:rgba(88,101,242,0.1)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.status-row{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+.status-dot.error{background:var(--red)}
+.status-text{font-size:11px;color:var(--muted)}
+
+/* FILTER BAR */
+.filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-right:2px;flex-shrink:0}
+.filter-pill{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;user-select:none}
+.filter-pill:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.filter-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
+
+/* SCOPE CHECK FILTER COLORS */
+.filter-pill[data-val="pass"].active{background:rgba(34,197,94,0.12);border-color:var(--green);color:var(--green)}
+.filter-pill[data-val="watch"].active{background:rgba(245,158,11,0.12);border-color:var(--amber);color:var(--amber)}
+.filter-pill[data-val="risk"].active{background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red)}
+
+/* MAIN */
+.main{flex:1;padding:16px;max-width:860px;width:100%;margin:0 auto;padding-bottom:80px}
+
+/* SECTION HEADERS */
+.section-head{display:flex;align-items:center;gap:10px;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-head:first-child{margin-top:0}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)}
+.section-count{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:2px 7px;border-radius:8px}
+
+/* OPP CARD */
+.opp-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden}
+.opp-card:hover{border-color:rgba(88,101,242,0.2)}
+.opp-card.expanded{border-color:rgba(88,101,242,0.3)}
+.opp-card.editing{border-color:rgba(88,101,242,0.4)}
+.opp-card.writing{opacity:0.5;pointer-events:none}
+.opp-card.scope-watch{border-left:2px solid var(--amber)}
+.opp-card.scope-risk{border-left:2px solid var(--red)}
+
+/* CARD ROW */
+.opp-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.opp-scope-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.dot-pass{background:var(--green)}
+.dot-watch{background:var(--amber)}
+.dot-risk{background:var(--red)}
+.opp-body{flex:1;min-width:0}
+.opp-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:5px}
+.opp-card.status-closed .opp-title{text-decoration:line-through;color:var(--muted)}
+.opp-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.opp-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;opacity:0.5;transition:opacity 0.15s;user-select:none;padding:2px 4px}
+.opp-card:hover .opp-expand-btn{opacity:1}
+
+/* CHIPS */
+.chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;display:inline-flex;align-items:center}
+.chip-pass{background:rgba(34,197,94,0.1);color:var(--green)}
+.chip-watch{background:rgba(245,158,11,0.1);color:var(--amber)}
+.chip-risk{background:rgba(239,68,68,0.1);color:var(--red)}
+.chip-open{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
+.chip-exploring{background:rgba(168,85,247,0.1);color:#C084FC}
+.chip-closed{background:rgba(107,107,138,0.15);color:var(--muted-2)}
+.chip-category{background:rgba(88,101,242,0.08);color:var(--blurple-light)}
+.chip-date{background:rgba(255,255,255,0.04);color:var(--muted-2)}
+.chip-origin{background:rgba(20,184,166,0.1);color:var(--teal)}
+
+/* EXPANDED DETAILS */
+.opp-details{padding:0 14px 14px 34px;border-top:1px solid var(--border);display:none}
+.opp-card.expanded .opp-details{display:block}
+.detail-description{margin-top:12px;padding:10px 12px;background:var(--surface-2);border-radius:6px;font-size:13px;color:var(--text);line-height:1.7;border-left:2px solid rgba(88,101,242,0.3)}
+.detail-grid{display:grid;grid-template-columns:90px 1fr;gap:5px 12px;margin-top:10px}
+.detail-label{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding-top:1px;align-self:start}
+.detail-value{font-size:12px;color:var(--muted-2);font-family:var(--mono);word-break:break-word}
+.detail-notes{margin-top:8px;padding:8px 12px;background:rgba(245,158,11,0.05);border-radius:6px;font-size:12px;color:var(--muted-2);line-height:1.6;border-left:2px solid rgba(245,158,11,0.3)}
+.detail-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.btn-action{font-size:11px;font-weight:600;font-family:var(--sans);padding:5px 12px;border-radius:6px;border:1px solid var(--border-2);color:var(--muted-2);background:transparent;cursor:pointer;transition:all 0.15s}
+.btn-action:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.btn-action.elevate{background:rgba(88,101,242,0.12);border-color:var(--blurple);color:var(--blurple-light)}
+.btn-action.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* EDIT MODE */
+.edit-panel{padding:10px 14px 14px 34px;border-top:1px solid var(--border);display:none;background:var(--surface-2)}
+.opp-card.editing .edit-panel{display:block}
+.opp-card.editing .opp-details{display:none}
+.edit-field{margin-bottom:10px}
+.edit-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.edit-input{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;transition:border-color 0.15s}
+.edit-input:focus{border-color:var(--blurple)}
+.edit-textarea{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:80px;transition:border-color 0.15s;line-height:1.5}
+.edit-textarea:focus{border-color:var(--blurple)}
+.edit-select{width:100%;padding:8px 10px;background:var(--near-black);border:1px solid var(--border-2);border-radius:6px;font-family:var(--sans);font-size:13px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer}
+.edit-select:focus{border-color:var(--blurple)}
+.edit-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.edit-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.btn-edit-cancel{padding:7px 14px;background:transparent;border:1px solid var(--border-2);border-radius:6px;color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-edit-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-edit-save{padding:7px 18px;background:var(--blurple);border:none;border-radius:6px;color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s}
+.btn-edit-save:hover{background:var(--blurple-dark)}
+
+/* FAB */
+.fab{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blurple);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,101,242,0.4);transition:all 0.2s;z-index:100;line-height:1}
+.fab:hover{background:var(--blurple-dark);transform:scale(1.05)}
+.fab:active{transform:scale(0.97)}
+
+/* ADD + BULK SHEETS */
+.add-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.add-sheet-overlay.open{opacity:1;pointer-events:all}
+.add-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-2);border-radius:16px 16px 0 0;padding:20px 16px 32px;z-index:160;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.add-sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--border-2);border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px}
+.form-field{margin-bottom:12px}
+.form-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.form-input{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s;-webkit-appearance:none}
+.form-input:focus{border-color:var(--blurple)}
+.form-input::placeholder{color:var(--muted)}
+.form-select{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer}
+.form-select:focus{border-color:var(--blurple)}
+.form-textarea{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:100px;line-height:1.5;transition:border-color 0.15s}
+.form-textarea:focus{border-color:var(--blurple)}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tag-picker{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
+.tag-option{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none}
+.tag-option:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.tag-option.selected{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.tag-custom-row{display:flex;gap:8px;margin-top:6px}
+.tag-custom-input{flex:1;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none}
+.tag-custom-input:focus{border-color:var(--blurple)}
+.tag-add-btn{padding:8px 14px;background:transparent;border:1px solid var(--border-2);border-radius:7px;color:var(--muted-2);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:var(--sans)}
+.tag-add-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.sheet-actions{display:flex;gap:8px;margin-top:16px}
+.btn-sheet-cancel{flex:1;padding:12px;background:transparent;border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-sheet-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-sheet-save{flex:2;padding:12px;background:var(--blurple);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;transition:background 0.15s}
+.btn-sheet-save:hover{background:var(--blurple-dark)}
+
+/* BULK IMPORT */
+.bulk-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-2);border-radius:16px 16px 0 0;padding:20px 16px 32px;z-index:160;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.bulk-sheet.open{transform:translateY(0)}
+.bulk-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px}
+.bulk-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.bulk-textarea{width:100%;min-height:140px;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;resize:vertical;line-height:1.6;transition:border-color 0.15s}
+.bulk-textarea:focus{border-color:var(--blurple)}
+.bulk-parse-btn{width:100%;margin-top:10px;padding:11px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.bulk-parse-btn:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.bulk-preview{margin-top:14px;display:none}
+.bulk-preview.visible{display:block}
+.preview-summary{font-size:12px;color:var(--muted);margin:10px 0 6px;font-family:var(--mono)}
+.preview-item{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px}
+.preview-item.is-new{border-color:rgba(34,197,94,0.2)}
+.preview-item.is-dupe{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.04)}
+.preview-check{width:16px;height:16px;border-radius:3px;border:2px solid var(--border-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:1px;transition:all 0.15s}
+.preview-check.checked{background:var(--blurple);border-color:var(--blurple)}
+.preview-check.checked::after{content:'✓';font-size:9px;font-weight:700;color:#fff}
+.preview-check.dupe-check{border-color:var(--amber)}
+.preview-body{flex:1;min-width:0}
+.preview-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.4}
+.preview-meta{display:flex;gap:5px;flex-wrap:wrap}
+.preview-badge{font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:3px}
+.badge-new{background:rgba(34,197,94,0.1);color:var(--green)}
+.badge-dupe{background:rgba(245,158,11,0.12);color:var(--amber)}
+.badge-id{background:rgba(88,101,242,0.1);color:var(--blurple-light)}
+.bulk-actions{display:flex;gap:8px;margin-top:14px}
+.btn-bulk-cancel{flex:1;padding:11px;background:transparent;border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-bulk-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-bulk-commit{flex:2;padding:11px;background:var(--blurple);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s}
+.btn-bulk-commit:hover{background:var(--blurple-dark)}
+.btn-bulk-commit:disabled{opacity:0.4;cursor:not-allowed}
+
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:10px 18px;font-size:13px;font-weight:500;color:var(--text);opacity:0;transition:all 0.25s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error-state{border-color:rgba(239,68,68,0.3)}
+
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.empty-text{font-size:14px;line-height:1.6}
+.footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Opportunities</span>
+  <span style="opacity:0.3">·</span>
+  <span>dovetell-io/dovetell-sandbox · opportunities.md</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="../tasks/" class="nav-link">Tasks</a>
+    <a href="../decisions/" class="nav-link">Decisions</a>
+    <a href="../opportunities/" class="nav-link active">Opportunities</a>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm" onclick="openBulkSheet()">⬆ Import</button>
+    <button class="btn-sm" id="sync-btn" onclick="loadOpportunities()">↻</button>
+    <div class="status-row">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span class="status-text" id="status-text">Loading…</span>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Scope</span>
+  <div class="filter-pill active" onclick="setFilter('scope','all')" data-filter="scope" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('scope','pass')" data-filter="scope" data-val="pass">✓ Pass</div>
+  <div class="filter-pill" onclick="setFilter('scope','watch')" data-filter="scope" data-val="watch">⚠ Watch</div>
+  <div class="filter-pill" onclick="setFilter('scope','risk')" data-filter="scope" data-val="risk">✕ Risk</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Status</span>
+  <div class="filter-pill active" onclick="setFilter('status','all')" data-filter="status" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('status','open')" data-filter="status" data-val="open">Open</div>
+  <div class="filter-pill" onclick="setFilter('status','exploring')" data-filter="status" data-val="exploring">Exploring</div>
+  <div class="filter-pill" onclick="setFilter('status','closed')" data-filter="status" data-val="closed">Closed</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Category</span>
+  <div class="filter-pill active" onclick="setFilter('category','all')" data-filter="category" data-val="all">All</div>
+</div>
+
+<div class="main" id="main">
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading opportunities…</div></div>
+</div>
+
+<div class="footer">
+  <span id="footer-path">—</span>
+  <span id="footer-build" style="color:var(--muted)">build 1</span>
+  <span id="footer-sha">—</span>
+</div>
+
+<button class="fab" onclick="openAddSheet()" title="Add opportunity">+</button>
+
+<!-- ADD SHEET -->
+<div class="add-sheet-overlay" id="sheet-overlay" onclick="closeAddSheet()"></div>
+<div class="add-sheet" id="add-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">New opportunity</div>
+  <div class="form-field">
+    <label class="form-label">Title *</label>
+    <input class="form-input" type="text" id="new-title" placeholder="What's the opportunity?"/>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Description</label>
+    <textarea class="form-textarea" id="new-description" placeholder="What is this, why does it matter, what's the potential?"></textarea>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Scope check *</label>
+      <select class="form-select" id="new-scope">
+        <option value="pass">✓ Pass — within context governance</option>
+        <option value="watch">⚠ Watch — adjacent, could drift</option>
+        <option value="risk">✕ Risk — likely scope expansion</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="new-status">
+        <option value="open" selected>Open</option>
+        <option value="exploring">Exploring</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Origin</label>
+    <input class="form-input" type="text" id="new-origin" placeholder="decision-xxxxxxxx or conversation or research"/>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Notes</label>
+    <input class="form-input" type="text" id="new-notes" placeholder="Any scope caveats or watch items…"/>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Categories</label>
+    <div class="tag-picker" id="cat-picker"></div>
+    <div class="tag-custom-row">
+      <input class="tag-custom-input" id="custom-cat-input" type="text" placeholder="#new-category" onkeydown="if(event.key==='Enter')addCustomCat()"/>
+      <button class="tag-add-btn" onclick="addCustomCat()">+ Add</button>
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Source</label>
+    <input class="form-input" type="text" id="new-source" placeholder="john or claude-xxxxxxxx"/>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-sheet-cancel" onclick="closeAddSheet()">Cancel</button>
+    <button class="btn-sheet-save" onclick="saveNewOpp()">Save →</button>
+  </div>
+</div>
+
+<!-- BULK IMPORT SHEET -->
+<div class="add-sheet-overlay" id="bulk-overlay" onclick="closeBulkSheet()"></div>
+<div class="bulk-sheet" id="bulk-sheet">
+  <div class="sheet-handle"></div>
+  <div class="bulk-title">Bulk import opportunities</div>
+  <div class="bulk-sub">Paste markdown opportunity blocks. Preview before committing.</div>
+  <textarea class="bulk-textarea" id="bulk-input" placeholder="- [ ] Opportunity title&#10;  id:opp-xxxxxxxx&#10;  date:2026-05-03&#10;  category:#tag&#10;  description:What this is&#10;  scope-check:pass&#10;  origin:conversation&#10;  status:open&#10;  source:claude-a3f7c291"></textarea>
+  <button class="bulk-parse-btn" onclick="parseBulkInput()">Preview import →</button>
+  <div class="bulk-preview" id="bulk-preview">
+    <div class="preview-summary" id="preview-summary"></div>
+    <div id="preview-list"></div>
+    <div class="bulk-actions">
+      <button class="btn-bulk-cancel" onclick="closeBulkSheet()">Cancel</button>
+      <button class="btn-bulk-commit" id="bulk-commit-btn" onclick="commitBulkImport()">Commit selected →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  owner: 'dovetell-io',
+  repo: 'dovetell-sandbox',
+  path: 'opportunities.md',
+  token: null,
+  timezone: 'America/New_York',
+  tzLabel: 'ET',
+  sessionId: 'a3f7c291'
+}
+
+let currentSha = null
+let currentContent = ''
+let isSaving = false
+let filters = { scope: 'all', status: 'all', category: 'all' }
+let expandedOpps = new Set()
+let editingOpp = null
+let knownCategories = new Set()
+let selectedCats = new Set()
+let bulkParsed = []
+
+function nanoid(len=8){const c='abcdefghijklmnopqrstuvwxyz0123456789';let id='';const a=new Uint8Array(len);crypto.getRandomValues(a);a.forEach(n=>id+=c[n%c.length]);return id}
+
+async function githubGet(path){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json'}});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
+
+async function githubPut(path,content,sha,message){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({message,content:btoa(unescape(encodeURIComponent(content))),sha})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`GitHub ${r.status}`)}return r.json()}
+
+function nowTimestamp(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`}
+
+function todayDate(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}`}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ─── PARSER ───
+function parseOpps(md){
+  const lines=md.split('\n');const opps=[];let opp=null;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const m=line.match(/^- \[([ x])\] (.+)/);
+    if(m){
+      if(opp)opps.push(opp);
+      opp={closed:m[1]==='x',title:m[2].trim(),lineIndex:i,id:null,date:null,category:[],description:null,scopeCheck:'pass',origin:null,status:'open',notes:null,source:null};
+      continue;
+    }
+    if(opp&&/^  /.test(line)&&line.trim()){
+      const meta=line.trim();
+      const cats=meta.match(/#[\w-]+/g);if(cats){opp.category.push(...cats);cats.forEach(c=>knownCategories.add(c))}
+      const id=meta.match(/^id:(opp-[\w-]+)/);if(id)opp.id=id[1];
+      const date=meta.match(/^date:([\d-]+)/);if(date)opp.date=date[1];
+      const desc=meta.match(/^description:(.+)/);if(desc)opp.description=desc[1];
+      const sc=meta.match(/^scope-check:(\w+)/);if(sc)opp.scopeCheck=sc[1];
+      const orig=meta.match(/^origin:(.+)/);if(orig)opp.origin=orig[1];
+      const status=meta.match(/^status:(\w+)/);if(status)opp.status=status[1];
+      const notes=meta.match(/^notes:(.+)/);if(notes)opp.notes=notes[1];
+      const src=meta.match(/^source:([\S]+)/);if(src)opp.source=src[1];
+    }
+    if(opp&&!/^  /.test(line)&&line.trim()&&!/^- \[/.test(line)&&!/^#/.test(line)&&!/^<!/.test(line)){opps.push(opp);opp=null;}
+  }
+  if(opp)opps.push(opp);return opps;
+}
+
+// ─── RENDER ───
+function renderOpps(opps){
+  const main=document.getElementById('main');
+  if(!opps.length){main.innerHTML=`<div class="empty"><div class="empty-icon">◇</div><div class="empty-text">No opportunities in opportunities.md</div></div>`;return;}
+  renderCategoryFilters();
+  let filtered=opps.filter(o=>{
+    if(filters.scope!=='all'&&o.scopeCheck!==filters.scope)return false;
+    if(filters.status!=='all'&&o.status!==filters.status)return false;
+    if(filters.category!=='all'&&!o.category.includes(filters.category))return false;
+    return true;
+  });
+  const groups=[
+    {key:'open',label:'Open',items:filtered.filter(o=>o.status==='open')},
+    {key:'exploring',label:'Exploring',items:filtered.filter(o=>o.status==='exploring')},
+    {key:'closed',label:'Closed',items:filtered.filter(o=>o.status==='closed')},
+  ];
+  let html='';
+  for(const g of groups){
+    if(!g.items.length)continue;
+    if(filters.status==='all'){
+      html+=`<div class="section-head"><span class="section-title">${g.label}</span><span class="section-count">${g.items.length}</span></div>`;
+    }
+    g.items.forEach(o=>{html+=renderCard(o);});
+  }
+  if(!html)html=`<div class="empty"><div class="empty-icon">—</div><div class="empty-text">No opportunities match this filter</div></div>`;
+  main.innerHTML=html;
+  document.getElementById('footer-path').textContent=`${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`;
+  document.getElementById('footer-sha').textContent=currentSha?`sha: ${currentSha.slice(0,7)}`:'—';
+  const open=opps.filter(o=>o.status==='open').length;
+  const exploring=opps.filter(o=>o.status==='exploring').length;
+  setStatus('ready',`${open} open · ${exploring} exploring`);
+  expandedOpps.forEach(idx=>{const el=document.getElementById(`opp-${idx}`);if(el)el.classList.add('expanded');});
+}
+
+function renderCard(opp){
+  const isExpanded=expandedOpps.has(opp.lineIndex);
+  const isEditing=editingOpp===opp.lineIndex;
+  const scopeDotClass={pass:'dot-pass',watch:'dot-watch',risk:'dot-risk'}[opp.scopeCheck]||'dot-pass';
+  const scopeChipClass={pass:'chip-pass',watch:'chip-watch',risk:'chip-risk'}[opp.scopeCheck]||'chip-pass';
+  const scopeLabel={pass:'✓ pass',watch:'⚠ watch',risk:'✕ risk'}[opp.scopeCheck]||'pass';
+  const statusChip={open:'chip-open',exploring:'chip-exploring',closed:'chip-closed'}[opp.status]||'chip-open';
+  return `
+  <div class="opp-card scope-${opp.scopeCheck} status-${opp.status} ${isExpanded||isEditing?'expanded':''} ${isEditing?'editing':''}" id="opp-${opp.lineIndex}">
+    <div class="opp-row" onclick="toggleExpand(${opp.lineIndex})">
+      <div class="opp-scope-dot ${scopeDotClass}"></div>
+      <div class="opp-body">
+        <div class="opp-title">${escHtml(opp.title)}</div>
+        <div class="opp-meta">
+          <span class="chip ${scopeChipClass}">${scopeLabel}</span>
+          <span class="chip ${statusChip}">${opp.status}</span>
+          ${opp.category.map(c=>`<span class="chip chip-category">${c}</span>`).join('')}
+          ${opp.date?`<span class="chip chip-date">${opp.date}</span>`:''}
+          ${opp.origin?`<span class="chip chip-origin" title="${escHtml(opp.origin)}">↗ origin</span>`:''}
+        </div>
+      </div>
+      <div class="opp-expand-btn">${isExpanded||isEditing?'▲':'▼'}</div>
+    </div>
+
+    <div class="opp-details">
+      ${opp.description?`<div class="detail-description">${escHtml(opp.description)}</div>`:''}
+      <div class="detail-grid">
+        ${opp.id?`<span class="detail-label">ID</span><span class="detail-value">${opp.id}</span>`:''}
+        ${opp.origin?`<span class="detail-label">Origin</span><span class="detail-value">${escHtml(opp.origin)}</span>`:''}
+        ${opp.source?`<span class="detail-label">Source</span><span class="detail-value">${opp.source}</span>`:''}
+        ${opp.date?`<span class="detail-label">Date</span><span class="detail-value">${opp.date}</span>`:''}
+      </div>
+      ${opp.notes?`<div class="detail-notes">⚠ ${escHtml(opp.notes)}</div>`:''}
+      <div class="detail-actions">
+        <button class="btn-action" onclick="event.stopPropagation();startEdit(${opp.lineIndex})">Edit</button>
+        ${opp.status==='open'?`<button class="btn-action elevate" onclick="event.stopPropagation();markExploring(${opp.lineIndex})">Mark exploring</button>`:''}
+        ${opp.status!=='closed'?`<button class="btn-action danger" onclick="event.stopPropagation();closeOpp(${opp.lineIndex})">Close</button>`:''}
+      </div>
+    </div>
+
+    <div class="edit-panel" onclick="event.stopPropagation()">
+      <div class="edit-field">
+        <label class="edit-label">Title</label>
+        <input class="edit-input" id="edit-title-${opp.lineIndex}" type="text" value="${escHtml(opp.title)}"/>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Description</label>
+        <textarea class="edit-textarea" id="edit-desc-${opp.lineIndex}">${escHtml(opp.description||'')}</textarea>
+      </div>
+      <div class="edit-row-2">
+        <div class="edit-field">
+          <label class="edit-label">Scope check</label>
+          <select class="edit-select" id="edit-scope-${opp.lineIndex}">
+            <option value="pass" ${opp.scopeCheck==='pass'?'selected':''}>✓ Pass</option>
+            <option value="watch" ${opp.scopeCheck==='watch'?'selected':''}>⚠ Watch</option>
+            <option value="risk" ${opp.scopeCheck==='risk'?'selected':''}>✕ Risk</option>
+          </select>
+        </div>
+        <div class="edit-field">
+          <label class="edit-label">Status</label>
+          <select class="edit-select" id="edit-status-${opp.lineIndex}">
+            <option value="open" ${opp.status==='open'?'selected':''}>Open</option>
+            <option value="exploring" ${opp.status==='exploring'?'selected':''}>Exploring</option>
+            <option value="closed" ${opp.status==='closed'?'selected':''}>Closed</option>
+          </select>
+        </div>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">Notes</label>
+        <input class="edit-input" id="edit-notes-${opp.lineIndex}" type="text" value="${escHtml(opp.notes||'')}"/>
+      </div>
+      <div class="edit-actions">
+        <button class="btn-edit-cancel" onclick="cancelEdit(${opp.lineIndex})">Cancel</button>
+        <button class="btn-edit-save" onclick="saveEdit(${opp.lineIndex})">Save →</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCategoryFilters(){
+  const bar=document.querySelector('.filter-bar');
+  bar.querySelectorAll('[data-filter="category"]:not([data-val="all"])').forEach(el=>el.remove());
+  [...knownCategories].sort().forEach(cat=>{
+    const pill=document.createElement('div');
+    pill.className=`filter-pill${filters.category===cat?' active':''}`;
+    pill.setAttribute('data-filter','category');pill.setAttribute('data-val',cat);
+    pill.textContent=cat;pill.onclick=()=>setFilter('category',cat);
+    bar.appendChild(pill);
+  });
+}
+
+function toggleExpand(li){
+  if(editingOpp===li)return;
+  if(expandedOpps.has(li))expandedOpps.delete(li);else expandedOpps.add(li);
+  const card=document.getElementById(`opp-${li}`);
+  if(card){card.classList.toggle('expanded',expandedOpps.has(li));const btn=card.querySelector('.opp-expand-btn');if(btn)btn.textContent=expandedOpps.has(li)?'▲':'▼';}
+}
+
+function setFilter(type,val){
+  filters[type]=val;
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(el=>el.classList.toggle('active',el.dataset.val===val));
+  renderOpps(parseOpps(currentContent));
+}
+
+// ─── EDIT ───
+function startEdit(li){expandedOpps.add(li);editingOpp=li;renderOpps(parseOpps(currentContent));const inp=document.getElementById(`edit-title-${li}`);if(inp){inp.focus();inp.select();}}
+function cancelEdit(li){editingOpp=null;renderOpps(parseOpps(currentContent));}
+
+async function saveEdit(li){
+  if(isSaving)return;
+  const opps=parseOpps(currentContent);const opp=opps.find(o=>o.lineIndex===li);if(!opp)return;
+  const newTitle=document.getElementById(`edit-title-${li}`)?.value.trim();
+  const newDesc=document.getElementById(`edit-desc-${li}`)?.value.trim();
+  const newScope=document.getElementById(`edit-scope-${li}`)?.value;
+  const newStatus=document.getElementById(`edit-status-${li}`)?.value;
+  const newNotes=document.getElementById(`edit-notes-${li}`)?.value.trim();
+  if(!newTitle){showToast('Title required','error-state');return;}
+  isSaving=true;
+  try{
+    const newContent=rewriteOppInMarkdown(currentContent,opp,{...opp,title:newTitle,description:newDesc||opp.description,scopeCheck:newScope||opp.scopeCheck,status:newStatus||opp.status,notes:newNotes||null});
+    const result=await githubPut(CONFIG.path,newContent,currentSha,`opportunities: edit "${newTitle.slice(0,50)}" · ${nowTimestamp()}`);
+    currentContent=newContent;currentSha=result.content.sha;editingOpp=null;renderOpps(parseOpps(currentContent));showToast('✓ Updated · committed','success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');if(err.message.includes('401'))handleAuthError();}
+  isSaving=false;
+}
+
+async function markExploring(li){await updateOppStatus(li,'exploring','Mark exploring');}
+async function closeOpp(li){await updateOppStatus(li,'closed','Close opportunity');}
+
+async function updateOppStatus(li,newStatus,label){
+  if(isSaving)return;isSaving=true;
+  const opps=parseOpps(currentContent);const opp=opps.find(o=>o.lineIndex===li);if(!opp){isSaving=false;return;}
+  try{
+    const newContent=rewriteOppInMarkdown(currentContent,opp,{...opp,status:newStatus});
+    const result=await githubPut(CONFIG.path,newContent,currentSha,`opportunities: ${label.toLowerCase()} "${opp.title.slice(0,50)}" · ${nowTimestamp()}`);
+    currentContent=newContent;currentSha=result.content.sha;expandedOpps.delete(li);renderOpps(parseOpps(currentContent));showToast(`✓ ${label} · committed`,'success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');}
+  isSaving=false;
+}
+
+function rewriteOppInMarkdown(md,opp,updates){
+  const lines=md.split('\n');let endLine=lines.length;
+  for(let i=opp.lineIndex+1;i<lines.length;i++){if(!/^  /.test(lines[i])&&lines[i].trim()&&!/^<!--/.test(lines[i].trim())){endLine=i;break;}}
+  let block=`- [ ] ${updates.title}\n`;
+  if(opp.id)block+=`  id:${opp.id}\n`;
+  if(opp.date)block+=`  date:${opp.date}\n`;
+  if(opp.category.length)block+=`  category:${opp.category.join(' ')}\n`;
+  if(updates.description)block+=`  description:${updates.description}\n`;
+  block+=`  scope-check:${updates.scopeCheck}\n`;
+  if(opp.origin)block+=`  origin:${opp.origin}\n`;
+  block+=`  status:${updates.status}\n`;
+  if(updates.notes)block+=`  notes:${updates.notes}\n`;
+  if(opp.source)block+=`  source:${opp.source}\n`;
+  lines.splice(opp.lineIndex,endLine-opp.lineIndex,...block.trimEnd().split('\n'));
+  return lines.join('\n');
+}
+
+// ─── ADD SHEET ───
+function openAddSheet(){
+  document.getElementById('add-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  renderCatPicker();
+  document.getElementById('new-source').value=`claude-${CONFIG.sessionId}`;
+  setTimeout(()=>document.getElementById('new-title').focus(),300);
+}
+function closeAddSheet(){document.getElementById('add-sheet').classList.remove('open');document.getElementById('sheet-overlay').classList.remove('open');document.body.style.overflow='';}
+
+function renderCatPicker(){
+  const picker=document.getElementById('cat-picker');
+  picker.innerHTML=[...knownCategories].sort().map(c=>`<div class="tag-option ${selectedCats.has(c)?'selected':''}" onclick="toggleCat('${c}')">${c}</div>`).join('');
+}
+function toggleCat(c){if(selectedCats.has(c))selectedCats.delete(c);else selectedCats.add(c);renderCatPicker();}
+function addCustomCat(){
+  const inp=document.getElementById('custom-cat-input');let c=inp.value.trim();
+  if(!c)return;if(!c.startsWith('#'))c='#'+c;c=c.replace(/\s+/g,'-').toLowerCase();
+  knownCategories.add(c);selectedCats.add(c);inp.value='';renderCatPicker();
+}
+
+async function saveNewOpp(){
+  const title=document.getElementById('new-title').value.trim();
+  if(!title){showToast('Title required','error-state');return;}
+  if(isSaving)return;isSaving=true;
+  const desc=document.getElementById('new-description').value.trim();
+  const scope=document.getElementById('new-scope').value;
+  const status=document.getElementById('new-status').value;
+  const origin=document.getElementById('new-origin').value.trim();
+  const notes=document.getElementById('new-notes').value.trim();
+  const source=document.getElementById('new-source').value.trim()||`claude-${CONFIG.sessionId}`;
+  const cats=[...selectedCats];
+  const id=`opp-${nanoid(8)}`;
+  let block=`\n- [ ] ${title}\n`;
+  block+=`  id:${id}\n`;
+  block+=`  date:${todayDate()}\n`;
+  if(cats.length)block+=`  category:${cats.join(' ')}\n`;
+  if(desc)block+=`  description:${desc}\n`;
+  block+=`  scope-check:${scope}\n`;
+  if(origin)block+=`  origin:${origin}\n`;
+  block+=`  status:${status}\n`;
+  if(notes)block+=`  notes:${notes}\n`;
+  block+=`  source:${source}\n`;
+  try{
+    const newContent=currentContent.trimEnd()+block;
+    const result=await githubPut(CONFIG.path,newContent,currentSha,`opportunities: add "${title.slice(0,50)}" · ${nowTimestamp()}`);
+    currentContent=newContent;currentSha=result.content.sha;
+    document.getElementById('new-title').value='';document.getElementById('new-description').value='';
+    document.getElementById('new-origin').value='';document.getElementById('new-notes').value='';
+    document.getElementById('new-scope').value='pass';document.getElementById('new-status').value='open';
+    selectedCats.clear();closeAddSheet();renderOpps(parseOpps(currentContent));showToast('✓ Opportunity added · committed','success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');if(err.message.includes('401'))handleAuthError();}
+  isSaving=false;
+}
+
+// ─── BULK IMPORT ───
+function openBulkSheet(){document.getElementById('bulk-sheet').classList.add('open');document.getElementById('bulk-overlay').classList.add('open');document.getElementById('bulk-preview').classList.remove('visible');document.getElementById('bulk-input').value='';document.body.style.overflow='hidden';setTimeout(()=>document.getElementById('bulk-input').focus(),300);}
+function closeBulkSheet(){document.getElementById('bulk-sheet').classList.remove('open');document.getElementById('bulk-overlay').classList.remove('open');document.body.style.overflow='';bulkParsed=[];}
+
+function parseBulkInput(){
+  const raw=document.getElementById('bulk-input').value.trim();
+  if(!raw){showToast('Paste some opportunities first','error-state');return;}
+  const parsed=parseOpps(raw);
+  if(!parsed.length){showToast('No valid opportunities found','error-state');return;}
+  const existing=parseOpps(currentContent);
+  const existingById={};const existingByTitle={};
+  existing.forEach(o=>{if(o.id)existingById[o.id]=o;existingByTitle[o.title.toLowerCase().trim()]=o;});
+  bulkParsed=parsed.map(o=>{
+    const match=(o.id&&existingById[o.id])||existingByTitle[o.title.toLowerCase().trim()];
+    if(!match)return{...o,classification:'new',selected:true};
+    const statusDiffers=match.status!==o.status;
+    const othersDiffer=match.description!==o.description||match.scopeCheck!==o.scopeCheck;
+    if(statusDiffers&&!othersDiffer)return{...o,classification:'reconcile',existing:match,selected:true};
+    if(othersDiffer)return{...o,classification:'review',existing:match,selected:false};
+    return{...o,classification:'skip',existing:match,selected:false};
+  });
+  const counts={new:0,reconcile:0,review:0,skip:0};bulkParsed.forEach(o=>counts[o.classification]++);
+  document.getElementById('preview-summary').textContent=`${parsed.length} found · ${counts.new} new · ${counts.reconcile} reconcile · ${counts.review} needs review · ${counts.skip} skip`;
+  const badges={new:'<span class="preview-badge badge-new">new</span>',reconcile:'<span class="preview-badge" style="background:rgba(56,189,248,0.12);color:#38BDF8">↻ reconcile</span>',review:'<span class="preview-badge badge-dupe">⚠ needs review</span>',skip:'<span class="preview-badge" style="background:rgba(107,107,138,0.15);color:var(--muted-2)">= skip</span>'};
+  document.getElementById('preview-list').innerHTML=bulkParsed.map((o,i)=>`
+    <div class="preview-item ${o.classification==='new'?'is-new':o.classification!=='skip'?'is-dupe':''}">
+      <div class="preview-check ${o.selected?'checked':''} ${o.classification==='review'?'dupe-check':''}" onclick="toggleBulkItem(${i})" id="preview-check-${i}"></div>
+      <div class="preview-body">
+        <div class="preview-title">${escHtml(o.title)}</div>
+        <div class="preview-meta">${badges[o.classification]}${o.id?`<span class="preview-badge badge-id">${o.id}</span>`:''}${o.scopeCheck?`<span class="preview-badge chip-${o.scopeCheck}">${o.scopeCheck}</span>`:''}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('bulk-preview').classList.add('visible');updateBulkCommitBtn();
+}
+
+function toggleBulkItem(i){bulkParsed[i].selected=!bulkParsed[i].selected;document.getElementById(`preview-check-${i}`).classList.toggle('checked',bulkParsed[i].selected);updateBulkCommitBtn();}
+function updateBulkCommitBtn(){const count=bulkParsed.filter(o=>o.selected).length;const btn=document.getElementById('bulk-commit-btn');btn.textContent=count>0?`Commit ${count} opportunit${count!==1?'ies':'y'} →`:'Select to commit';btn.disabled=count===0;}
+
+async function commitBulkImport(){
+  if(isSaving)return;const toCommit=bulkParsed.filter(o=>o.selected);if(!toCommit.length)return;
+  isSaving=true;document.getElementById('bulk-commit-btn').textContent='Committing…';document.getElementById('bulk-commit-btn').disabled=true;
+  try{
+    let appended=currentContent.trimEnd();
+    for(const o of toCommit){
+      let block=`\n- [ ] ${o.title}\n`;
+      if(o.id)block+=`  id:${o.id}\n`;
+      if(o.date)block+=`  date:${o.date}\n`;
+      if(o.category.length)block+=`  category:${o.category.join(' ')}\n`;
+      if(o.description)block+=`  description:${o.description}\n`;
+      block+=`  scope-check:${o.scopeCheck||'pass'}\n`;
+      if(o.origin)block+=`  origin:${o.origin}\n`;
+      block+=`  status:${o.status||'open'}\n`;
+      if(o.notes)block+=`  notes:${o.notes}\n`;
+      if(o.source)block+=`  source:${o.source}\n`;
+      appended+=block;
+    }
+    const result=await githubPut(CONFIG.path,appended,currentSha,`opportunities: bulk import ${toCommit.length} · ${nowTimestamp()}`);
+    currentContent=appended;currentSha=result.content.sha;closeBulkSheet();renderOpps(parseOpps(currentContent));showToast(`✓ ${toCommit.length} imported · committed`,'success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');if(err.message.includes('401'))handleAuthError();document.getElementById('bulk-commit-btn').textContent='Commit selected →';document.getElementById('bulk-commit-btn').disabled=false;}
+  isSaving=false;
+}
+
+// ─── LOAD ───
+async function loadOpportunities(){
+  setStatus('loading','Syncing…');
+  try{
+    const file=await githubGet(CONFIG.path);
+    currentSha=file.sha;currentContent=decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    knownCategories.clear();renderOpps(parseOpps(currentContent));
+  }catch(err){setStatus('error',err.message);document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">⚠</div><div class="empty-text">${err.message}</div></div>`;}
+}
+
+// ─── TOKEN ───
+function showTokenPrompt(){
+  setStatus('error','Token required');
+  document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Stored in localStorage. Shared with tasks and decisions.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
+  setTimeout(()=>{const i=document.getElementById('token-input');if(i)i.focus();},50);
+}
+function saveToken(){const inp=document.getElementById('token-input');const t=inp?inp.value.trim():'';if(!t)return;localStorage.setItem('dovetell_pat',t);CONFIG.token=t;loadOpportunities();}
+function clearToken(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;showTokenPrompt();}
+function handleAuthError(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
+
+function setStatus(state,text){const dot=document.getElementById('status-dot');const label=document.getElementById('status-text');dot.className='status-dot';if(state==='loading')dot.classList.add('loading');if(state==='error')dot.classList.add('error');label.textContent=text;}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+
+const savedToken=localStorage.getItem('dovetell_pat');
+if(savedToken){CONFIG.token=savedToken;loadOpportunities();}else{showTokenPrompt();}
+</script>
+</body>
+</html>
