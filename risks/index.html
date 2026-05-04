@@ -1,0 +1,497 @@
+<!-- build:1 · 2026-05-03 · initial build — risk register viewer -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Risks</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../assets/sandbox-favicon.png">
+<link rel="apple-touch-icon" href="../assets/sandbox-apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="dovetell risks">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
+  --near-black:#1A1A2E;--surface:#161625;--surface-2:#1E1E30;
+  --border:rgba(255,255,255,0.07);--border-2:rgba(255,255,255,0.12);
+  --text:#E8E9F8;--muted:#6B6B8A;--muted-2:#9999BB;--cream:#F5F4EF;
+  --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;--purple:#A855F7;--teal:#14B8A6;
+}
+html,body{height:100%;margin:0}
+body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+.demo-banner{height:24px;width:100%;flex-shrink:0;background:var(--cream);border-bottom:1px solid rgba(88,101,242,0.15);display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple)}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.logo-img{width:26px;height:26px;border-radius:6px;display:block}
+.logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.logo-wordmark span{color:var(--blurple)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+.btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.status-row{display:flex;align-items:center;gap:6px}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+.status-dot.error{background:var(--red)}
+.status-text{font-size:11px;color:var(--muted)}
+
+.filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-right:2px;flex-shrink:0}
+.filter-pill{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;user-select:none}
+.filter-pill:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill[data-val="high"].active{background:rgba(239,68,68,0.12);border-color:var(--red);color:var(--red)}
+.filter-pill[data-val="medium"].active{background:rgba(245,158,11,0.12);border-color:var(--amber);color:var(--amber)}
+.filter-pill[data-val="low"].active{background:rgba(107,107,138,0.15);border-color:var(--muted);color:var(--muted-2)}
+.filter-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
+
+.main{flex:1;padding:16px;max-width:860px;width:100%;margin:0 auto;padding-bottom:80px}
+
+.section-head{display:flex;align-items:center;gap:10px;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-head:first-child{margin-top:0}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)}
+.section-count{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:2px 7px;border-radius:8px}
+
+/* RISK MATRIX BADGE */
+.risk-matrix{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;font-weight:600}
+.matrix-hh{background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3)}
+.matrix-hm,.matrix-mh{background:rgba(239,68,68,0.08);color:#F87171;border:1px solid rgba(239,68,68,0.2)}
+.matrix-mm{background:rgba(245,158,11,0.12);color:var(--amber);border:1px solid rgba(245,158,11,0.3)}
+.matrix-lh,.matrix-hl{background:rgba(245,158,11,0.08);color:#FCD34D;border:1px solid rgba(245,158,11,0.2)}
+.matrix-lm,.matrix-ml,.matrix-ll{background:rgba(107,107,138,0.12);color:var(--muted-2);border:1px solid var(--border-2)}
+
+/* RISK CARD */
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden}
+.risk-card:hover{border-color:rgba(239,68,68,0.2)}
+.risk-card.expanded{border-color:rgba(239,68,68,0.3)}
+.risk-card.impact-high{border-left:3px solid var(--red)}
+.risk-card.impact-medium{border-left:3px solid var(--amber)}
+.risk-card.impact-low{border-left:3px solid var(--muted)}
+.risk-card.status-mitigated{opacity:0.6}
+.risk-card.status-closed{opacity:0.4}
+.risk-card.writing{opacity:0.5;pointer-events:none}
+
+.risk-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.risk-body{flex:1;min-width:0}
+.risk-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:5px}
+.risk-card.status-mitigated .risk-title{text-decoration:line-through;color:var(--muted-2)}
+.risk-card.status-closed .risk-title{text-decoration:line-through;color:var(--muted)}
+.risk-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.risk-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;opacity:0.5;transition:opacity 0.15s;user-select:none;padding:2px 4px}
+.risk-card:hover .risk-expand-btn{opacity:1}
+
+.chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;display:inline-flex;align-items:center}
+.chip-high{background:rgba(239,68,68,0.1);color:var(--red)}
+.chip-medium{background:rgba(245,158,11,0.1);color:var(--amber)}
+.chip-low{background:rgba(107,107,138,0.12);color:var(--muted-2)}
+.chip-open{background:rgba(239,68,68,0.08);color:#F87171}
+.chip-mitigated{background:rgba(34,197,94,0.1);color:var(--green)}
+.chip-closed{background:rgba(107,107,138,0.12);color:var(--muted-2)}
+.chip-category{background:rgba(88,101,242,0.08);color:var(--blurple-light)}
+.chip-date{background:rgba(255,255,255,0.04);color:var(--muted-2)}
+
+/* EXPANDED */
+.risk-details{padding:0 14px 14px 14px;border-top:1px solid var(--border);display:none}
+.risk-card.expanded .risk-details{display:block}
+.risk-description{margin-top:12px;padding:10px 12px;background:var(--surface-2);border-radius:6px;font-size:13px;color:var(--text);line-height:1.7}
+.risk-section{margin-top:8px;padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.6}
+.risk-section-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.risk-mitigation{background:rgba(34,197,94,0.05);border-left:2px solid rgba(34,197,94,0.3);color:var(--muted-2)}
+.risk-mitigation .risk-section-label{color:var(--green)}
+.detail-grid{display:grid;grid-template-columns:90px 1fr;gap:5px 12px;margin-top:10px}
+.detail-label{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding-top:1px;align-self:start}
+.detail-value{font-size:12px;color:var(--muted-2);font-family:var(--mono);word-break:break-word}
+.detail-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.btn-action{font-size:11px;font-weight:600;font-family:var(--sans);padding:5px 12px;border-radius:6px;border:1px solid var(--border-2);color:var(--muted-2);background:transparent;cursor:pointer;transition:all 0.15s}
+.btn-action:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.btn-action.mitigate{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:var(--green)}
+
+/* FAB */
+.fab{position:fixed;bottom:80px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--red);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(239,68,68,0.4);transition:all 0.2s;z-index:100;line-height:1}
+.fab:hover{background:#DC2626;transform:scale(1.05)}
+.fab:active{transform:scale(0.97)}
+
+/* ADD SHEET */
+.add-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.add-sheet-overlay.open{opacity:1;pointer-events:all}
+.add-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-2);border-radius:16px 16px 0 0;padding:20px 16px 32px;z-index:160;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.add-sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--border-2);border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px}
+.form-field{margin-bottom:12px}
+.form-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.form-input{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s;-webkit-appearance:none}
+.form-input:focus{border-color:var(--red)}
+.form-input::placeholder{color:var(--muted)}
+.form-select{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer}
+.form-select:focus{border-color:var(--red)}
+.form-textarea{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:80px;line-height:1.5;transition:border-color 0.15s}
+.form-textarea:focus{border-color:var(--red)}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sheet-actions{display:flex;gap:8px;margin-top:16px}
+.btn-sheet-cancel{flex:1;padding:12px;background:transparent;border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
+.btn-sheet-cancel:hover{border-color:var(--muted);color:var(--muted-2)}
+.btn-sheet-save{flex:2;padding:12px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer}
+.btn-sheet-save:hover{background:#DC2626}
+
+/* TAB BAR */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--surface);border-top:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-around;z-index:90;padding-bottom:env(safe-area-inset-bottom)}
+.tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;text-decoration:none;color:var(--muted);transition:color 0.15s;padding:6px 0;-webkit-tap-highlight-color:transparent}
+.tab-item.active{color:var(--red)}
+.tab-icon{font-size:20px;line-height:1}
+.tab-label{font-family:var(--mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase}
+
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:10px 18px;font-size:13px;font-weight:500;color:var(--text);opacity:0;transition:all 0.25s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error-state{border-color:rgba(239,68,68,0.3)}
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.empty-text{font-size:14px;line-height:1.6}
+.footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Risks</span>
+  <span style="opacity:0.3">·</span>
+  <span>dovetell-io/dovetell-sandbox · risks.md</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm" id="sync-btn" onclick="loadRisks()">↻</button>
+    <div class="status-row">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span class="status-text" id="status-text">Loading…</span>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Impact</span>
+  <div class="filter-pill active" onclick="setFilter('impact','all')" data-filter="impact" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('impact','high')" data-filter="impact" data-val="high">⬤ High</div>
+  <div class="filter-pill" onclick="setFilter('impact','medium')" data-filter="impact" data-val="medium">⬤ Medium</div>
+  <div class="filter-pill" onclick="setFilter('impact','low')" data-filter="impact" data-val="low">⬤ Low</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Status</span>
+  <div class="filter-pill active" onclick="setFilter('status','all')" data-filter="status" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('status','open')" data-filter="status" data-val="open">Open</div>
+  <div class="filter-pill" onclick="setFilter('status','mitigated')" data-filter="status" data-val="mitigated">Mitigated</div>
+  <div class="filter-pill" onclick="setFilter('status','closed')" data-filter="status" data-val="closed">Closed</div>
+</div>
+
+<div class="main" id="main">
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading risks…</div></div>
+</div>
+
+<div class="footer">
+  <span id="footer-path">—</span>
+  <span id="footer-build" style="color:var(--muted)">build 1</span>
+  <span id="footer-sha">—</span>
+</div>
+
+<button class="fab" onclick="openAddSheet()" title="Log a risk">+</button>
+
+<div class="add-sheet-overlay" id="sheet-overlay" onclick="closeAddSheet()"></div>
+<div class="add-sheet" id="add-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Log a risk</div>
+  <div class="form-field">
+    <label class="form-label">Risk title *</label>
+    <input class="form-input" type="text" id="new-title" placeholder="What could go wrong?"/>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Description</label>
+    <textarea class="form-textarea" id="new-description" placeholder="What is this risk and why does it matter?"></textarea>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Likelihood</label>
+      <select class="form-select" id="new-likelihood">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Impact</label>
+      <select class="form-select" id="new-impact">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Mitigation</label>
+    <textarea class="form-textarea" id="new-mitigation" placeholder="What do we do about it?" style="min-height:64px"></textarea>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Source</label>
+    <input class="form-input" type="text" id="new-source" placeholder="john or claude-xxxxxxxx"/>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-sheet-cancel" onclick="closeAddSheet()">Cancel</button>
+    <button class="btn-sheet-save" onclick="saveNewRisk()">Log risk →</button>
+  </div>
+</div>
+
+<nav class="tab-bar">
+  <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
+  <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
+  <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
+  <a href="../rules/" class="tab-item"><span class="tab-icon">§</span><span class="tab-label">Rules</span></a>
+  <a href="../risks/" class="tab-item active"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG={owner:'dovetell-io',repo:'dovetell-sandbox',path:'risks.md',token:null,timezone:'America/New_York',tzLabel:'ET',sessionId:'a3f7c291'}
+let currentSha=null,currentContent='',isSaving=false
+let filters={impact:'all',status:'all'}
+let expandedRisks=new Set()
+
+function nanoid(len=8){const c='abcdefghijklmnopqrstuvwxyz0123456789';let id='';const a=new Uint8Array(len);crypto.getRandomValues(a);a.forEach(n=>id+=c[n%c.length]);return id}
+async function githubGet(path){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json'}});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
+async function githubPut(path,content,sha,message){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({message,content:btoa(unescape(encodeURIComponent(content))),sha})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`GitHub ${r.status}`)}return r.json()}
+function nowTimestamp(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`}
+function todayDate(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}`}
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function parseRisks(md){
+  const lines=md.split('\n');const risks=[];let risk=null;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];const m=line.match(/^- \[([ x])\] (.+)/);
+    if(m){
+      if(risk)risks.push(risk);
+      risk={title:m[2].trim(),lineIndex:i,id:null,date:null,category:[],description:null,likelihood:'medium',impact:'medium',mitigation:null,status:'open',source:null};
+      continue;
+    }
+    if(risk&&/^  /.test(line)&&line.trim()){
+      const meta=line.trim();
+      const cats=meta.match(/#[\w-]+/g);if(cats)risk.category.push(...cats);
+      const id=meta.match(/^id:(risk-[\w-]+)/);if(id)risk.id=id[1];
+      const date=meta.match(/^date:([\d-]+)/);if(date)risk.date=date[1];
+      const desc=meta.match(/^description:(.+)/);if(desc)risk.description=desc[1];
+      const lk=meta.match(/^likelihood:(\w+)/);if(lk)risk.likelihood=lk[1];
+      const imp=meta.match(/^impact:(\w+)/);if(imp)risk.impact=imp[1];
+      const mit=meta.match(/^mitigation:(.+)/);if(mit)risk.mitigation=mit[1];
+      const st=meta.match(/^status:(\w+)/);if(st)risk.status=st[1];
+      const src=meta.match(/^source:([\S]+)/);if(src)risk.source=src[1];
+    }
+    if(risk&&!/^  /.test(line)&&line.trim()&&!/^- \[/.test(line)&&!/^#/.test(line)&&!/^<!/.test(line)){risks.push(risk);risk=null;}
+  }
+  if(risk)risks.push(risk);return risks;
+}
+
+function matrixClass(likelihood,impact){return`matrix-${likelihood[0]}${impact[0]}`}
+function matrixLabel(likelihood,impact){return`${likelihood} L · ${impact} I`}
+
+const IMPACT_ORDER={high:0,medium:1,low:2};
+const LIKELIHOOD_ORDER={high:0,medium:1,low:2};
+
+function renderRisks(risks){
+  const main=document.getElementById('main');
+  if(!risks.length){main.innerHTML=`<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No risks logged yet.<br>Add the first one to create risks.md.</div></div>`;return;}
+  let filtered=risks.filter(r=>{
+    if(filters.impact!=='all'&&r.impact!==filters.impact)return false;
+    if(filters.status!=='all'&&r.status!==filters.status)return false;
+    return true;
+  }).sort((a,b)=>{
+    const io=IMPACT_ORDER[a.impact]-IMPACT_ORDER[b.impact];
+    if(io!==0)return io;
+    return LIKELIHOOD_ORDER[a.likelihood]-LIKELIHOOD_ORDER[b.likelihood];
+  });
+  const open=filtered.filter(r=>r.status==='open');
+  const mitigated=filtered.filter(r=>r.status==='mitigated');
+  const closed=filtered.filter(r=>r.status==='closed');
+  let html='';
+  if(open.length){
+    if(filters.status==='all')html+=`<div class="section-head"><span class="section-title">Open</span><span class="section-count">${open.length}</span></div>`;
+    open.forEach(r=>{html+=renderCard(r);});
+  }
+  if(mitigated.length){
+    if(filters.status==='all')html+=`<div class="section-head" style="margin-top:24px"><span class="section-title">Mitigated</span><span class="section-count">${mitigated.length}</span></div>`;
+    mitigated.forEach(r=>{html+=renderCard(r);});
+  }
+  if(closed.length){
+    if(filters.status==='all')html+=`<div class="section-head" style="margin-top:24px"><span class="section-title">Closed</span><span class="section-count">${closed.length}</span></div>`;
+    closed.forEach(r=>{html+=renderCard(r);});
+  }
+  if(!html)html=`<div class="empty"><div class="empty-icon">—</div><div class="empty-text">No risks match this filter</div></div>`;
+  main.innerHTML=html;
+  document.getElementById('footer-path').textContent=`${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`;
+  document.getElementById('footer-sha').textContent=currentSha?`sha: ${currentSha.slice(0,7)}`:'—';
+  const openCount=risks.filter(r=>r.status==='open').length;
+  const highCount=risks.filter(r=>r.status==='open'&&r.impact==='high').length;
+  setStatus('ready',`${openCount} open · ${highCount} high impact`);
+  expandedRisks.forEach(idx=>{const el=document.getElementById(`risk-${idx}`);if(el)el.classList.add('expanded');});
+}
+
+function renderCard(risk){
+  const isExpanded=expandedRisks.has(risk.lineIndex);
+  const mc=matrixClass(risk.likelihood,risk.impact);
+  const ml=matrixLabel(risk.likelihood,risk.impact);
+  return `
+  <div class="risk-card impact-${risk.impact} status-${risk.status} ${isExpanded?'expanded':''}" id="risk-${risk.lineIndex}">
+    <div class="risk-row" onclick="toggleExpand(${risk.lineIndex})">
+      <div class="risk-body">
+        <div class="risk-title">${escHtml(risk.title)}</div>
+        <div class="risk-meta">
+          <span class="risk-matrix ${mc}">${ml}</span>
+          <span class="chip chip-${risk.status}">${risk.status}</span>
+          ${risk.category.map(c=>`<span class="chip chip-category">${c}</span>`).join('')}
+          ${risk.date?`<span class="chip chip-date">${risk.date}</span>`:''}
+        </div>
+      </div>
+      <div class="risk-expand-btn">${isExpanded?'▲':'▼'}</div>
+    </div>
+    <div class="risk-details">
+      ${risk.description?`<div class="risk-description">${escHtml(risk.description)}</div>`:''}
+      ${risk.mitigation?`<div class="risk-section risk-mitigation"><div class="risk-section-label">Mitigation</div>${escHtml(risk.mitigation)}</div>`:''}
+      <div class="detail-grid">
+        ${risk.id?`<span class="detail-label">ID</span><span class="detail-value">${risk.id}</span>`:''}
+        ${risk.source?`<span class="detail-label">Source</span><span class="detail-value">${risk.source}</span>`:''}
+        ${risk.date?`<span class="detail-label">Date</span><span class="detail-value">${risk.date}</span>`:''}
+      </div>
+      <div class="detail-actions">
+        ${risk.status==='open'?`<button class="btn-action mitigate" onclick="event.stopPropagation();updateStatus(${risk.lineIndex},'mitigated')">Mark mitigated</button>`:''}
+        ${risk.status!=='closed'?`<button class="btn-action" onclick="event.stopPropagation();updateStatus(${risk.lineIndex},'closed')">Close</button>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleExpand(li){
+  if(expandedRisks.has(li))expandedRisks.delete(li);else expandedRisks.add(li);
+  const card=document.getElementById(`risk-${li}`);
+  if(card){card.classList.toggle('expanded',expandedRisks.has(li));const btn=card.querySelector('.risk-expand-btn');if(btn)btn.textContent=expandedRisks.has(li)?'▲':'▼';}
+}
+
+function setFilter(type,val){
+  filters[type]=val;
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(el=>el.classList.toggle('active',el.dataset.val===val));
+  renderRisks(parseRisks(currentContent));
+}
+
+async function updateStatus(li,newStatus){
+  if(isSaving)return;isSaving=true;
+  const risks=parseRisks(currentContent);const risk=risks.find(r=>r.lineIndex===li);if(!risk){isSaving=false;return;}
+  try{
+    const lines=currentContent.split('\n');
+    // Find and update status line
+    let found=false;
+    for(let i=risk.lineIndex+1;i<lines.length;i++){
+      if(!/^  /.test(lines[i])&&lines[i].trim())break;
+      if(lines[i].trim().startsWith('status:')){lines[i]=`  status:${newStatus}`;found=true;break;}
+    }
+    if(!found){
+      // Insert status after last meta line
+      let last=risk.lineIndex;
+      for(let i=risk.lineIndex+1;i<lines.length;i++){if(!/^  /.test(lines[i])&&lines[i].trim())break;last=i;}
+      lines.splice(last+1,0,`  status:${newStatus}`);
+    }
+    const newContent=lines.join('\n');
+    const result=await githubPut(CONFIG.path,newContent,currentSha,`risks: ${newStatus} "${risk.title.slice(0,50)}" · ${nowTimestamp()}`);
+    currentContent=newContent;currentSha=result.content.sha;expandedRisks.delete(li);renderRisks(parseRisks(currentContent));
+    showToast(`✓ Marked ${newStatus} · committed`,'success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');}
+  isSaving=false;
+}
+
+function openAddSheet(){
+  document.getElementById('add-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('new-source').value=`claude-${CONFIG.sessionId}`;
+  setTimeout(()=>document.getElementById('new-title').focus(),300);
+}
+function closeAddSheet(){document.getElementById('add-sheet').classList.remove('open');document.getElementById('sheet-overlay').classList.remove('open');document.body.style.overflow='';}
+
+async function saveNewRisk(){
+  const title=document.getElementById('new-title').value.trim();
+  if(!title){showToast('Title required','error-state');return;}
+  if(isSaving)return;isSaving=true;
+  const desc=document.getElementById('new-description').value.trim();
+  const likelihood=document.getElementById('new-likelihood').value;
+  const impact=document.getElementById('new-impact').value;
+  const mitigation=document.getElementById('new-mitigation').value.trim();
+  const source=document.getElementById('new-source').value.trim()||`claude-${CONFIG.sessionId}`;
+  const id=`risk-${nanoid(8)}`;
+  let block=`\n- [ ] ${title}\n`;
+  block+=`  id:${id}\n  date:${todayDate()}\n`;
+  if(desc)block+=`  description:${desc}\n`;
+  block+=`  likelihood:${likelihood}\n  impact:${impact}\n`;
+  if(mitigation)block+=`  mitigation:${mitigation}\n`;
+  block+=`  status:open\n  source:${source}\n`;
+  try{
+    let newContent,newSha;
+    if(!currentSha){
+      const init=`# risks.md\nProject: dovetell\nLast updated: ${todayDate()}\n\n<!-- Flat append log. Newest risks at bottom. -->\n\n`+block.trimStart();
+      const result=await githubPut(CONFIG.path,init,'',`risks: initialize · ${nowTimestamp()}`);
+      newContent=init;newSha=result.content.sha;
+    } else {
+      newContent=currentContent.trimEnd()+block;
+      const result=await githubPut(CONFIG.path,newContent,currentSha,`risks: log "${title.slice(0,50)}" · ${nowTimestamp()}`);
+      newSha=result.content.sha;
+    }
+    currentContent=newContent;currentSha=newSha;
+    document.getElementById('new-title').value='';document.getElementById('new-description').value='';
+    document.getElementById('new-mitigation').value='';
+    closeAddSheet();renderRisks(parseRisks(currentContent));showToast('✓ Risk logged · committed','success');
+  }catch(err){showToast(`Error: ${err.message}`,'error-state');if(err.message.includes('401'))handleAuthError();}
+  isSaving=false;
+}
+
+async function loadRisks(){
+  setStatus('loading','Syncing…');
+  try{
+    const file=await githubGet(CONFIG.path);
+    currentSha=file.sha;currentContent=decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    renderRisks(parseRisks(currentContent));
+  }catch(err){
+    if(err.message.includes('404')){
+      currentContent='';currentSha='';
+      setStatus('ready','No risks yet');
+      document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">✓</div><div class="empty-text">No risks logged yet.<br>Tap + to log the first one.</div></div>`;
+      document.getElementById('footer-path').textContent=`${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`;
+    } else {
+      setStatus('error',err.message);
+      document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">⚠</div><div class="empty-text">${err.message}</div></div>`;
+    }
+  }
+}
+
+function showTokenPrompt(){
+  setStatus('error','Token required');
+  document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Shared with all dovetell pages.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--red);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
+  setTimeout(()=>{const i=document.getElementById('token-input');if(i)i.focus();},50);
+}
+function saveToken(){const inp=document.getElementById('token-input');const t=inp?inp.value.trim():'';if(!t)return;localStorage.setItem('dovetell_pat',t);CONFIG.token=t;loadRisks();}
+function clearToken(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;showTokenPrompt();}
+function handleAuthError(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
+function setStatus(state,text){const dot=document.getElementById('status-dot');dot.className='status-dot';if(state==='loading')dot.classList.add('loading');if(state==='error')dot.classList.add('error');document.getElementById('status-text').textContent=text;}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+
+const savedToken=localStorage.getItem('dovetell_pat');
+if(savedToken){CONFIG.token=savedToken;loadRisks();}else{showTokenPrompt();}
+</script>
+</body>
+</html>

@@ -223,6 +223,13 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .btn-bulk-commit:hover{background:var(--blurple-dark)}
 .btn-bulk-commit:disabled{opacity:0.4;cursor:not-allowed}
 
+/* TAB BAR */
+.tab-bar{position:fixed;bottom:0;left:0;right:0;height:56px;background:var(--surface);border-top:1px solid var(--border-2);display:flex;align-items:center;justify-content:space-around;z-index:90;padding-bottom:env(safe-area-inset-bottom)}
+.tab-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;text-decoration:none;color:var(--muted);transition:color 0.15s;padding:6px 0;-webkit-tap-highlight-color:transparent}
+.tab-item.active{color:var(--blurple-light)}
+.tab-icon{font-size:20px;line-height:1}
+.tab-label{font-family:var(--mono);font-size:9px;letter-spacing:0.06em;text-transform:uppercase}
+
 /* EMPTY / TOKEN */
 .empty{text-align:center;padding:48px 24px;color:var(--muted)}
 .empty-icon{font-size:32px;margin-bottom:12px}
@@ -248,13 +255,8 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
     <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
-  <div class="nav-links">
-    <a href="../tasks/" class="nav-link active">Tasks</a>
-    <a href="../decisions/" class="nav-link">Decisions</a>
-    <a href="../opportunities/" class="nav-link">Opportunities</a>
-  </div>
   <div class="topbar-right">
-    <button class="btn-sm" onclick="openBulkSheet()">⬆ Import</button>
+    <button class="btn-sm" onclick="openBulkSheet()">⬆</button>
     <button class="btn-sm" id="toggle-done-btn" onclick="toggleDone()">Hide done</button>
     <button class="btn-sm" id="sync-btn" onclick="loadTasks()">↻</button>
     <div class="status-row">
@@ -283,9 +285,30 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="footer">
   <span id="footer-path">—</span>
-  <span id="footer-build" style="color:var(--muted)">build 4</span>
+  <span id="footer-build" style="color:var(--muted)">build 6</span>
   <span id="footer-sha">—</span>
 </div>
+
+<!-- TAB BAR -->
+<nav class="tab-bar">
+  <a href="../tasks/" class="tab-item active">
+    <span class="tab-icon">☑</span>
+    <span class="tab-label">Tasks</span>
+  </a>
+  <a href="../decisions/" class="tab-item">
+    <span class="tab-icon">⚖</span>
+    <span class="tab-label">Decisions</span>
+  </a>
+  <a href="../opportunities/" class="tab-item">
+    <span class="tab-icon">◇</span>
+    <span class="tab-label">Opportunities</span>
+  </a>
+  <a href="../rules/" class="tab-item">
+    <span class="tab-icon">§</span>
+    <span class="tab-label">Rules</span>
+  </a>
+  <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+</nav>
 
 <!-- BULK IMPORT SHEET -->
 <div class="add-sheet-overlay" id="bulk-overlay" onclick="closeBulkSheet()"></div>

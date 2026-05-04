@@ -1,0 +1,533 @@
+<!-- build:1 · 2026-05-03 · initial build — business rules viewer -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Rules</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../assets/sandbox-favicon.png">
+<link rel="apple-touch-icon" href="../assets/sandbox-apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="dovetell rules">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blurple:#5865F2;--blurple-dark:#3B45C4;--blurple-light:#D8DAFD;
+  --near-black:#1A1A2E;--surface:#161625;--surface-2:#1E1E30;
+  --border:rgba(255,255,255,0.07);--border-2:rgba(255,255,255,0.12);
+  --text:#E8E9F8;--muted:#6B6B8A;--muted-2:#9999BB;--cream:#F5F4EF;
+  --sans:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;--purple:#A855F7;
+  --teal:#14B8A6;
+}
+html,body{height:100%;margin:0}
+body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+
+.demo-banner{height:24px;width:100%;flex-shrink:0;background:var(--cream);border-bottom:1px solid rgba(88,101,242,0.15);display:flex;align-items:center;justify-content:center;gap:16px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--blurple)}
+
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.logo-img{width:26px;height:26px;border-radius:6px;display:block}
+.logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
+.logo-wordmark span{color:var(--blurple)}
+.nav-links{display:flex;align-items:center;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:6px;transition:all 0.15s;white-space:nowrap;flex-shrink:0}
+.nav-link:hover{color:var(--text);background:var(--surface-2)}
+.nav-link.active{color:var(--blurple-light);background:rgba(88,101,242,0.1)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.status-row{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
+.status-dot.error{background:var(--red)}
+.status-text{font-size:11px;color:var(--muted)}
+
+.filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-right:2px;flex-shrink:0}
+.filter-pill{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0;user-select:none}
+.filter-pill:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.filter-pill.active{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.filter-sep{width:1px;height:16px;background:var(--border);margin:0 2px;flex-shrink:0}
+
+.main{flex:1;padding:16px;max-width:860px;width:100%;margin:0 auto;padding-bottom:80px}
+
+.section-head{display:flex;align-items:center;gap:10px;margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-head:first-child{margin-top:0}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-2)}
+.section-count{font-family:var(--mono);font-size:10px;color:var(--muted);background:var(--surface-2);padding:2px 7px;border-radius:8px}
+
+/* RULE CARD */
+.rule-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;transition:all 0.15s;overflow:hidden;border-left:3px solid var(--blurple)}
+.rule-card:hover{border-color:rgba(88,101,242,0.3)}
+.rule-card.expanded{border-color:rgba(88,101,242,0.4)}
+.rule-card.status-superseded{opacity:0.5;border-left-color:var(--muted)}
+.rule-card.writing{opacity:0.5;pointer-events:none}
+
+.rule-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;cursor:pointer}
+.rule-number{font-family:var(--mono);font-size:11px;color:var(--blurple);flex-shrink:0;margin-top:2px;min-width:24px}
+.rule-body{flex:1;min-width:0}
+.rule-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:5px}
+.rule-card.status-superseded .rule-title{text-decoration:line-through;color:var(--muted)}
+.rule-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.rule-expand-btn{font-size:11px;color:var(--muted);flex-shrink:0;opacity:0.5;transition:opacity 0.15s;user-select:none;padding:2px 4px}
+.rule-card:hover .rule-expand-btn{opacity:1}
+
+/* CHIPS */
+.chip{font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 7px;border-radius:3px;display:inline-flex;align-items:center}
+.chip-active{background:rgba(34,197,94,0.1);color:var(--green)}
+.chip-superseded{background:rgba(107,107,138,0.15);color:var(--muted-2)}
+.chip-category{background:rgba(88,101,242,0.08);color:var(--blurple-light)}
+.chip-applies{background:rgba(20,184,166,0.1);color:var(--teal)}
+.chip-date{background:rgba(255,255,255,0.04);color:var(--muted-2)}
+
+/* EXPANDED */
+.rule-details{padding:0 14px 14px 50px;border-top:1px solid var(--border);display:none}
+.rule-card.expanded .rule-details{display:block}
+.rule-statement{margin-top:12px;padding:12px 14px;background:var(--surface-2);border-radius:8px;font-size:13px;color:var(--text);line-height:1.7;border-left:3px solid var(--blurple);font-family:var(--sans)}
+.rule-rationale{margin-top:8px;padding:10px 12px;background:rgba(88,101,242,0.04);border-radius:6px;font-size:12px;color:var(--muted-2);line-height:1.6;border-left:2px solid rgba(88,101,242,0.2)}
+.rule-rationale-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:0.06em;margin-bottom:4px}
+.detail-grid{display:grid;grid-template-columns:80px 1fr;gap:5px 12px;margin-top:10px}
+.detail-label{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);padding-top:1px;align-self:start}
+.detail-value{font-size:12px;color:var(--muted-2);font-family:var(--mono);word-break:break-word}
+
+/* CROSS-REFERENCE PANEL */
+.xref-panel{margin-top:10px;padding:10px 12px;background:rgba(168,85,247,0.05);border:1px solid rgba(168,85,247,0.15);border-radius:8px}
+.xref-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:#C084FC;letter-spacing:0.06em;margin-bottom:6px}
+.xref-list{display:flex;flex-wrap:wrap;gap:6px}
+.xref-chip{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(168,85,247,0.1);color:#C084FC;cursor:pointer;transition:all 0.15s;border:1px solid rgba(168,85,247,0.2)}
+.xref-chip:hover{background:rgba(168,85,247,0.2)}
+
+/* FAB */
+.fab{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--blurple);border:none;color:#fff;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(88,101,242,0.4);transition:all 0.2s;z-index:100;line-height:1}
+.fab:hover{background:var(--blurple-dark);transform:scale(1.05)}
+.fab:active{transform:scale(0.97)}
+
+/* ADD SHEET */
+.add-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.add-sheet-overlay.open{opacity:1;pointer-events:all}
+.add-sheet{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border-2);border-radius:16px 16px 0 0;padding:20px 16px 32px;z-index:160;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.add-sheet.open{transform:translateY(0)}
+.sheet-handle{width:36px;height:4px;background:var(--border-2);border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px}
+.form-field{margin-bottom:12px}
+.form-label{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px}
+.form-input{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;transition:border-color 0.15s;-webkit-appearance:none}
+.form-input:focus{border-color:var(--blurple)}
+.form-input::placeholder{color:var(--muted)}
+.form-select{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer}
+.form-select:focus{border-color:var(--blurple)}
+.form-textarea{width:100%;padding:10px 12px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:100px;line-height:1.5;transition:border-color 0.15s}
+.form-textarea:focus{border-color:var(--blurple)}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tag-picker{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0}
+.tag-option{font-family:var(--mono);font-size:10px;padding:4px 10px;border-radius:10px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer;transition:all 0.15s;user-select:none}
+.tag-option:hover{border-color:var(--blurple);color:var(--blurple-light)}
+.tag-option.selected{background:rgba(88,101,242,0.15);border-color:var(--blurple);color:var(--blurple-light)}
+.tag-custom-row{display:flex;gap:8px;margin-top:6px}
+.tag-custom-input{flex:1;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:7px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none}
+.tag-custom-input:focus{border-color:var(--blurple)}
+.tag-add-btn{padding:8px 14px;background:transparent;border:1px solid var(--border-2);border-radius:7px;color:var(--muted-2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.sheet-actions{display:flex;gap:8px;margin-top:16px}
+.btn-sheet-cancel{flex:1;padding:12px;background:transparent;border:1px solid var(--border-2);border-radius:8px;color:var(--muted-2);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
+.btn-sheet-cancel:hover{border-color:var(--red);color:var(--red)}
+.btn-sheet-save{flex:2;padding:12px;background:var(--blurple);border:none;border-radius:8px;color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer}
+.btn-sheet-save:hover{background:var(--blurple-dark)}
+
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface-2);border:1px solid var(--border-2);border-radius:9px;padding:10px 18px;font-size:13px;font-weight:500;color:var(--text);opacity:0;transition:all 0.25s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,0.3)}
+.toast.error-state{border-color:rgba(239,68,68,0.3)}
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.empty-text{font-size:14px;line-height:1.6}
+.footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Rules</span>
+  <span style="opacity:0.3">·</span>
+  <span>dovetell-io/dovetell-sandbox · business-rules.md</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm" id="sync-btn" onclick="loadRules()">↻</button>
+    <div class="status-row">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span class="status-text" id="status-text">Loading…</span>
+    </div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Status</span>
+  <div class="filter-pill active" onclick="setFilter('status','all')" data-filter="status" data-val="all">All</div>
+  <div class="filter-pill" onclick="setFilter('status','active')" data-filter="status" data-val="active">Active</div>
+  <div class="filter-pill" onclick="setFilter('status','superseded')" data-filter="status" data-val="superseded">Superseded</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Applies to</span>
+  <div class="filter-pill active" onclick="setFilter('applies','all')" data-filter="applies" data-val="all">All</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Category</span>
+  <div class="filter-pill active" onclick="setFilter('category','all')" data-filter="category" data-val="all">All</div>
+</div>
+
+<div class="main" id="main">
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading rules…</div></div>
+</div>
+
+<div class="footer">
+  <span id="footer-path">—</span>
+  <span id="footer-build" style="color:var(--muted)">build 2</span>
+  <span id="footer-sha">—</span>
+</div>
+
+<button class="fab" onclick="openAddSheet()" title="Add rule">+</button>
+
+<div class="add-sheet-overlay" id="sheet-overlay" onclick="closeAddSheet()"></div>
+<div class="add-sheet" id="add-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">New rule</div>
+  <div class="form-field">
+    <label class="form-label">Rule title *</label>
+    <input class="form-input" type="text" id="new-title" placeholder="What does this rule govern?"/>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Rule statement *</label>
+    <textarea class="form-textarea" id="new-rule" placeholder="State the rule clearly and unambiguously…"></textarea>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Rationale</label>
+    <textarea class="form-textarea" id="new-rationale" placeholder="Why does this rule exist?" style="min-height:64px"></textarea>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Applies to</label>
+      <input class="form-input" type="text" id="new-applies" placeholder="bulk-import · decisions · all"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Source</label>
+      <input class="form-input" type="text" id="new-source" placeholder="john or claude-xxxxxxxx"/>
+    </div>
+  </div>
+  <div class="form-field">
+    <label class="form-label">Categories</label>
+    <div class="tag-picker" id="cat-picker"></div>
+    <div class="tag-custom-row">
+      <input class="tag-custom-input" id="custom-cat-input" type="text" placeholder="#new-category" onkeydown="if(event.key==='Enter')addCustomCat()"/>
+      <button class="tag-add-btn" onclick="addCustomCat()">+ Add</button>
+    </div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-sheet-cancel" onclick="closeAddSheet()">Cancel</button>
+    <button class="btn-sheet-save" onclick="saveNewRule()">Save →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG={owner:'dovetell-io',repo:'dovetell-sandbox',path:'business-rules.md',token:null,timezone:'America/New_York',tzLabel:'ET',sessionId:'a3f7c291'}
+let currentSha=null,currentContent='',isSaving=false
+let filters={status:'all',applies:'all',category:'all'}
+let expandedRules=new Set()
+let knownCategories=new Set(),knownApplies=new Set(),selectedCats=new Set()
+
+function nanoid(len=8){const c='abcdefghijklmnopqrstuvwxyz0123456789';let id='';const a=new Uint8Array(len);crypto.getRandomValues(a);a.forEach(n=>id+=c[n%c.length]);return id}
+async function githubGet(path){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json'}});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
+async function githubPut(path,content,sha,message){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({message,content:btoa(unescape(encodeURIComponent(content))),sha})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`GitHub ${r.status}`)}return r.json()}
+function nowTimestamp(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`}
+function todayDate(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}`}
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ─── PARSER ───
+function parseRules(md){
+  const lines=md.split('\n');const rules=[];let rule=null;
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];const m=line.match(/^- \[([ x])\] (.+)/);
+    if(m){
+      if(rule)rules.push(rule);
+      rule={title:m[2].trim(),lineIndex:i,id:null,date:null,category:[],rule:null,rationale:null,appliesTo:[],status:'active',source:null};
+      continue;
+    }
+    if(rule&&/^  /.test(line)&&line.trim()){
+      const meta=line.trim();
+      const cats=meta.match(/#[\w-]+/g);if(cats){rule.category.push(...cats);cats.forEach(c=>knownCategories.add(c))}
+      const id=meta.match(/^id:(rule-[\w-]+)/);if(id)rule.id=id[1];
+      const date=meta.match(/^date:([\d-]+)/);if(date)rule.date=date[1];
+      const r=meta.match(/^rule:(.+)/);if(r)rule.rule=r[1];
+      const rat=meta.match(/^rationale:(.+)/);if(rat)rule.rationale=rat[1];
+      const at=meta.match(/^applies-to:(.+)/);if(at){const parts=at[1].split(/[\s·]+/).map(s=>s.trim()).filter(Boolean);rule.appliesTo.push(...parts);parts.forEach(p=>knownApplies.add(p));}
+      const st=meta.match(/^status:(\w+)/);if(st)rule.status=st[1];
+      const src=meta.match(/^source:([\S]+)/);if(src)rule.source=src[1];
+    }
+    if(rule&&!/^  /.test(line)&&line.trim()&&!/^- \[/.test(line)&&!/^#/.test(line)&&!/^<!/.test(line)){rules.push(rule);rule=null;}
+  }
+  if(rule)rules.push(rule);return rules;
+}
+
+// ─── RENDER ───
+function renderRules(rules){
+  const main=document.getElementById('main');
+  if(!rules.length){main.innerHTML=`<div class="empty"><div class="empty-icon">§</div><div class="empty-text">No rules in business-rules.md</div></div>`;return;}
+  renderDynamicFilters();
+  let filtered=rules.filter(r=>{
+    if(filters.status!=='all'&&r.status!==filters.status)return false;
+    if(filters.applies!=='all'&&!r.appliesTo.includes(filters.applies)&&!r.appliesTo.includes('all'))return false;
+    if(filters.category!=='all'&&!r.category.includes(filters.category))return false;
+    return true;
+  });
+  const active=filtered.filter(r=>r.status==='active');
+  const superseded=filtered.filter(r=>r.status==='superseded');
+  let html='';
+  if(active.length){
+    if(filters.status==='all')html+=`<div class="section-head"><span class="section-title">Active</span><span class="section-count">${active.length}</span></div>`;
+    active.forEach((r,i)=>{html+=renderCard(r,i+1);});
+  }
+  if(superseded.length){
+    if(filters.status==='all')html+=`<div class="section-head" style="margin-top:24px"><span class="section-title">Superseded</span><span class="section-count">${superseded.length}</span></div>`;
+    superseded.forEach((r,i)=>{html+=renderCard(r,active.length+i+1);});
+  }
+  if(!html)html=`<div class="empty"><div class="empty-icon">—</div><div class="empty-text">No rules match this filter</div></div>`;
+  main.innerHTML=html;
+  document.getElementById('footer-path').textContent=`${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`;
+  document.getElementById('footer-sha').textContent=currentSha?`sha: ${currentSha.slice(0,7)}`:'—';
+  setStatus('ready',`${active.length} active · ${superseded.length} superseded`);
+  expandedRules.forEach(idx=>{const el=document.getElementById(`rule-${idx}`);if(el)el.classList.add('expanded');});
+  handleDeepLink(rules, 'rule');
+}
+
+function renderCard(rule,num){
+  const isExpanded=expandedRules.has(rule.lineIndex);
+  const xrefs=findCrossRefs(rule);
+  return `
+  <div class="rule-card status-${rule.status} ${isExpanded?'expanded':''}" id="rule-${rule.lineIndex}">
+    <div class="rule-row" onclick="toggleExpand(${rule.lineIndex})">
+      <div class="rule-number">${String(num).padStart(2,'0')}</div>
+      <div class="rule-body">
+        <div class="rule-title">${escHtml(rule.title)}</div>
+        <div class="rule-meta">
+          <span class="chip chip-${rule.status}">${rule.status}</span>
+          ${rule.appliesTo.map(a=>`<span class="chip chip-applies">${a}</span>`).join('')}
+          ${rule.category.map(c=>`<span class="chip chip-category">${c}</span>`).join('')}
+          ${rule.date?`<span class="chip chip-date">${rule.date}</span>`:''}
+        </div>
+      </div>
+      <div class="rule-expand-btn">${isExpanded?'▲':'▼'}</div>
+    </div>
+    <div class="rule-details">
+      ${rule.rule?`<div class="rule-statement">${escHtml(rule.rule)}</div>`:''}
+      ${rule.rationale?`<div class="rule-rationale"><div class="rule-rationale-label">Rationale</div>${escHtml(rule.rationale)}</div>`:''}
+      <div class="detail-grid">
+        ${rule.id?`<span class="detail-label">ID</span><span class="detail-value">${rule.id}</span>`:''}
+        ${rule.source?`<span class="detail-label">Source</span><span class="detail-value">${rule.source}</span>`:''}
+        ${rule.date?`<span class="detail-label">Date</span><span class="detail-value">${rule.date}</span>`:''}
+      </div>
+      ${xrefs.length?`
+      <div class="xref-panel">
+        <div class="xref-label">Referenced by ${xrefs.length} opportunit${xrefs.length!==1?'ies':'y'}</div>
+        <div class="xref-list">${xrefs.map(x=>`<a class="xref-chip" href="../opportunities/?id=${x.id}" title="${escHtml(x.title)}">${x.id}</a>`).join('')}</div>
+      </div>`:''}
+    </div>
+  </div>`;
+}
+
+// Cross-reference: find opportunities that mention this rule's ID
+let oppContent = ''
+async function loadOppContentForXref(){
+  try{
+    const f = await githubGet('opportunities.md')
+    oppContent = decodeURIComponent(escape(atob(f.content.replace(/\n/g,''))))
+  }catch(e){ oppContent = '' }
+}
+function findCrossRefs(rule){
+  if(!rule.id || !oppContent) return []
+  const lines = oppContent.split('\n')
+  const refs = []
+  let current = null
+  for(const line of lines){
+    const m = line.match(/^- \[([ x])\] (.+)/)
+    if(m) current = { title: m[2].trim(), id: null }
+    if(current && /^  id:(opp-[\w-]+)/.test(line.trim())){
+      current.id = line.trim().replace('id:','')
+    }
+    if(current && current.id && line.includes(rule.id)) refs.push({...current})
+  }
+  return [...new Map(refs.map(r=>[r.id,r])).values()]
+}
+
+function renderDynamicFilters(){
+  const bar=document.querySelector('.filter-bar');
+  // Applies-to filters
+  bar.querySelectorAll('[data-filter="applies"]:not([data-val="all"])').forEach(el=>el.remove());
+  const appliesSep=bar.querySelector('[data-filter="applies"][data-val="all"]');
+  [...knownApplies].sort().forEach(a=>{
+    const pill=document.createElement('div');
+    pill.className=`filter-pill${filters.applies===a?' active':''}`;
+    pill.setAttribute('data-filter','applies');pill.setAttribute('data-val',a);
+    pill.textContent=a;pill.onclick=()=>setFilter('applies',a);
+    appliesSep.after(pill);
+  });
+  // Category filters
+  bar.querySelectorAll('[data-filter="category"]:not([data-val="all"])').forEach(el=>el.remove());
+  [...knownCategories].sort().forEach(c=>{
+    const pill=document.createElement('div');
+    pill.className=`filter-pill${filters.category===c?' active':''}`;
+    pill.setAttribute('data-filter','category');pill.setAttribute('data-val',c);
+    pill.textContent=c;pill.onclick=()=>setFilter('category',c);
+    bar.appendChild(pill);
+  });
+}
+
+function toggleExpand(li){
+  if(expandedRules.has(li))expandedRules.delete(li);else expandedRules.add(li);
+  const card=document.getElementById(`rule-${li}`);
+  if(card){card.classList.toggle('expanded',expandedRules.has(li));const btn=card.querySelector('.rule-expand-btn');if(btn)btn.textContent=expandedRules.has(li)?'▲':'▼';}
+}
+
+function setFilter(type,val){
+  filters[type]=val;
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(el=>el.classList.toggle('active',el.dataset.val===val));
+  renderRules(parseRules(currentContent));
+}
+
+// ─── ADD SHEET ───
+function openAddSheet(){
+  document.getElementById('add-sheet').classList.add('open');
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  renderCatPicker();
+  document.getElementById('new-source').value=`claude-${CONFIG.sessionId}`;
+  setTimeout(()=>document.getElementById('new-title').focus(),300);
+}
+function closeAddSheet(){document.getElementById('add-sheet').classList.remove('open');document.getElementById('sheet-overlay').classList.remove('open');document.body.style.overflow='';}
+function renderCatPicker(){document.getElementById('cat-picker').innerHTML=[...knownCategories].sort().map(c=>`<div class="tag-option ${selectedCats.has(c)?'selected':''}" onclick="toggleCat('${c}')">${c}</div>`).join('');}
+function toggleCat(c){if(selectedCats.has(c))selectedCats.delete(c);else selectedCats.add(c);renderCatPicker();}
+function addCustomCat(){const inp=document.getElementById('custom-cat-input');let c=inp.value.trim();if(!c)return;if(!c.startsWith('#'))c='#'+c;c=c.replace(/\s+/g,'-').toLowerCase();knownCategories.add(c);selectedCats.add(c);inp.value='';renderCatPicker();}
+
+async function saveNewRule(){
+  const title=document.getElementById('new-title').value.trim();
+  const ruleText=document.getElementById('new-rule').value.trim();
+  if(!title||!ruleText){showToast('Title and rule statement required','error-state');return;}
+  if(isSaving)return;isSaving=true;
+  const rationale=document.getElementById('new-rationale').value.trim();
+  const applies=document.getElementById('new-applies').value.trim();
+  const source=document.getElementById('new-source').value.trim()||`claude-${CONFIG.sessionId}`;
+  const cats=[...selectedCats];
+  const id=`rule-${nanoid(8)}`;
+  let block=`\n- [ ] ${title}\n`;
+  block+=`  id:${id}\n`;
+  block+=`  date:${todayDate()}\n`;
+  if(cats.length)block+=`  category:${cats.join(' ')}\n`;
+  block+=`  rule:${ruleText}\n`;
+  if(rationale)block+=`  rationale:${rationale}\n`;
+  if(applies)block+=`  applies-to:${applies}\n`;
+  block+=`  status:active\n`;
+  block+=`  source:${source}\n`;
+  try{
+    const newContent=currentContent.trimEnd()+block;
+    const result=await githubPut(CONFIG.path,newContent,currentSha,`rules: add "${title.slice(0,50)}" · ${nowTimestamp()}`);
+    currentContent=newContent;currentSha=result.content.sha;
+    document.getElementById('new-title').value='';document.getElementById('new-rule').value='';
+    document.getElementById('new-rationale').value='';document.getElementById('new-applies').value='';
+    selectedCats.clear();closeAddSheet();renderRules(parseRules(currentContent));showToast('✓ Rule added · committed','success');
+  }catch(err){
+    if(err.message.includes('404')){
+      // File doesn't exist yet — create it
+      try{
+        const initContent=`# business-rules.md\nProject: dovetell\nLast updated: ${todayDate()}\n\n<!-- Flat append log. Newest rules at bottom. -->\n\n`+block.trimStart();
+        const result=await githubPut(CONFIG.path,initContent,'',`rules: initialize business-rules.md · ${nowTimestamp()}`);
+        // GitHub returns different response for file creation
+        if(result.content){currentContent=initContent;currentSha=result.content.sha;}
+        closeAddSheet();loadRules();showToast('✓ Rule added · file created · committed','success');
+      }catch(e2){showToast(`Error: ${e2.message}`,'error-state');}
+    } else {
+      showToast(`Error: ${err.message}`,'error-state');
+      if(err.message.includes('401'))handleAuthError();
+    }
+  }
+  isSaving=false;
+}
+
+// ─── LOAD ───
+async function loadRules(){
+  setStatus('loading','Syncing…');
+  try{
+    const file=await githubGet(CONFIG.path);
+    currentSha=file.sha;currentContent=decodeURIComponent(escape(atob(file.content.replace(/\n/g,''))));
+    knownCategories.clear();knownApplies.clear();loadOppContentForXref().then(()=>renderRules(parseRules(currentContent)));
+  }catch(err){
+    if(err.message.includes('404')){
+      currentContent='';currentSha='';
+      setStatus('ready','No rules yet');
+      document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">§</div><div class="empty-text">No business-rules.md yet.<br>Add the first rule to create it.</div></div>`;
+      document.getElementById('footer-path').textContent=`${CONFIG.owner}/${CONFIG.repo}/${CONFIG.path}`;
+    } else {
+      setStatus('error',err.message);
+      document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">⚠</div><div class="empty-text">${err.message}</div></div>`;
+    }
+  }
+}
+
+// ─── TOKEN ───
+function showTokenPrompt(){
+  setStatus('error','Token required');
+  document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Stored in localStorage. Shared across all dovetell pages.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--blurple);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
+  setTimeout(()=>{const i=document.getElementById('token-input');if(i)i.focus();},50);
+}
+function saveToken(){const inp=document.getElementById('token-input');const t=inp?inp.value.trim():'';if(!t)return;localStorage.setItem('dovetell_pat',t);CONFIG.token=t;loadRules();}
+function clearToken(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;showTokenPrompt();}
+function handleAuthError(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
+function setStatus(state,text){const dot=document.getElementById('status-dot');dot.className='status-dot';if(state==='loading')dot.classList.add('loading');if(state==='error')dot.classList.add('error');document.getElementById('status-text').textContent=text;}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+
+
+// ─────────────────────────────────────────
+// DEEP LINK — auto-expand from ?id= param
+// ─────────────────────────────────────────
+function handleDeepLink(items, prefix) {
+  const params = new URLSearchParams(window.location.search)
+  const targetId = params.get('id')
+  if (!targetId) return
+  const match = items.find(item => item.id === targetId)
+  if (!match) return
+  // Expand after render
+  setTimeout(() => {
+    const el = document.getElementById(`${prefix}-${match.lineIndex}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('expanded')
+      const btn = el.querySelector('.rule-expand-btn')
+      if (btn) btn.textContent = '▲'
+    }
+  }, 200)
+}
+
+const savedToken=localStorage.getItem('dovetell_pat');
+if(savedToken){CONFIG.token=savedToken;loadRules();}else{showTokenPrompt();}
+</script>
+<nav class="tab-bar">
+  <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
+  <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
+  <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
+  <a href="../rules/" class="tab-item active"><span class="tab-icon">§</span><span class="tab-label">Rules</span></a>
+  <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+</nav>
+</body>
+</html>

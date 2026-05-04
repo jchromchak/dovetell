@@ -238,11 +238,6 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
     <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
-  <div class="nav-links">
-    <a href="../tasks/" class="nav-link">Tasks</a>
-    <a href="../decisions/" class="nav-link">Decisions</a>
-    <a href="../opportunities/" class="nav-link active">Opportunities</a>
-  </div>
   <div class="topbar-right">
     <button class="btn-sm" onclick="openBulkSheet()">⬆ Import</button>
     <button class="btn-sm" id="sync-btn" onclick="loadOpportunities()">↻</button>
@@ -276,7 +271,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="footer">
   <span id="footer-path">—</span>
-  <span id="footer-build" style="color:var(--muted)">build 1</span>
+  <span id="footer-build" style="color:var(--muted)">build 2</span>
   <span id="footer-sha">—</span>
 </div>
 
@@ -451,6 +446,7 @@ function renderOpps(opps){
   const exploring=opps.filter(o=>o.status==='exploring').length;
   setStatus('ready',`${open} open · ${exploring} exploring`);
   expandedOpps.forEach(idx=>{const el=document.getElementById(`opp-${idx}`);if(el)el.classList.add('expanded');});
+  handleDeepLink(opps, 'opp');
 }
 
 function renderCard(opp){
@@ -751,8 +747,37 @@ function handleAuthError(){localStorage.removeItem('dovetell_pat');CONFIG.token=
 function setStatus(state,text){const dot=document.getElementById('status-dot');const label=document.getElementById('status-text');dot.className='status-dot';if(state==='loading')dot.classList.add('loading');if(state==='error')dot.classList.add('error');label.textContent=text;}
 function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
 
+
+// ─────────────────────────────────────────
+// DEEP LINK — auto-expand from ?id= param
+// ─────────────────────────────────────────
+function handleDeepLink(items, prefix) {
+  const params = new URLSearchParams(window.location.search)
+  const targetId = params.get('id')
+  if (!targetId) return
+  const match = items.find(item => item.id === targetId)
+  if (!match) return
+  // Expand after render
+  setTimeout(() => {
+    const el = document.getElementById(`${prefix}-${match.lineIndex}`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('expanded')
+      const btn = el.querySelector('.opp-expand-btn, .rule-expand-btn')
+      if (btn) btn.textContent = '▲'
+    }
+  }, 200)
+}
+
 const savedToken=localStorage.getItem('dovetell_pat');
 if(savedToken){CONFIG.token=savedToken;loadOpportunities();}else{showTokenPrompt();}
 </script>
+<nav class="tab-bar">
+  <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
+  <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
+  <a href="../opportunities/" class="tab-item active"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
+  <a href="../rules/" class="tab-item"><span class="tab-icon">§</span><span class="tab-label">Rules</span></a>
+  <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+</nav>
 </body>
 </html>
