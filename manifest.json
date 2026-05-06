@@ -1,13 +1,13 @@
 {
   "name": "dovetell",
   "short_name": "dovetell",
-  "description": "dovetell task and decision tracker",
-  "start_url": "/tasks/",
+  "description": "dovetell context governance dashboard",
+  "start_url": "/dashboard/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#1A1A2E",
-  "theme_color": "#1A1A2E",
+  "background_color": "#070D18",
+  "theme_color": "#070D18",
   "icons": [
     {
       "src": "/assets/sandbox-favicon.png",

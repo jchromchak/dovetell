@@ -33,14 +33,14 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .logo-img{width:26px;height:26px;border-radius:6px;display:block}
 .logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
 .logo-wordmark span{color:var(--blurple)}
-.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:8px;min-width:0}
 .btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
 .btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
 .status-row{display:flex;align-items:center;gap:6px}
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
 .status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
 .status-dot.error{background:var(--red)}
-.status-text{font-size:11px;color:var(--muted)}
+.status-text{font-size:11px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .filter-bar::-webkit-scrollbar{display:none}
@@ -193,6 +193,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 </style>
+<link rel="stylesheet" href="../assets/css/shared.css"/>
 </head>
 <body>
 
@@ -306,6 +307,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
   </div>
 </div>
 <nav class="tab-bar">
+  <a href="../dashboard/" class="tab-item"><span class="tab-icon">⌂</span><span class="tab-label">Dashboard</span></a>
   <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
   <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
   <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
@@ -315,18 +317,14 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="toast" id="toast"></div>
 
+<script src="../assets/js/shared.js"></script>
 <script>
 const CONFIG={owner:'dovetell-io',repo:'dovetell-sandbox',path:'risks.md',token:null,timezone:'America/New_York',tzLabel:'ET',sessionId:'a3f7c291'}
 let currentSha=null,currentContent='',isSaving=false
 let filters={impact:'all',status:'all'}
 let expandedRisks=new Set()
 
-function nanoid(len=8){const c='abcdefghijklmnopqrstuvwxyz0123456789';let id='';const a=new Uint8Array(len);crypto.getRandomValues(a);a.forEach(n=>id+=c[n%c.length]);return id}
-async function githubGet(path){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json'}});if(!r.ok)throw new Error(`GitHub ${r.status}`);return r.json()}
-async function githubPut(path,content,sha,message){const r=await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':`Bearer ${CONFIG.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify({message,content:btoa(unescape(encodeURIComponent(content))),sha})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||`GitHub ${r.status}`)}return r.json()}
-function nowTimestamp(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`}
-function todayDate(){const p=new Intl.DateTimeFormat('en-US',{timeZone:CONFIG.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>p.find(x=>x.type===t).value;return `${g('year')}-${g('month')}-${g('day')}`}
-function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+// Shared utility functions are provided by ../assets/js/shared.js
 
 function parseRisks(md){
   const lines=md.split('\n');const risks=[];let risk=null;
@@ -470,13 +468,10 @@ async function updateStatus(li,newStatus){
 }
 
 function openAddSheet(){
-  document.getElementById('add-sheet').classList.add('open');
-  document.getElementById('sheet-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+  Dovetell.openAddSheet({ focusId: 'new-title' });
   document.getElementById('new-source').value=`claude-${CONFIG.sessionId}`;
-  setTimeout(()=>document.getElementById('new-title').focus(),300);
 }
-function closeAddSheet(){document.getElementById('add-sheet').classList.remove('open');document.getElementById('sheet-overlay').classList.remove('open');document.body.style.overflow='';}
+function closeAddSheet(){Dovetell.closeAddSheet();}
 
 async function saveNewRisk(){
   const title=document.getElementById('new-title').value.trim();
@@ -537,13 +532,13 @@ function showTokenPrompt(){
   document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Shared with all dovetell pages.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--red);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
   setTimeout(()=>{const i=document.getElementById('token-input');if(i)i.focus();},50);
 }
-function saveToken(){const inp=document.getElementById('token-input');const t=inp?inp.value.trim():'';if(!t)return;localStorage.setItem('dovetell_pat',t);CONFIG.token=t;loadRisks();}
-function clearToken(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;showTokenPrompt();}
-function handleAuthError(){localStorage.removeItem('dovetell_pat');CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
-function setStatus(state,text){const dot=document.getElementById('status-dot');dot.className='status-dot';if(state==='loading')dot.classList.add('loading');if(state==='error')dot.classList.add('error');document.getElementById('status-text').textContent=text;}
-function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>t.classList.remove('show'),3000);}
+function saveToken(){const t=Dovetell.readTokenInput();if(!t)return;Dovetell.saveToken(t);CONFIG.token=t;loadRisks();}
+function clearToken(){Dovetell.clearToken();CONFIG.token=null;showTokenPrompt();}
+function handleAuthError(){Dovetell.clearToken();CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
+function setStatus(state,text){Dovetell.setStatus(state,text);}
+function showToast(msg,type=''){Dovetell.showToast(msg,type);}
 
-const savedToken=localStorage.getItem('dovetell_pat');
+const savedToken=Dovetell.readToken();
 if(savedToken){CONFIG.token=savedToken;loadRisks();}else{showTokenPrompt();}
 </script>
 </body>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Dashboard</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../assets/sandbox-favicon.png">
+<link rel="apple-touch-icon" href="../assets/sandbox-apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="dovetell dashboard">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+.dashboard-main{max-width:1220px}
+.dashboard-hero{display:grid;grid-template-columns:minmax(0,1fr) 220px 260px;gap:16px;margin-bottom:16px;align-items:stretch}
+.dashboard-title{font-size:26px;font-weight:800;color:var(--text);line-height:1.15;margin-bottom:6px}
+.dashboard-subtitle{font-size:14px;color:var(--muted-2)}
+.summary-panel,.dash-panel{background:rgba(14,22,36,0.78);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:0 16px 44px rgba(0,0,0,0.14)}
+.source-warning{border-color:rgba(245,158,11,0.34);background:rgba(245,158,11,0.08);color:var(--muted-2);font-size:12px;line-height:1.5;margin-bottom:16px}
+.source-warning strong{color:var(--amber);font-weight:800}
+.health-panel{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.health-label,.session-label,.panel-kicker{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.health-score{font-family:var(--mono);font-size:38px;font-weight:700;color:var(--teal);line-height:1}
+.health-denom{font-size:14px;color:var(--muted);margin-left:4px}
+.health-rail{width:126px;height:64px;border-top:10px solid rgba(148,163,184,0.18);border-radius:126px 126px 0 0;margin-bottom:8px;position:relative}
+.health-rail::after{content:'';position:absolute;left:-10px;top:-10px;width:96px;height:64px;border-top:10px solid var(--teal);border-radius:126px 126px 0 0}
+.session-panel{display:flex;flex-direction:column;justify-content:center;gap:8px}
+.session-id{font-family:var(--mono);font-size:17px;color:var(--blurple-light);background:rgba(18,27,43,0.9);border:1px solid var(--border);border-radius:7px;padding:8px 10px}
+.session-meta{font-size:13px;color:var(--muted-2);line-height:1.5}
+.dash-grid{display:grid;grid-template-columns:minmax(300px,1.1fr) minmax(280px,1fr) minmax(300px,1.15fr);gap:16px}
+.dash-stack{display:grid;gap:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:8px}
+.panel-title{font-size:17px;font-weight:800;color:var(--text)}
+.panel-count{font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface-3);border-radius:999px;padding:2px 8px;margin-left:6px}
+.panel-link{font-size:12px;font-weight:700;color:var(--blurple-light);text-decoration:none;white-space:nowrap}
+.panel-link:hover{text-decoration:underline}
+.dash-list{display:grid}
+.dash-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(148,163,184,0.12);text-decoration:none;color:inherit}
+.dash-row:last-child{border-bottom:none}
+.row-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot-p0,.dot-now,.risk-high{background:var(--red)}
+.dot-p1,.dot-next,.risk-medium{background:var(--amber)}
+.dot-p2{background:#FACC15}
+.dot-p3,.dot-later,.risk-low{background:var(--muted-2)}
+.row-title{font-size:14px;font-weight:650;color:var(--text);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-sub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-meta{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.risk-score{font-family:var(--mono);font-size:20px;font-weight:700;min-width:34px}
+.risk-score.high{color:var(--red)}
+.risk-score.medium{color:var(--amber)}
+.risk-score.low{color:var(--teal)}
+.status-chip,.rev-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap}
+.status-active,.status-approved,.status-implemented{color:var(--green);border-color:rgba(52,211,153,0.28)}
+.status-deferred,.status-open{color:var(--amber);border-color:rgba(245,158,11,0.28)}
+.status-superseded,.status-closed{color:var(--muted-2)}
+.change-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--blurple));font-size:12px;font-weight:800;color:#fff}
+.dashboard-empty{padding:22px 0;text-align:center;color:var(--muted);font-size:13px}
+.token-card{width:100%;max-width:520px;margin:48px auto;text-align:center}
+.token-icon{font-size:34px;margin-bottom:12px}
+.token-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px}
+.token-copy{font-size:13px;color:var(--muted-2);line-height:1.6;margin-bottom:18px}
+.token-form{display:flex;gap:8px}
+.token-input{flex:1;min-width:0;padding:11px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none}
+.token-input:focus{border-color:var(--blurple)}
+.token-save{padding:11px 16px;border:none;border-radius:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-weight:800;cursor:pointer}
+.token-clear{margin-top:12px;background:transparent;border:none;color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer}
+.token-error{max-width:520px;margin:48px auto}
+@media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}}
+@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-hero,.dash-grid{grid-template-columns:1fr}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-panel{align-items:flex-start}.health-rail{display:none}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.token-card{margin:48px 0}.token-copy{font-size:12px}.token-form{flex-direction:column}.token-save{width:100%}}
+</style>
+<link rel="stylesheet" href="../assets/css/shared.css"/>
+</head>
+<body>
+<div class="demo-banner">
+  <span>// Context dashboard</span>
+  <span class="demo-banner-divider">·</span>
+  <span>dovetell-io/dovetell-sandbox</span>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm" onclick="loadDashboard()" title="Refresh">↻</button>
+    <div class="status-row">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span class="status-text" id="status-text">Loading…</span>
+    </div>
+  </div>
+</div>
+
+<main class="main dashboard-main" id="main">
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading dashboard…</div></div>
+</main>
+
+<div class="footer">
+  <span id="footer-path">dovetell-io/dovetell-sandbox</span>
+  <span id="footer-build" style="color:var(--muted)">dashboard</span>
+  <span id="footer-sha">—</span>
+</div>
+
+<nav class="tab-bar">
+  <a href="../dashboard/" class="tab-item active"><span class="tab-icon">⌂</span><span class="tab-label">Dashboard</span></a>
+  <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
+  <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
+  <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
+  <a href="../rules/" class="tab-item"><span class="tab-icon">§</span><span class="tab-label">Rules</span></a>
+  <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/shared.js"></script>
+<script>
+const CONFIG = {
+  owner: 'dovetell-io',
+  repo: 'dovetell-sandbox',
+  path: 'dashboard',
+  token: null,
+  timezone: 'America/New_York',
+  tzLabel: 'ET',
+  sessionId: 'a3f7c291'
+}
+
+const SOURCES = [
+  { key: 'tasks', path: 'tasks.md' },
+  { key: 'decisions', path: 'decisions.md' },
+  { key: 'risks', path: 'risks.md' },
+  { key: 'opportunities', path: 'opportunities.md' },
+  { key: 'changelog', path: 'changelog.md' }
+]
+
+function parseTasks(md) {
+  const lines = md.split('\n')
+  const tasks = []
+  let task = null
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const m = line.match(/^- \[([ x])\] (.+)/)
+    if (m) {
+      if (task) tasks.push(task)
+      task = { checked: m[1] === 'x', title: m[2].trim(), id: null, priority: 'later', due: null, owner: null, notes: null, source: null }
+      continue
+    }
+    if (task && /^  /.test(line) && line.trim()) {
+      const meta = line.trim()
+      const id = meta.match(/^id:(task-[\w-]+)/); if (id) task.id = id[1]
+      const pri = meta.match(/^priority:(\w+)/); if (pri) task.priority = pri[1]
+      const due = meta.match(/^due:([\d-]+)/); if (due) task.due = due[1]
+      const own = meta.match(/^owner:(\w+)/); if (own) task.owner = own[1]
+      const notes = meta.match(/^notes:(.+)/); if (notes) task.notes = notes[1].trim()
+      const src = meta.match(/^source:([\S]+)/); if (src) task.source = src[1]
+    }
+    if (task && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      tasks.push(task); task = null
+    }
+  }
+  if (task) tasks.push(task)
+  return tasks
+}
+
+function parseDecisions(md) {
+  const lines = md.split('\n')
+  const decisions = []
+  let dec = null
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const m = line.match(/^- \[([ x])\] (.+)/) || line.match(/^- ([^[\n].+)/)
+    if (m) {
+      if (dec) decisions.push(dec)
+      const checkbox = line.match(/^- \[([ x])\] (.+)/)
+      dec = { closed: checkbox ? checkbox[1] === 'x' : false, title: checkbox ? checkbox[2].trim() : m[1].trim(), id: null, date: null, status: 'active', rationale: null, source: null }
+      continue
+    }
+    if (dec && /^  /.test(line) && line.trim()) {
+      const meta = line.trim()
+      const id = meta.match(/^id:(decision-[\w-]+)/); if (id) dec.id = id[1]
+      const date = meta.match(/^date:([\d-]+)/); if (date) dec.date = date[1]
+      const status = meta.match(/^status:(\w+)/); if (status) dec.status = status[1].toLowerCase()
+      const rat = meta.match(/^rationale:(.+)/); if (rat) dec.rationale = rat[1].trim()
+      const src = meta.match(/^source:([\S]+)/); if (src) dec.source = src[1]
+    }
+    if (dec && !/^  /.test(line) && line.trim() && !/^- /.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      decisions.push(dec); dec = null
+    }
+  }
+  if (dec) decisions.push(dec)
+  return decisions
+}
+
+function parseRisks(md) {
+  const lines = md.split('\n')
+  const risks = []
+  let risk = null
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const m = line.match(/^- \[([ x])\] (.+)/)
+    if (m) {
+      if (risk) risks.push(risk)
+      risk = { title: m[2].trim(), id: null, date: null, description: null, likelihood: 'medium', impact: 'medium', status: 'open', source: null }
+      continue
+    }
+    if (risk && /^  /.test(line) && line.trim()) {
+      const meta = line.trim()
+      const id = meta.match(/^id:(risk-[\w-]+)/); if (id) risk.id = id[1]
+      const date = meta.match(/^date:([\d-]+)/); if (date) risk.date = date[1]
+      const desc = meta.match(/^description:(.+)/); if (desc) risk.description = desc[1].trim()
+      const lk = meta.match(/^likelihood:(\w+)/); if (lk) risk.likelihood = lk[1]
+      const imp = meta.match(/^impact:(\w+)/); if (imp) risk.impact = imp[1]
+      const st = meta.match(/^status:(\w+)/); if (st) risk.status = st[1]
+      const src = meta.match(/^source:([\S]+)/); if (src) risk.source = src[1]
+    }
+    if (risk && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      risks.push(risk); risk = null
+    }
+  }
+  if (risk) risks.push(risk)
+  return risks
+}
+
+function parseOpportunities(md) {
+  const lines = md.split('\n')
+  const opps = []
+  let opp = null
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const m = line.match(/^- \[([ x])\] (.+)/)
+    if (m) {
+      if (opp) opps.push(opp)
+      opp = { title: m[2].trim(), id: null, date: null, description: null, scopeCheck: 'pass', status: 'open', source: null }
+      continue
+    }
+    if (opp && /^  /.test(line) && line.trim()) {
+      const meta = line.trim()
+      const id = meta.match(/^id:(opp-[\w-]+)/); if (id) opp.id = id[1]
+      const date = meta.match(/^date:([\d-]+)/); if (date) opp.date = date[1]
+      const desc = meta.match(/^description:(.+)/); if (desc) opp.description = desc[1].trim()
+      const scope = meta.match(/^scope-check:(\w+)/); if (scope) opp.scopeCheck = scope[1]
+      const status = meta.match(/^status:(\w+)/); if (status) opp.status = status[1]
+      const src = meta.match(/^source:([\S]+)/); if (src) opp.source = src[1]
+    }
+    if (opp && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
+      opps.push(opp); opp = null
+    }
+  }
+  if (opp) opps.push(opp)
+  return opps
+}
+
+function parseChangelog(md) {
+  const lines = md.split('\n')
+  const changes = []
+  let change = null
+  for (const line of lines) {
+    const rev = line.match(/^- (rev-[\w-]+)/)
+    if (rev) {
+      if (change) changes.push(change)
+      change = { revisionId: rev[1], date: null, user: null, summary: null }
+      continue
+    }
+    if (!change) continue
+    const meta = line.trim()
+    const date = meta.match(/^date:\s*(.+)/); if (date) change.date = date[1]
+    const user = meta.match(/^user:\s*(.+)/); if (user) change.user = user[1]
+    const summary = meta.match(/^summary:\s*(.+)/); if (summary) change.summary = summary[1]
+  }
+  if (change) changes.push(change)
+  return changes
+}
+
+function riskScore(risk) {
+  const weight = { low: 1, medium: 2, high: 3 }
+  return (weight[risk.likelihood] || 2) * (weight[risk.impact] || 2) * 10
+}
+
+function scoreClass(score) {
+  if (score >= 60) return 'high'
+  if (score >= 30) return 'medium'
+  return 'low'
+}
+
+function contextHealth(tasks, risks, decisions, changes) {
+  let score = 82
+  score -= Math.min(18, risks.filter(r => r.status === 'open' && r.impact === 'high').length * 6)
+  score -= Math.min(12, tasks.filter(t => !t.checked && t.priority === 'now').length * 3)
+  score += Math.min(6, decisions.filter(d => d.status === 'active').length)
+  score += changes.length ? 4 : 0
+  return Math.max(0, Math.min(100, score))
+}
+
+function initials(value) {
+  return (value || 'DT').split(/[\s-]+/).filter(Boolean).slice(0, 2).map(v => v[0].toUpperCase()).join('') || 'DT'
+}
+
+function shortDate(value) {
+  if (!value) return '—'
+  return value.replace(/T.*/, '').replace(/^2026-/, '')
+}
+
+function taskPriorityDot(priority) {
+  return priority === 'now' ? 'dot-now' : priority === 'next' ? 'dot-next' : 'dot-later'
+}
+
+function sourceWarning(sourceStates) {
+  const failed = sourceStates.filter(source => !source.ok)
+  if (!failed.length) return ''
+  const names = failed.map(source => source.path).join(', ')
+  return `<div class="summary-panel source-warning"><strong>Partial load:</strong> ${escHtml(names)} could not be read. Loaded panels are based on available sources.</div>`
+}
+
+function renderAuthError(message) {
+  document.getElementById('main').innerHTML = `<div class="summary-panel token-card token-error">
+    <div class="token-icon">!</div>
+    <div class="token-title">GitHub access failed</div>
+    <div class="token-copy">${escHtml(message)} Check that the saved token can read ${CONFIG.owner}/${CONFIG.repo} contents.</div>
+    <div class="token-form">
+      <input class="token-input" id="token-input" type="password" placeholder="github_pat_…" onkeydown="if(event.key==='Enter')saveToken()"/>
+      <button class="token-save" onclick="saveToken()">Replace token</button>
+    </div>
+    <button class="token-clear" onclick="clearToken()">Clear saved token</button>
+  </div>`
+  setStatus('error', 'GitHub access failed')
+}
+
+function renderDashboard(data, sourceStates = []) {
+  const tasks = data.tasks || []
+  const decisions = data.decisions || []
+  const risks = data.risks || []
+  const opportunities = data.opportunities || []
+  const changes = data.changelog || []
+  const openTasks = tasks.filter(t => !t.checked)
+  const priorityRank = { now: 0, next: 1, later: 2 }
+  const hotTasks = openTasks.sort((a, b) => priorityRank[a.priority || 'later'] - priorityRank[b.priority || 'later']).slice(0, 6)
+  const activeRisks = risks.filter(r => r.status === 'open').sort((a, b) => riskScore(b) - riskScore(a)).slice(0, 5)
+  const recentDecisions = decisions.sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 4)
+  const recentChanges = changes.sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 7)
+  const health = contextHealth(tasks, risks, decisions, changes)
+  const latestChange = recentChanges[0]
+  const warning = sourceWarning(sourceStates)
+
+  document.getElementById('main').innerHTML = `
+    ${warning}
+    <section class="dashboard-hero">
+      <div class="summary-panel">
+        <div class="dashboard-title">Dovetell</div>
+        <div class="dashboard-subtitle">Developer context governance</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <span class="status-chip status-active">${openTasks.length} open tasks</span>
+          <span class="status-chip status-open">${activeRisks.length} open risks</span>
+          <span class="status-chip">${opportunities.filter(o => o.status !== 'closed').length} opportunities</span>
+        </div>
+      </div>
+      <div class="summary-panel health-panel">
+        <div class="health-label">Context Health</div>
+        <div class="health-rail"></div>
+        <div><span class="health-score">${health}</span><span class="health-denom">/100</span></div>
+      </div>
+      <div class="summary-panel session-panel">
+        <div class="session-label">Last Change</div>
+        <div class="session-id">${latestChange ? escHtml(latestChange.revisionId) : '—'}</div>
+        <div class="session-meta">${latestChange ? `${escHtml(latestChange.user || 'unknown')} · ${escHtml(latestChange.date || 'undated')}` : 'No changelog entries loaded'}</div>
+      </div>
+    </section>
+    <section class="dash-grid">
+      <div class="dash-panel">
+        <div class="panel-head"><div class="panel-title">Hot Items <span class="panel-count">${hotTasks.length}</span></div><a class="panel-link" href="../tasks/">View all</a></div>
+        <div class="dash-list">${hotTasks.length ? hotTasks.map(renderTaskRow).join('') : emptyPanel('No open tasks')}</div>
+      </div>
+      <div class="dash-stack">
+        <div class="dash-panel">
+          <div class="panel-head"><div class="panel-title">Active Risks <span class="panel-count">${activeRisks.length}</span></div><a class="panel-link" href="../risks/">View all</a></div>
+          <div class="dash-list">${activeRisks.length ? activeRisks.map(renderRiskRow).join('') : emptyPanel('No active risks')}</div>
+        </div>
+        <div class="dash-panel">
+          <div class="panel-head"><div class="panel-title">Recent Decisions <span class="panel-count">${recentDecisions.length}</span></div><a class="panel-link" href="../decisions/">View all</a></div>
+          <div class="dash-list">${recentDecisions.length ? recentDecisions.map(renderDecisionRow).join('') : emptyPanel('No decisions loaded')}</div>
+        </div>
+      </div>
+      <div class="dash-panel">
+        <div class="panel-head"><div class="panel-title">Changelog <span class="panel-count">${recentChanges.length}</span></div><span class="panel-kicker">Recent</span></div>
+        <div class="dash-list">${recentChanges.length ? recentChanges.map(renderChangeRow).join('') : emptyPanel('No changes loaded')}</div>
+      </div>
+    </section>
+  `
+  document.getElementById('footer-sha').textContent = latestChange ? latestChange.revisionId : '—'
+  const failedCount = sourceStates.filter(source => !source.ok).length
+  setStatus(failedCount ? 'error' : 'ready', failedCount ? `${failedCount} source${failedCount === 1 ? '' : 's'} unavailable` : `${openTasks.length} open · ${activeRisks.length} risks`)
+}
+
+function emptyPanel(text) {
+  return `<div class="dashboard-empty">${escHtml(text)}</div>`
+}
+
+function renderTaskRow(task) {
+  return `<a class="dash-row" href="../tasks/${task.id ? `?id=${encodeURIComponent(task.id)}` : ''}">
+    <span class="row-dot ${taskPriorityDot(task.priority)}"></span>
+    <span><span class="row-title">${escHtml(task.title)}</span><span class="row-sub">${escHtml(task.notes || task.owner || task.source || 'Task')}</span></span>
+    <span class="row-meta">${escHtml((task.priority || 'later').toUpperCase())}</span>
+  </a>`
+}
+
+function renderRiskRow(risk) {
+  const score = riskScore(risk)
+  const klass = scoreClass(score)
+  return `<a class="dash-row" href="../risks/${risk.id ? `?id=${encodeURIComponent(risk.id)}` : ''}">
+    <span class="risk-score ${klass}">${score}</span>
+    <span><span class="row-title">${escHtml(risk.title)}</span><span class="row-sub">${escHtml(risk.description || `${risk.likelihood} likelihood · ${risk.impact} impact`)}</span></span>
+    <span class="row-meta">${shortDate(risk.date)}</span>
+  </a>`
+}
+
+function renderDecisionRow(decision) {
+  return `<a class="dash-row" href="../decisions/${decision.id ? `?id=${encodeURIComponent(decision.id)}` : ''}">
+    <span class="row-dot"></span>
+    <span><span class="row-title">${escHtml(decision.title)}</span><span class="row-sub">${escHtml(decision.id || decision.rationale || 'Decision')}</span></span>
+    <span class="status-chip status-${escHtml(decision.status || 'active')}">${escHtml(decision.status || 'active')}</span>
+  </a>`
+}
+
+function renderChangeRow(change) {
+  return `<div class="dash-row">
+    <span class="change-avatar">${escHtml(initials(change.user))}</span>
+    <span><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${escHtml(change.date || 'undated')}</span></span>
+    <span class="rev-chip">${escHtml(change.revisionId)}</span>
+  </div>`
+}
+
+function renderTokenPrompt() {
+  document.getElementById('main').innerHTML = `<div class="summary-panel token-card">
+    <div class="token-icon">🔑</div>
+    <div class="token-title">Enter your GitHub token</div>
+    <div class="token-copy">Stored on this device. Used only to read GitHub markdown sources.</div>
+    <div class="token-form">
+      <input class="token-input" id="token-input" type="password" placeholder="github_pat_…" onkeydown="if(event.key==='Enter')saveToken()"/>
+      <button class="token-save" onclick="saveToken()">Save &amp; load</button>
+    </div>
+    <button class="token-clear" onclick="clearToken()">Clear saved token</button>
+  </div>`
+  setStatus('error', 'Token required')
+}
+
+function saveToken() {
+  const token = Dovetell.readTokenInput()
+  if (!token) return
+  Dovetell.saveToken(token)
+  CONFIG.token = token
+  loadDashboard()
+}
+
+function clearToken() {
+  Dovetell.clearToken()
+  CONFIG.token = null
+  renderTokenPrompt()
+}
+
+async function loadDashboard() {
+  CONFIG.token = Dovetell.readToken()
+  if (!CONFIG.token) {
+    renderTokenPrompt()
+    return
+  }
+  setStatus('loading', 'Loading dashboard…')
+  try {
+    const entries = await Promise.all(SOURCES.map(async source => {
+      try {
+        const file = await githubGet(source.path)
+        return { key: source.key, path: source.path, ok: true, content: decodeURIComponent(escape(atob(file.content.replace(/\n/g, '')))) }
+      } catch (err) {
+        console.warn(`Unable to load ${source.path}`, err)
+        return { key: source.key, path: source.path, ok: false, status: err.message || 'Load failed', content: '' }
+      }
+    }))
+    const failures = entries.filter(entry => !entry.ok)
+    const authFailure = failures.length === SOURCES.length && failures.some(entry => /401|403|not found|bad credentials|requires authentication/i.test(entry.status))
+    if (authFailure) {
+      renderAuthError(failures[0].status)
+      return
+    }
+    const raw = Object.fromEntries(entries.map(entry => [entry.key, entry.content]))
+    renderDashboard({
+      tasks: parseTasks(raw.tasks || ''),
+      decisions: parseDecisions(raw.decisions || ''),
+      risks: parseRisks(raw.risks || ''),
+      opportunities: parseOpportunities(raw.opportunities || ''),
+      changelog: parseChangelog(raw.changelog || '')
+    }, entries)
+  } catch (err) {
+    setStatus('error', 'Load failed')
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">${escHtml(err.message)}</div></div>`
+  }
+}
+
+loadDashboard()
+</script>
+</body>
+</html>

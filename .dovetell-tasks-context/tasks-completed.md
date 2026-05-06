@@ -35,6 +35,116 @@
 
 [Entries moved here from tasks.md on completion. Newest at bottom.]
 
+- [x] Extract shared CSS and GitHub/auth utilities
+  id: task-a27da8f3
+  priority: now
+  revisionId: rev-62ecc615
+  created: 2026-05-06T02:21Z
+  completed: 2026-05-06T02:21Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Extract shared CSS and shared GitHub/auth utilities from the static pages without changing page behavior, routes, markdown data formats, or GitHub write semantics.
+
+  completion-notes:
+    Added assets/css/shared.css and assets/js/shared.js. Updated tasks, decisions, rules, risks, and opportunities pages to load shared assets and delegate GitHub GET/PUT, PAT storage, timestamps, ID generation, and escaping to shared utilities while keeping page-specific parsing and rendering local. Verified script parsing, whitespace, token prompt rendering, desktop shell, and mobile shell behavior.
+
+- [x] Extract shared shell and interaction helpers
+  id: task-51a43e7c
+  priority: next
+  revisionId: rev-5143d294
+  created: 2026-05-06T02:21Z
+  completed: 2026-05-06T13:36Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Follow the completed shared CSS and GitHub/auth utility extraction by moving shell, status, toast, sheet, and common list/bulk interaction helpers into reusable assets. Keep markdown parsers, render-card logic, route structure, data formats, and GitHub write semantics page-specific until a later architecture decision.
+
+  completion-notes:
+    Added shared status, toast, add-sheet, and bulk-sheet helpers to assets/js/shared.js. Updated tasks, decisions, rules, risks, and opportunities pages to delegate existing page-level wrapper functions to the shared helpers while preserving inline handlers, route structure, page-specific reset/focus behavior, markdown parsing, and GitHub write semantics. Verified JavaScript parsing and desktop/mobile token-prompt shell rendering across all five pages.
+
+- [x] Establish brand guidance and dashboard visual direction
+  id: task-ba584083
+  priority: next
+  revisionId: rev-acf5d65d
+  created: 2026-05-06T13:36Z
+  completed: 2026-05-06T13:47Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Create a brand.md source of truth and use the supplied desktop/mobile dashboard mockups to define visual principles, tokens, navigation patterns, cards, severity language, and responsive dashboard direction before applying larger visual changes.
+
+  completion-notes:
+    Added .dovetell-tasks-context/brand.md as the visual source of truth for Dovetell. Captured identity, tone, color tokens, typography, layout, navigation, component rules, language guidance, responsive requirements, dashboard direction, implementation guardrails, and open questions based on the supplied desktop and mobile dashboard mockups.
+
+- [x] Apply brand guidance to dashboard shell
+  id: task-a8a8f3a2
+  priority: next
+  revisionId: rev-12b0e3b6
+  created: 2026-05-06T13:47Z
+  completed: 2026-05-06T14:31Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Use .dovetell-tasks-context/brand.md to guide the first visual implementation pass. Start with shared CSS tokens and dashboard shell/navigation direction before applying deeper page-specific visual changes. Preserve static portability, routes, markdown data formats, and GitHub write semantics.
+
+  completion-notes:
+    Updated assets/css/shared.css with brand-aligned color tokens, dark workspace backgrounds, compact controls, desktop sidebar navigation, mobile bottom-nav constraints, and token-prompt overflow fixes. Updated tasks, decisions, rules, risks, and opportunities pages so the shared brand layer loads after legacy inline styles, allowing the shell to update without changing page logic, routes, markdown data formats, or GitHub write semantics. Queued task-37e67370 to create the first dashboard overview route.
+
+- [x] Create dashboard overview route
+  id: task-37e67370
+  priority: next
+  revisionId: rev-b3ef3363
+  created: 2026-05-06T14:31Z
+  completed: 2026-05-06T15:18Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Add a lightweight dashboard route that uses the established brand shell and summarizes current tasks, risks, decisions, and recent changes from the existing markdown-backed sources. Preserve static portability, existing routes, markdown data formats, and GitHub write semantics. Treat aggregation and project drill-in as incremental; do not introduce a build step.
+
+  completion-notes:
+    Added dashboard/index.html as a static overview route. The dashboard reuses shared PAT/GitHub utilities, reads existing markdown-backed tasks, decisions, risks, opportunities, and changelog files, and renders context health, hot tasks, active risks, recent decisions, and recent changes. Updated index.html and manifest.json to start at the dashboard. Added Dashboard to the existing page navigation while preserving all existing routes and write semantics. Queued task-9a1c2691 to validate and refine the authenticated loaded state.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

@@ -38,14 +38,14 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 .logo-img{width:26px;height:26px;border-radius:6px;display:block}
 .logo-wordmark{font-size:15px;font-weight:800;letter-spacing:-0.03em;color:var(--text)}
 .logo-wordmark span{color:var(--blurple)}
-.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:8px;min-width:0}
 .btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:7px;background:transparent;border:1px solid var(--border-2);color:var(--muted-2);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
 .btn-sm:hover{border-color:var(--blurple);color:var(--blurple-light)}
-.status-row{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.status-row{display:flex;align-items:center;gap:6px;flex-shrink:1;min-width:0}
 .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
 .status-dot.loading{background:var(--amber);animation:pulse 1s infinite}
 .status-dot.error{background:var(--red)}
-.status-text{font-size:11px;color:var(--muted)}
+.status-text{font-size:11px;color:var(--muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* NAV LINKS */
 .nav-links{display:flex;align-items:center;gap:4px}
@@ -250,6 +250,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 </style>
+<link rel="stylesheet" href="../assets/css/shared.css"/>
 </head>
 <body>
 
@@ -365,6 +366,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 
 <div class="toast" id="toast"></div>
 
+<script src="../assets/js/shared.js"></script>
 <script>
 // ─────────────────────────────────────────
 // CONFIG
@@ -393,71 +395,9 @@ let knownCategories = new Set()
 let selectedCats = new Set()
 
 // ─────────────────────────────────────────
-// NANOID
+// SHARED UTILITIES
 // ─────────────────────────────────────────
-function nanoid(len = 8) {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
-  let id = ''
-  const arr = new Uint8Array(len)
-  crypto.getRandomValues(arr)
-  arr.forEach(n => id += chars[n % chars.length])
-  return id
-}
-
-// ─────────────────────────────────────────
-// GITHUB API
-// ─────────────────────────────────────────
-async function githubGet(path) {
-  const res = await fetch(
-    `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,
-    { headers: { 'Authorization': `Bearer ${CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' } }
-  )
-  if (!res.ok) throw new Error(`GitHub ${res.status}: ${res.statusText}`)
-  return res.json()
-}
-
-async function githubPut(path, content, sha, message) {
-  const res = await fetch(
-    `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`,
-    {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${CONFIG.token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message,
-        content: btoa(unescape(encodeURIComponent(content))),
-        sha
-      })
-    }
-  )
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.message || `GitHub ${res.status}`)
-  }
-  return res.json()
-}
-
-// ─────────────────────────────────────────
-// TIMESTAMPS
-// ─────────────────────────────────────────
-function nowTimestamp() {
-  const now = new Date()
-  const opts = { timeZone: CONFIG.timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }
-  const p = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
-  const g = t => p.find(x => x.type === t).value
-  return `${g('year')}-${g('month')}-${g('day')}T${g('hour')}:${g('minute')} ${CONFIG.tzLabel}`
-}
-
-function todayDate() {
-  const now = new Date()
-  const opts = { timeZone: CONFIG.timezone, year: 'numeric', month: '2-digit', day: '2-digit' }
-  const p = new Intl.DateTimeFormat('en-US', opts).formatToParts(now)
-  const g = t => p.find(x => x.type === t).value
-  return `${g('year')}-${g('month')}-${g('day')}`
-}
+// nanoid, GitHub API, timestamp, and escaping helpers are provided by ../assets/js/shared.js
 
 // ─────────────────────────────────────────
 // PARSER
@@ -897,12 +837,9 @@ function rewriteDecisionInMarkdown(md, dec, updates) {
 // ADD SHEET
 // ─────────────────────────────────────────
 function openAddSheet() {
-  document.getElementById('add-sheet').classList.add('open')
-  document.getElementById('sheet-overlay').classList.add('open')
-  document.body.style.overflow = 'hidden'
+  Dovetell.openAddSheet({ focusId: 'new-decision' })
   renderCatPicker()
   document.getElementById('new-source').value = `claude-${CONFIG.sessionId}`
-  setTimeout(() => document.getElementById('new-decision').focus(), 300)
 
   // Show/hide trigger field based on status
   document.getElementById('new-status').onchange = function() {
@@ -911,9 +848,7 @@ function openAddSheet() {
 }
 
 function closeAddSheet() {
-  document.getElementById('add-sheet').classList.remove('open')
-  document.getElementById('sheet-overlay').classList.remove('open')
-  document.body.style.overflow = ''
+  Dovetell.closeAddSheet()
 }
 
 function renderCatPicker() {
@@ -1052,22 +987,21 @@ function showTokenPrompt() {
 }
 
 function saveToken() {
-  const input = document.getElementById('token-input')
-  const token = input ? input.value.trim() : ''
+  const token = Dovetell.readTokenInput()
   if (!token) return
-  localStorage.setItem('dovetell_pat', token)
+  Dovetell.saveToken(token)
   CONFIG.token = token
   loadDecisions()
 }
 
 function clearToken() {
-  localStorage.removeItem('dovetell_pat')
+  Dovetell.clearToken()
   CONFIG.token = null
   showTokenPrompt()
 }
 
 function handleAuthError() {
-  localStorage.removeItem('dovetell_pat')
+  Dovetell.clearToken()
   CONFIG.token = null
   setTimeout(() => showTokenPrompt(), 1500)
 }
@@ -1076,19 +1010,11 @@ function handleAuthError() {
 // UI HELPERS
 // ─────────────────────────────────────────
 function setStatus(state, text) {
-  const dot = document.getElementById('status-dot')
-  const label = document.getElementById('status-text')
-  dot.className = 'status-dot'
-  if (state === 'loading') dot.classList.add('loading')
-  if (state === 'error') dot.classList.add('error')
-  label.textContent = text
+  Dovetell.setStatus(state, text)
 }
 
 function showToast(msg, type = '') {
-  const toast = document.getElementById('toast')
-  toast.textContent = msg
-  toast.className = `toast ${type} show`
-  setTimeout(() => toast.classList.remove('show'), 3000)
+  Dovetell.showToast(msg, type)
 }
 
 // ─────────────────────────────────────────
@@ -1097,18 +1023,11 @@ function showToast(msg, type = '') {
 let bulkParsed = []
 
 function openBulkSheet() {
-  document.getElementById('bulk-sheet').classList.add('open')
-  document.getElementById('bulk-overlay').classList.add('open')
-  document.getElementById('bulk-preview').classList.remove('visible')
-  document.getElementById('bulk-input').value = ''
-  document.body.style.overflow = 'hidden'
-  setTimeout(() => document.getElementById('bulk-input').focus(), 300)
+  Dovetell.openBulkSheet({ previewId: 'bulk-preview', inputId: 'bulk-input' })
 }
 
 function closeBulkSheet() {
-  document.getElementById('bulk-sheet').classList.remove('open')
-  document.getElementById('bulk-overlay').classList.remove('open')
-  document.body.style.overflow = ''
+  Dovetell.closeBulkSheet()
   bulkParsed = []
 }
 
@@ -1253,7 +1172,7 @@ async function commitBulkImport() {
 // ─────────────────────────────────────────
 // INIT — share PAT with tasks.html
 // ─────────────────────────────────────────
-const savedToken = localStorage.getItem('dovetell_pat')
+const savedToken = Dovetell.readToken()
 if (savedToken) {
   CONFIG.token = savedToken
   loadDecisions()
@@ -1262,6 +1181,7 @@ if (savedToken) {
 }
 </script>
 <nav class="tab-bar">
+  <a href="../dashboard/" class="tab-item"><span class="tab-icon">⌂</span><span class="tab-label">Dashboard</span></a>
   <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
   <a href="../decisions/" class="tab-item active"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
   <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
