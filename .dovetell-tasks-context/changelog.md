@@ -229,6 +229,26 @@
   action: updated
   summary: Fixed the live dashboard loading-screen crash, added GitHub request timeouts, cache-busted dashboard shared scripts, and made project source failures visible.
 
+- rev-b8d3a6e1
+  date: 2026-05-06T23:56Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - jchromchak/dovetell-private:.dovetell-tasks-context/tasks.md: created
+    - jchromchak/dovetell-private:.dovetell-tasks-context/decisions.md: created
+    - jchromchak/dovetell-private:.dovetell-tasks-context/risks.md: created
+    - jchromchak/dovetell-private:.dovetell-tasks-context/opportunities.md: created
+    - jchromchak/dovetell-private:.dovetell-tasks-context/rules.md: created
+    - jchromchak/dovetell-private:.dovetell-tasks-context/changelog.md: created
+    - dovetell-io/dovetell-sandbox:changelog.md: created
+    - task-9a1c2691: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Seeded the private context repo and added the missing sandbox changelog file so configured project sources can load without file-path 404s.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

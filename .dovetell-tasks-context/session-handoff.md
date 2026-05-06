@@ -43,6 +43,7 @@ project-source-update: Added assets/js/projects.js with configured sources for d
 project-page-update: Added shared project-page initialization so tasks, decisions, rules, risks, and opportunities choose owner/repo/path/token from the selected configured project. Dashboard drill-ins now include the source project in the URL, and item pages inject a compact project selector so create, edit, status, and bulk write flows continue using existing code while writing to the selected project source.
 project-settings-update: Added browser-local project source management. Built-in project defaults are exposed separately from locally stored custom projects, and shared project helpers now merge defaults with local overrides. Dashboard includes a Project sources sheet for adding/editing owner, repo, display name, visibility, token key, and context file paths without changing code.
 dashboard-live-fix-update: Patched a live dashboard loading-screen crash by exposing shared setStatus/showToast compatibility wrappers from assets/js/shared.js. Added timeout-backed GitHub fetch helpers, cache-busted dashboard shared script URLs, and changed project source failures to render as grouped visible warnings with per-project token replacement forms where relevant.
+source-shape-update: Seeded jchromchak/dovetell-private with the configured .dovetell-tasks-context/tasks.md, decisions.md, risks.md, opportunities.md, rules.md, and changelog.md files; pushed private commit 98ff4ff. Added root changelog.md to dovetell-io/dovetell-sandbox; pushed sandbox commit e277d61.
 decisions-made: none
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
@@ -79,5 +80,6 @@ validation:
   - In-process project mapping validation passed for tasks, decisions, rules, risks, and opportunities across public/private source selections and per-project token storage.
   - In-process project settings validation passed for local project add, default context path merge, default project override, and local project delete behavior.
   - In-app browser reload passed after the live dashboard loading fix: dashboard rendered sandbox data and showed grouped source warnings instead of staying on the loading screen.
-pending: task-9a1c2691 is blocked on configured source file 404s, not a fatal runtime error. Current known missing files are dovetell sandbox changelog.md and dovetell private .dovetell-tasks-context paths. No PAT value was exposed, logged, or requested.
-next-session-start-here: Start by deciding whether to add the missing markdown files to each project repo or adjust the configured source paths. Then re-check dashboard/ and each item page locally with existing public and private GitHub tokens.
+  - Repo source-shape fixes pushed for the known missing files: private context folder at jchromchak/dovetell-private@98ff4ff and sandbox changelog at dovetell-io/dovetell-sandbox@e277d61.
+pending: task-9a1c2691 is blocked only on final browser reload with existing public/private repo PATs. No PAT value was exposed, logged, or requested.
+next-session-start-here: Reload dashboard/ with the existing project tokens. Confirm no source-warning panel appears, then drill into one item from each project and verify selected-project writes still target the intended repo.
