@@ -21,6 +21,11 @@
 .summary-panel,.dash-panel{background:rgba(14,22,36,0.78);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:0 16px 44px rgba(0,0,0,0.14)}
 .source-warning{border-color:rgba(245,158,11,0.34);background:rgba(245,158,11,0.08);color:var(--muted-2);font-size:12px;line-height:1.5;margin-bottom:16px}
 .source-warning strong{color:var(--amber);font-weight:800}
+.source-warning-list{display:grid;gap:10px;margin-top:10px}
+.source-warning-item{padding:10px 12px;border:1px solid rgba(245,158,11,0.26);border-radius:8px;background:rgba(5,9,20,0.32)}
+.source-warning-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px}
+.source-warning-detail{font-family:var(--mono);font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.source-warning .token-projects{margin-top:12px}
 .health-panel{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .health-label,.session-label,.panel-kicker{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .health-score{font-family:var(--mono);font-size:38px;font-weight:700;color:var(--teal);line-height:1}
@@ -53,12 +58,20 @@
 .risk-score.medium{color:var(--amber)}
 .risk-score.low{color:var(--teal)}
 .status-chip,.rev-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap}
+.project-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.project-chip.private{color:var(--amber);border-color:rgba(245,158,11,0.28)}
+.project-chip.public{color:var(--cyan);border-color:rgba(103,232,249,0.24)}
 .status-active,.status-approved,.status-implemented{color:var(--green);border-color:rgba(52,211,153,0.28)}
 .status-deferred,.status-open{color:var(--amber);border-color:rgba(245,158,11,0.28)}
 .status-superseded,.status-closed{color:var(--muted-2)}
 .change-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--blurple));font-size:12px;font-weight:800;color:#fff}
 .dashboard-empty{padding:22px 0;text-align:center;color:var(--muted);font-size:13px}
 .token-card{width:100%;max-width:520px;margin:48px auto;text-align:center}
+.token-projects{display:grid;gap:14px;text-align:left;margin-top:18px}
+.token-project{border:1px solid var(--border);border-radius:8px;padding:12px;background:rgba(18,27,43,0.52)}
+.token-project-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.token-project-title{font-size:13px;font-weight:800;color:var(--text)}
+.token-project-repo{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
 .token-icon{font-size:34px;margin-bottom:12px}
 .token-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px}
 .token-copy{font-size:13px;color:var(--muted-2);line-height:1.6;margin-bottom:18px}
@@ -68,10 +81,17 @@
 .token-save{padding:11px 16px;border:none;border-radius:8px;background:var(--blurple);color:#fff;font-family:var(--sans);font-weight:800;cursor:pointer}
 .token-clear{margin-top:12px;background:transparent;border:none;color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer}
 .token-error{max-width:520px;margin:48px auto}
+.project-settings-list{display:grid;gap:8px;margin-bottom:16px}
+.project-settings-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:rgba(18,27,43,0.54)}
+.project-settings-title{font-size:13px;font-weight:800;color:var(--text)}
+.project-settings-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.project-settings-actions{display:flex;gap:6px;align-items:center}
+.project-path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.project-hint{font-size:11px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
 @media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}}
-@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-hero,.dash-grid{grid-template-columns:1fr}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-panel{align-items:flex-start}.health-rail{display:none}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.token-card{margin:48px 0}.token-copy{font-size:12px}.token-form{flex-direction:column}.token-save{width:100%}}
+@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-hero,.dash-grid{grid-template-columns:1fr}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-panel{align-items:flex-start}.health-rail{display:none}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="../assets/css/shared.css"/>
+<link rel="stylesheet" href="../assets/css/shared.css?v=20260506-projects5"/>
 </head>
 <body>
 <div class="demo-banner">
@@ -86,6 +106,7 @@
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
   <div class="topbar-right">
+    <button class="btn-sm" onclick="openProjectSettings()" title="Project sources">Projects</button>
     <button class="btn-sm" onclick="loadDashboard()" title="Refresh">↻</button>
     <div class="status-row">
       <div class="status-dot loading" id="status-dot"></div>
@@ -113,9 +134,64 @@
   <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
 </nav>
 
+<div class="add-sheet-overlay" id="project-overlay" onclick="closeProjectSettings()"></div>
+<div class="add-sheet" id="project-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Project sources</div>
+  <div class="project-hint">Project metadata stays in this browser. PATs are stored separately per project and only used for GitHub API reads or writes.</div>
+  <div class="project-settings-list" id="project-settings-list"></div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">ID</label>
+      <input class="form-input" id="project-id" placeholder="my-project"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Display name</label>
+      <input class="form-input" id="project-name" placeholder="my project"/>
+    </div>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Owner</label>
+      <input class="form-input" id="project-owner" placeholder="github-owner"/>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Repo</label>
+      <input class="form-input" id="project-repo" placeholder="repo-name"/>
+    </div>
+  </div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Visibility</label>
+      <select class="form-select" id="project-visibility">
+        <option value="public">Public</option>
+        <option value="private">Private</option>
+        <option value="unknown">Unknown</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Token key</label>
+      <input class="form-input" id="project-token-key" placeholder="auto-generated"/>
+    </div>
+  </div>
+  <div class="project-path-grid">
+    <div class="form-field"><label class="form-label">Tasks</label><input class="form-input" id="project-path-tasks"/></div>
+    <div class="form-field"><label class="form-label">Decisions</label><input class="form-input" id="project-path-decisions"/></div>
+    <div class="form-field"><label class="form-label">Risks</label><input class="form-input" id="project-path-risks"/></div>
+    <div class="form-field"><label class="form-label">Opportunities</label><input class="form-input" id="project-path-opportunities"/></div>
+    <div class="form-field"><label class="form-label">Rules</label><input class="form-input" id="project-path-rules"/></div>
+    <div class="form-field"><label class="form-label">Changelog</label><input class="form-input" id="project-path-changelog"/></div>
+  </div>
+  <div class="sheet-actions">
+    <button class="btn-sheet-cancel" onclick="closeProjectSettings()">Cancel</button>
+    <button class="btn-sheet-save" onclick="saveProjectSettings()">Save project</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js"></script>
+<script src="../assets/js/shared.js?v=20260506-status1"></script>
+<script src="../assets/js/projects.js?v=20260506-status1"></script>
 <script>
 const CONFIG = {
   owner: 'dovetell-io',
@@ -127,13 +203,9 @@ const CONFIG = {
   sessionId: 'a3f7c291'
 }
 
-const SOURCES = [
-  { key: 'tasks', path: 'tasks.md' },
-  { key: 'decisions', path: 'decisions.md' },
-  { key: 'risks', path: 'risks.md' },
-  { key: 'opportunities', path: 'opportunities.md' },
-  { key: 'changelog', path: 'changelog.md' }
-]
+const PROJECTS = Dovetell.allProjects()
+const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog']
+const REFRESH_INTERVAL_MS = 10 * 60 * 1000
 
 function parseTasks(md) {
   const lines = md.split('\n')
@@ -306,23 +378,74 @@ function taskPriorityDot(priority) {
   return priority === 'now' ? 'dot-now' : priority === 'next' ? 'dot-next' : 'dot-later'
 }
 
+function visibilityIcon(project) {
+  if (!project) return '?'
+  if (project.visibility === 'private') return '🔒'
+  if (project.visibility === 'public') return '🌐'
+  return '?'
+}
+
+function projectName(project) {
+  return project ? project.name || `${project.owner}/${project.repo}` : 'unknown project'
+}
+
+function projectChip(project) {
+  if (!project) return ''
+  return `<span class="project-chip ${escHtml(project.visibility || 'unknown')}" title="${escHtml(`${project.owner}/${project.repo}`)}">${visibilityIcon(project)} ${escHtml(projectName(project))}</span>`
+}
+
+function itemHref(section, item) {
+  const params = new URLSearchParams()
+  if (item.project && item.project.id) params.set('project', item.project.id)
+  if (item.id) params.set('id', item.id)
+  const query = params.toString()
+  return `../${section}/${query ? `?${query}` : ''}`
+}
+
+function attachProject(items, project) {
+  return items.map(item => ({ ...item, project }))
+}
+
+function isAuthLikeFailure(status = '') {
+  return /401|403|404|not found|bad credentials|requires authentication|resource not accessible/i.test(status)
+}
+
+function groupedFailures(sourceStates) {
+  return PROJECTS.map(project => {
+    const entries = sourceStates.filter(source => source.project.id === project.id)
+    const failed = entries.filter(source => !source.ok)
+    return {
+      project,
+      total: entries.length,
+      failed,
+      authLike: failed.some(source => isAuthLikeFailure(source.status))
+    }
+  }).filter(group => group.failed.length)
+}
+
 function sourceWarning(sourceStates) {
-  const failed = sourceStates.filter(source => !source.ok)
-  if (!failed.length) return ''
-  const names = failed.map(source => source.path).join(', ')
-  return `<div class="summary-panel source-warning"><strong>Partial load:</strong> ${escHtml(names)} could not be read. Loaded panels are based on available sources.</div>`
+  const groups = groupedFailures(sourceStates)
+  if (!groups.length) return ''
+  const authProjects = groups.filter(group => group.authLike).map(group => group.project)
+  return `<div class="summary-panel source-warning">
+    <strong>Project source issue:</strong> Some configured repos could not be read. Working project data is still shown below.
+    <div class="source-warning-list">${groups.map(group => `
+      <div class="source-warning-item">
+        <div class="source-warning-title">${visibilityIcon(group.project)} ${escHtml(projectName(group.project))} · ${group.failed.length}/${group.total} files failed</div>
+        <div class="source-warning-detail">${escHtml(`${group.project.owner}/${group.project.repo}`)}</div>
+        <div class="source-warning-detail">${escHtml(group.failed.map(source => `${source.path}: ${source.status}`).join(' · '))}</div>
+      </div>
+    `).join('')}</div>
+    ${authProjects.length ? renderProjectTokenForms(authProjects, 'Replace token') : ''}
+  </div>`
 }
 
 function renderAuthError(message) {
   document.getElementById('main').innerHTML = `<div class="summary-panel token-card token-error">
     <div class="token-icon">!</div>
     <div class="token-title">GitHub access failed</div>
-    <div class="token-copy">${escHtml(message)} Check that the saved token can read ${CONFIG.owner}/${CONFIG.repo} contents.</div>
-    <div class="token-form">
-      <input class="token-input" id="token-input" type="password" placeholder="github_pat_…" onkeydown="if(event.key==='Enter')saveToken()"/>
-      <button class="token-save" onclick="saveToken()">Replace token</button>
-    </div>
-    <button class="token-clear" onclick="clearToken()">Clear saved token</button>
+    <div class="token-copy">${escHtml(message)} Check that each saved project token can read its configured repository contents.</div>
+    ${renderProjectTokenForms(PROJECTS, 'Replace token')}
   </div>`
   setStatus('error', 'GitHub access failed')
 }
@@ -347,12 +470,13 @@ function renderDashboard(data, sourceStates = []) {
     ${warning}
     <section class="dashboard-hero">
       <div class="summary-panel">
-        <div class="dashboard-title">Dovetell</div>
+        <div class="dashboard-title">dovetell</div>
         <div class="dashboard-subtitle">Developer context governance</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
           <span class="status-chip status-active">${openTasks.length} open tasks</span>
           <span class="status-chip status-open">${activeRisks.length} open risks</span>
           <span class="status-chip">${opportunities.filter(o => o.status !== 'closed').length} opportunities</span>
+          <span class="status-chip">${PROJECTS.length} projects</span>
         </div>
       </div>
       <div class="summary-panel health-panel">
@@ -397,9 +521,9 @@ function emptyPanel(text) {
 }
 
 function renderTaskRow(task) {
-  return `<a class="dash-row" href="../tasks/${task.id ? `?id=${encodeURIComponent(task.id)}` : ''}">
+  return `<a class="dash-row" href="${itemHref('tasks', task)}">
     <span class="row-dot ${taskPriorityDot(task.priority)}"></span>
-    <span><span class="row-title">${escHtml(task.title)}</span><span class="row-sub">${escHtml(task.notes || task.owner || task.source || 'Task')}</span></span>
+    <span><span class="row-title">${escHtml(task.title)}</span><span class="row-sub">${projectChip(task.project)} ${escHtml(task.notes || task.owner || task.source || 'Task')}</span></span>
     <span class="row-meta">${escHtml((task.priority || 'later').toUpperCase())}</span>
   </a>`
 }
@@ -407,17 +531,17 @@ function renderTaskRow(task) {
 function renderRiskRow(risk) {
   const score = riskScore(risk)
   const klass = scoreClass(score)
-  return `<a class="dash-row" href="../risks/${risk.id ? `?id=${encodeURIComponent(risk.id)}` : ''}">
+  return `<a class="dash-row" href="${itemHref('risks', risk)}">
     <span class="risk-score ${klass}">${score}</span>
-    <span><span class="row-title">${escHtml(risk.title)}</span><span class="row-sub">${escHtml(risk.description || `${risk.likelihood} likelihood · ${risk.impact} impact`)}</span></span>
+    <span><span class="row-title">${escHtml(risk.title)}</span><span class="row-sub">${projectChip(risk.project)} ${escHtml(risk.description || `${risk.likelihood} likelihood · ${risk.impact} impact`)}</span></span>
     <span class="row-meta">${shortDate(risk.date)}</span>
   </a>`
 }
 
 function renderDecisionRow(decision) {
-  return `<a class="dash-row" href="../decisions/${decision.id ? `?id=${encodeURIComponent(decision.id)}` : ''}">
+  return `<a class="dash-row" href="${itemHref('decisions', decision)}">
     <span class="row-dot"></span>
-    <span><span class="row-title">${escHtml(decision.title)}</span><span class="row-sub">${escHtml(decision.id || decision.rationale || 'Decision')}</span></span>
+    <span><span class="row-title">${escHtml(decision.title)}</span><span class="row-sub">${projectChip(decision.project)} ${escHtml(decision.id || decision.rationale || 'Decision')}</span></span>
     <span class="status-chip status-${escHtml(decision.status || 'active')}">${escHtml(decision.status || 'active')}</span>
   </a>`
 }
@@ -425,7 +549,7 @@ function renderDecisionRow(decision) {
 function renderChangeRow(change) {
   return `<div class="dash-row">
     <span class="change-avatar">${escHtml(initials(change.user))}</span>
-    <span><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${escHtml(change.date || 'undated')}</span></span>
+    <span><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${projectChip(change.project)} ${escHtml(change.date || 'undated')}</span></span>
     <span class="rev-chip">${escHtml(change.revisionId)}</span>
   </div>`
 }
@@ -433,61 +557,184 @@ function renderChangeRow(change) {
 function renderTokenPrompt() {
   document.getElementById('main').innerHTML = `<div class="summary-panel token-card">
     <div class="token-icon">🔑</div>
-    <div class="token-title">Enter your GitHub token</div>
-    <div class="token-copy">Stored on this device. Used only to read GitHub markdown sources.</div>
-    <div class="token-form">
-      <input class="token-input" id="token-input" type="password" placeholder="github_pat_…" onkeydown="if(event.key==='Enter')saveToken()"/>
-      <button class="token-save" onclick="saveToken()">Save &amp; load</button>
-    </div>
-    <button class="token-clear" onclick="clearToken()">Clear saved token</button>
+    <div class="token-title">Connect project sources</div>
+    <div class="token-copy">Tokens stay on this device. Use one readable PAT per repo.</div>
+    ${renderProjectTokenForms(missingTokenProjects(), 'Save & load')}
   </div>`
   setStatus('error', 'Token required')
 }
 
-function saveToken() {
-  const token = Dovetell.readTokenInput()
+function renderProjectTokenForms(projects, label) {
+  if (!projects.length) return `<div class="dashboard-empty">All configured project tokens are saved.</div>`
+  return `<div class="token-projects">${projects.map(project => `
+    <div class="token-project">
+      <div class="token-project-head">
+        <div>
+          <div class="token-project-title">${visibilityIcon(project)} ${escHtml(projectName(project))}</div>
+          <div class="token-project-repo">${escHtml(`${project.owner}/${project.repo}`)}</div>
+        </div>
+        <button class="token-clear" onclick="clearProjectToken('${escHtml(project.id)}')">Clear</button>
+      </div>
+      <div class="token-form">
+        <input class="token-input" id="token-input-${escHtml(project.id)}" type="password" placeholder="github_pat_…" onkeydown="if(event.key==='Enter')saveProjectToken('${escHtml(project.id)}')"/>
+        <button class="token-save" onclick="saveProjectToken('${escHtml(project.id)}')">${escHtml(label)}</button>
+      </div>
+    </div>
+  `).join('')}</div>`
+}
+
+function findProject(projectId) {
+  return PROJECTS.find(project => project.id === projectId)
+}
+
+function missingTokenProjects() {
+  return PROJECTS.filter(project => !Dovetell.readProjectToken(project))
+}
+
+function saveProjectToken(projectId) {
+  const project = findProject(projectId)
+  if (!project) return
+  const input = document.getElementById(`token-input-${projectId}`)
+  const token = input ? input.value.trim() : ''
   if (!token) return
-  Dovetell.saveToken(token)
-  CONFIG.token = token
+  Dovetell.saveProjectToken(project, token)
   loadDashboard()
 }
 
-function clearToken() {
-  Dovetell.clearToken()
-  CONFIG.token = null
-  renderTokenPrompt()
+function clearProjectToken(projectId) {
+  const project = findProject(projectId)
+  if (!project) return
+  Dovetell.clearProjectToken(project)
+  loadDashboard()
+}
+
+function projectPathKeys() {
+  return ['tasks', 'decisions', 'risks', 'opportunities', 'rules', 'changelog']
+}
+
+function openProjectSettings(projectId = '') {
+  renderProjectSettingsList()
+  fillProjectForm(projectId ? findProject(projectId) : null)
+  Dovetell.openSheet('project-sheet', 'project-overlay')
+}
+
+function closeProjectSettings() {
+  Dovetell.closeSheet('project-sheet', 'project-overlay')
+}
+
+function renderProjectSettingsList() {
+  const list = document.getElementById('project-settings-list')
+  list.innerHTML = Dovetell.allProjects().map(project => `
+    <div class="project-settings-item">
+      <div>
+        <div class="project-settings-title">${visibilityIcon(project)} ${escHtml(projectName(project))}</div>
+        <div class="project-settings-meta">${escHtml(`${project.owner}/${project.repo}`)} · ${Dovetell.projectIsCustom(project.id) ? 'local' : 'default'}</div>
+      </div>
+      <div class="project-settings-actions">
+        <button class="btn-action" onclick="fillProjectForm(findProjectForSettings('${escHtml(project.id)}'))">Edit</button>
+        ${Dovetell.projectIsCustom(project.id) ? `<button class="btn-action danger" onclick="deleteProjectSettings('${escHtml(project.id)}')">Delete</button>` : ''}
+      </div>
+    </div>
+  `).join('')
+}
+
+function findProjectForSettings(projectId) {
+  return Dovetell.allProjects().find(project => project.id === projectId)
+}
+
+function fillProjectForm(project) {
+  const defaults = Dovetell.defaultContextFiles()
+  const data = project || { contextFiles: defaults, visibility: 'private' }
+  document.getElementById('project-id').value = data.id || ''
+  document.getElementById('project-name').value = data.name || ''
+  document.getElementById('project-owner').value = data.owner || ''
+  document.getElementById('project-repo').value = data.repo || ''
+  document.getElementById('project-visibility').value = data.visibility || 'unknown'
+  document.getElementById('project-token-key').value = data.tokenKey || ''
+  projectPathKeys().forEach(key => {
+    document.getElementById(`project-path-${key}`).value = (data.contextFiles && data.contextFiles[key]) || defaults[key] || ''
+  })
+}
+
+function saveProjectSettings() {
+  const owner = document.getElementById('project-owner').value.trim()
+  const repo = document.getElementById('project-repo').value.trim()
+  if (!owner || !repo) {
+    Dovetell.showToast('Owner and repo are required', 'error-state')
+    return
+  }
+  const contextFiles = {}
+  projectPathKeys().forEach(key => {
+    contextFiles[key] = document.getElementById(`project-path-${key}`).value.trim()
+  })
+  const project = Dovetell.upsertCustomProject({
+    id: document.getElementById('project-id').value.trim(),
+    name: document.getElementById('project-name').value.trim(),
+    owner,
+    repo,
+    visibility: document.getElementById('project-visibility').value,
+    tokenKey: document.getElementById('project-token-key').value.trim(),
+    contextFiles
+  })
+  localStorage.setItem('dovetell_project_tasks', project.id)
+  Dovetell.showToast('Project saved · reloading', 'success')
+  setTimeout(() => window.location.reload(), 500)
+}
+
+function deleteProjectSettings(projectId) {
+  Dovetell.deleteCustomProject(projectId)
+  Dovetell.showToast('Project removed · reloading', 'success')
+  setTimeout(() => window.location.reload(), 500)
 }
 
 async function loadDashboard() {
-  CONFIG.token = Dovetell.readToken()
-  if (!CONFIG.token) {
+  if (!PROJECTS.length) {
+    setStatus('error', 'No projects configured')
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No project sources configured.</div></div>`
+    return
+  }
+  if (missingTokenProjects().length) {
     renderTokenPrompt()
     return
   }
   setStatus('loading', 'Loading dashboard…')
   try {
-    const entries = await Promise.all(SOURCES.map(async source => {
+    const entries = await Promise.all(PROJECTS.flatMap(project => SOURCE_KEYS.map(async key => {
+      const path = project.contextFiles && project.contextFiles[key]
+      if (!path) return { project, key, path: key, ok: false, status: 'Missing path', content: '' }
+      const projectConfig = { ...project, token: Dovetell.readProjectToken(project) }
       try {
-        const file = await githubGet(source.path)
-        return { key: source.key, path: source.path, ok: true, content: decodeURIComponent(escape(atob(file.content.replace(/\n/g, '')))) }
+        const file = await Dovetell.githubGet(projectConfig, path)
+        return { project, key, path, ok: true, content: decodeURIComponent(escape(atob(file.content.replace(/\n/g, '')))) }
       } catch (err) {
-        console.warn(`Unable to load ${source.path}`, err)
-        return { key: source.key, path: source.path, ok: false, status: err.message || 'Load failed', content: '' }
+        console.warn(`Unable to load ${project.owner}/${project.repo}/${path}`, err)
+        return { project, key, path, ok: false, status: err.message || 'Load failed', content: '' }
       }
-    }))
+    })))
     const failures = entries.filter(entry => !entry.ok)
-    const authFailure = failures.length === SOURCES.length && failures.some(entry => /401|403|not found|bad credentials|requires authentication/i.test(entry.status))
+    const authFailure = failures.length === entries.length && failures.some(entry => isAuthLikeFailure(entry.status))
     if (authFailure) {
       renderAuthError(failures[0].status)
       return
     }
-    const raw = Object.fromEntries(entries.map(entry => [entry.key, entry.content]))
+    const byProject = PROJECTS.map(project => {
+      const projectEntries = entries.filter(entry => entry.project.id === project.id)
+      const raw = Object.fromEntries(projectEntries.map(entry => [entry.key, entry.content]))
+      return {
+        project,
+        tasks: attachProject(parseTasks(raw.tasks || ''), project),
+        decisions: attachProject(parseDecisions(raw.decisions || ''), project),
+        risks: attachProject(parseRisks(raw.risks || ''), project),
+        opportunities: attachProject(parseOpportunities(raw.opportunities || ''), project),
+        changelog: attachProject(parseChangelog(raw.changelog || ''), project)
+      }
+    })
     renderDashboard({
-      tasks: parseTasks(raw.tasks || ''),
-      decisions: parseDecisions(raw.decisions || ''),
-      risks: parseRisks(raw.risks || ''),
-      opportunities: parseOpportunities(raw.opportunities || ''),
-      changelog: parseChangelog(raw.changelog || '')
+      tasks: byProject.flatMap(project => project.tasks),
+      decisions: byProject.flatMap(project => project.decisions),
+      risks: byProject.flatMap(project => project.risks),
+      opportunities: byProject.flatMap(project => project.opportunities),
+      changelog: byProject.flatMap(project => project.changelog)
     }, entries)
   } catch (err) {
     setStatus('error', 'Load failed')
@@ -496,6 +743,7 @@ async function loadDashboard() {
 }
 
 loadDashboard()
+setInterval(loadDashboard, REFRESH_INTERVAL_MS)
 </script>
 </body>
 </html>

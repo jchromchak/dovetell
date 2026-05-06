@@ -395,6 +395,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 <div class="toast" id="toast"></div>
 
 <script src="../assets/js/shared.js"></script>
+<script src="../assets/js/projects.js"></script>
 <script>
 // ─────────────────────────────────────────
 // CONFIG
@@ -408,6 +409,8 @@ const CONFIG = {
   tzLabel: 'ET',
   sessionId: 'a3f7c291'
 }
+const SOURCE_KEY = 'tasks'
+let activeProject = null
 
 // ─────────────────────────────────────────
 // STATE
@@ -529,6 +532,7 @@ function renderTasks(tasks) {
     const el = document.getElementById(`task-${id}`)
     if (el) el.classList.add('expanded')
   })
+  Dovetell.expandDeepLink(tasks, 'task', '.task-expand-btn')
 }
 
 function escHtml(str) {
@@ -940,7 +944,7 @@ function showTokenPrompt() {
           </button>
         </div>
         <div style="margin-top:16px;font-size:11px;color:var(--muted)">
-          Fine-grained PAT · dovetell-io/dovetell-sandbox · Contents: Read and Write
+          Fine-grained PAT · ${Dovetell.projectName(activeProject)} · Contents: Read and Write
         </div>
         <div style="margin-top:12px">
           <button onclick="clearToken()"
@@ -956,19 +960,19 @@ function showTokenPrompt() {
 function saveToken() {
   const token = Dovetell.readTokenInput()
   if (!token) return
-  Dovetell.saveToken(token)
+  Dovetell.saveProjectToken(activeProject, token)
   CONFIG.token = token
   loadTasks()
 }
 
 function clearToken() {
-  Dovetell.clearToken()
+  Dovetell.clearProjectToken(activeProject)
   CONFIG.token = null
   showTokenPrompt()
 }
 
 function handleAuthError() {
-  Dovetell.clearToken()
+  Dovetell.clearProjectToken(activeProject)
   CONFIG.token = null
   setTimeout(() => showTokenPrompt(), 1500)
 }
@@ -1142,7 +1146,8 @@ async function commitBulkImport() {
 // ─────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────
-const savedToken = Dovetell.readToken()
+activeProject = Dovetell.initProjectPage(CONFIG, SOURCE_KEY)
+const savedToken = Dovetell.readProjectToken(activeProject)
 if (savedToken) {
   CONFIG.token = savedToken
   loadTasks()

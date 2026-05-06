@@ -367,6 +367,7 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 <div class="toast" id="toast"></div>
 
 <script src="../assets/js/shared.js"></script>
+<script src="../assets/js/projects.js"></script>
 <script>
 // ─────────────────────────────────────────
 // CONFIG
@@ -380,6 +381,8 @@ const CONFIG = {
   tzLabel: 'ET',
   sessionId: 'a3f7c291'
 }
+const SOURCE_KEY = 'decisions'
+let activeProject = null
 
 // ─────────────────────────────────────────
 // STATE
@@ -522,6 +525,7 @@ function renderDecisions(decisions) {
     const el = document.getElementById(`dec-${idx}`)
     if (el) el.classList.add('expanded')
   })
+  Dovetell.expandDeepLink(decisions, 'dec', '.dec-expand-btn')
 }
 
 function renderCard(dec) {
@@ -973,7 +977,7 @@ function showTokenPrompt() {
           </button>
         </div>
         <div style="margin-top:16px;font-size:11px;color:var(--muted)">
-          Fine-grained PAT · dovetell-io/dovetell-sandbox · Contents: Read and Write
+          Fine-grained PAT · ${Dovetell.projectName(activeProject)} · Contents: Read and Write
         </div>
         <div style="margin-top:12px">
           <button onclick="clearToken()"
@@ -989,19 +993,19 @@ function showTokenPrompt() {
 function saveToken() {
   const token = Dovetell.readTokenInput()
   if (!token) return
-  Dovetell.saveToken(token)
+  Dovetell.saveProjectToken(activeProject, token)
   CONFIG.token = token
   loadDecisions()
 }
 
 function clearToken() {
-  Dovetell.clearToken()
+  Dovetell.clearProjectToken(activeProject)
   CONFIG.token = null
   showTokenPrompt()
 }
 
 function handleAuthError() {
-  Dovetell.clearToken()
+  Dovetell.clearProjectToken(activeProject)
   CONFIG.token = null
   setTimeout(() => showTokenPrompt(), 1500)
 }
@@ -1170,9 +1174,10 @@ async function commitBulkImport() {
 }
 
 // ─────────────────────────────────────────
-// INIT — share PAT with tasks.html
+// INIT
 // ─────────────────────────────────────────
-const savedToken = Dovetell.readToken()
+activeProject = Dovetell.initProjectPage(CONFIG, SOURCE_KEY)
+const savedToken = Dovetell.readProjectToken(activeProject)
 if (savedToken) {
   CONFIG.token = savedToken
   loadDecisions()

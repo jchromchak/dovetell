@@ -1,7 +1,7 @@
 session: codex-7588c8e2
 date: 2026-05-06
 source: codex-7588c8e2
-scope: Extracted shared CSS, shared GitHub/auth utilities, shared shell interaction helpers, the first brand-aligned shell layer, and a dashboard overview route from the static pages without changing markdown data formats or GitHub write semantics.
+scope: Extracted shared CSS, shared GitHub/auth utilities, shared shell interaction helpers, the first brand-aligned shell layer, a dashboard overview route, and configured public/private project dashboard loading from the static pages without changing markdown data formats or existing GitHub write semantics.
 files-reviewed:
   - launcher.md
   - .dovetell-tasks-context/rules.md
@@ -14,9 +14,11 @@ files-reviewed:
   - dashboard/index.html
   - index.html
   - manifest.json
+  - assets/js/projects.js
 files-touched:
   - assets/css/shared.css
   - assets/js/shared.js
+  - assets/js/projects.js
   - tasks/index.html
   - decisions/index.html
   - rules/index.html
@@ -37,16 +39,25 @@ brand-update: Created .dovetell-tasks-context/brand.md as the source of truth fo
 shell-update: Applied the brand shell layer through assets/css/shared.css. Existing pages now load shared CSS after legacy inline styles, giving them the new dark token system, desktop sidebar navigation, mobile bottom-nav constraints, compact controls, and token-prompt overflow fixes without changing page scripts or write paths.
 dashboard-update: Added dashboard/index.html as the static overview route. It reads existing GitHub markdown sources through shared utilities and renders context health, hot tasks, active risks, recent decisions, opportunities count, and recent changelog entries. index.html and manifest.json now start at dashboard/.
 dashboard-validation-update: Improved dashboard loaded-state handling so full auth failure renders an explicit GitHub access error and partial source failures render a warning while preserving available data. Mocked GitHub responses validated hot task, risk, decision, changelog, context health, bad-token, and partial-load paths without using a real PAT.
+project-source-update: Added assets/js/projects.js with configured sources for dovetell-io/dovetell-sandbox and jchromchak/dovetell-private. Dashboard loading now aggregates configured project sources, prompts for one local PAT per project, marks public/private sources with globe/lock indicators from configuration, and refreshes every ten minutes.
+project-page-update: Added shared project-page initialization so tasks, decisions, rules, risks, and opportunities choose owner/repo/path/token from the selected configured project. Dashboard drill-ins now include the source project in the URL, and item pages inject a compact project selector so create, edit, status, and bulk write flows continue using existing code while writing to the selected project source.
+project-settings-update: Added browser-local project source management. Built-in project defaults are exposed separately from locally stored custom projects, and shared project helpers now merge defaults with local overrides. Dashboard includes a Project sources sheet for adding/editing owner, repo, display name, visibility, token key, and context file paths without changing code.
+dashboard-live-fix-update: Patched a live dashboard loading-screen crash by exposing shared setStatus/showToast compatibility wrappers from assets/js/shared.js. Added timeout-backed GitHub fetch helpers, cache-busted dashboard shared script URLs, and changed project source failures to render as grouped visible warnings with per-project token replacement forms where relevant.
 decisions-made: none
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
+  - task-bd02e9a4: Add project-aware drill-in and write target selection
+  - task-c8e72b9d: Add editable project source management
 tasks-completed:
   - task-a27da8f3: Extract shared CSS and GitHub/auth utilities
   - task-51a43e7c: Extract shared shell and interaction helpers
   - task-ba584083: Establish brand guidance and dashboard visual direction
   - task-a8a8f3a2: Apply brand guidance to dashboard shell
   - task-37e67370: Create dashboard overview route
+  - task-1f3704d5: Define private context project source configuration
+  - task-bd02e9a4: Add project-aware drill-in and write target selection
+  - task-c8e72b9d: Add editable project source management
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -63,5 +74,10 @@ validation:
   - git diff --check passed after dashboard route and navigation updates.
   - Served dashboard route rendered the no-token shell on desktop and mobile through headless Chrome. Desktop fit looked good; mobile no-token shell was tightened for nav and token copy. Live authenticated data rendering still needs a real local PAT check.
   - Mocked loaded-state validation passed for dashboard summaries, auth failure, and partial source failure.
-pending: task-9a1c2691 is blocked on live GitHub-loaded dashboard rendering with a real local PAT. No real PAT was used or requested.
-next-session-start-here: Start by opening dashboard/ locally with an existing GitHub token, then validate task, risk, decision, opportunity, and changelog summaries. If the loaded state looks correct, move task-9a1c2691 to completed; otherwise refine only loaded/partial-load display behavior without changing markdown data formats or GitHub write semantics.
+  - Mocked multi-project dashboard validation passed for public data, private data, public marker, private marker, missing token prompts, and partial warning states.
+  - JavaScript parse check passed for assets/js/projects.js, dashboard/index.html, assets/js/shared.js, and all existing page scripts.
+  - In-process project mapping validation passed for tasks, decisions, rules, risks, and opportunities across public/private source selections and per-project token storage.
+  - In-process project settings validation passed for local project add, default context path merge, default project override, and local project delete behavior.
+  - In-app browser reload passed after the live dashboard loading fix: dashboard rendered sandbox data and showed grouped source warnings instead of staying on the loading screen.
+pending: task-9a1c2691 is blocked on configured source file 404s, not a fatal runtime error. Current known missing files are dovetell sandbox changelog.md and dovetell private .dovetell-tasks-context paths. No PAT value was exposed, logged, or requested.
+next-session-start-here: Start by deciding whether to add the missing markdown files to each project repo or adjust the configured source paths. Then re-check dashboard/ and each item page locally with existing public and private GitHub tokens.

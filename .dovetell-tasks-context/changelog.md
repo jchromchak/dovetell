@@ -146,6 +146,89 @@
   action: updated
   summary: Improved dashboard loaded-state, bad-token, and partial-load handling; blocked final live validation on a real local PAT check.
 
+- rev-8890a80c
+  date: 2026-05-06T17:56Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-1f3704d5: created
+    - tasks.md: updated
+  action: updated
+  summary: Added the private context repo and per-project PAT/source configuration task ahead of multi-project dashboard work.
+
+- rev-1b7a2e4c
+  date: 2026-05-06T18:21Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/js/projects.js: created
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+    - assets/css/shared.css: updated
+    - task-1f3704d5: completed
+    - task-9a1c2691: updated
+    - task-bd02e9a4: created
+    - tasks.md: updated
+    - tasks-completed.md: updated
+  action: updated
+  summary: Wired configured public/private project sources into the dashboard with per-project PAT prompts, visibility indicators, and ten-minute refresh behavior.
+
+- rev-5c6d8e90
+  date: 2026-05-06T19:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/js/shared.js: updated
+    - assets/js/projects.js: updated
+    - assets/css/shared.css: updated
+    - dashboard/index.html: updated
+    - tasks/index.html: updated
+    - decisions/index.html: updated
+    - rules/index.html: updated
+    - risks/index.html: updated
+    - opportunities/index.html: updated
+    - task-bd02e9a4: completed
+    - task-9a1c2691: updated
+    - task-c8e72b9d: created
+    - tasks.md: updated
+    - tasks-completed.md: updated
+  action: updated
+  summary: Added project-aware item-page loading, drill-in routing, source selection, and per-project write target handling.
+
+- rev-dfb4037a
+  date: 2026-05-06T19:18Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/js/shared.js: updated
+    - assets/js/projects.js: updated
+    - dashboard/index.html: updated
+    - task-c8e72b9d: completed
+    - task-9a1c2691: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+  action: updated
+  summary: Added browser-local project source settings so additional repos can be added or overridden without code edits.
+
+- rev-a4f9c1d2
+  date: 2026-05-06T20:04Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+    - task-9a1c2691: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Fixed the live dashboard loading-screen crash, added GitHub request timeouts, cache-busted dashboard shared scripts, and made project source failures visible.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

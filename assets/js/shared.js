@@ -1,5 +1,6 @@
 (function(global){
   const TOKEN_KEY = 'dovetell_pat';
+  const PROJECTS_STORAGE_KEY = 'dovetell_projects_custom';
 
   function nanoid(len = 8) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -10,8 +11,21 @@
     return id;
   }
 
+  async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } catch (err) {
+      if (err && err.name === 'AbortError') throw new Error('GitHub request timed out');
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function githubGet(config, path) {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`,
       { headers: { 'Authorization': `Bearer ${config.token}`, 'Accept': 'application/vnd.github.v3+json' } }
     );
@@ -20,7 +34,7 @@
   }
 
   async function githubPut(config, path, content, sha, message) {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`,
       {
         method: 'PUT',
@@ -34,7 +48,8 @@
           content: btoa(unescape(encodeURIComponent(content))),
           sha
         })
-      }
+      },
+      20000
     );
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -87,6 +102,184 @@
 
   function clearToken() {
     localStorage.removeItem(TOKEN_KEY);
+  }
+
+  function repoSlug(config) {
+    return `${config.owner}/${config.repo}`;
+  }
+
+  function projectTokenKey(project) {
+    if (project && project.tokenKey) return project.tokenKey;
+    if (!project) return TOKEN_KEY;
+    return `dovetell_pat_${repoSlug(project).replace(/[^a-zA-Z0-9]/g, '_')}`;
+  }
+
+  function readProjectToken(project) {
+    return localStorage.getItem(projectTokenKey(project));
+  }
+
+  function saveProjectToken(project, token) {
+    localStorage.setItem(projectTokenKey(project), token);
+  }
+
+  function clearProjectToken(project) {
+    localStorage.removeItem(projectTokenKey(project));
+  }
+
+  function cloneProject(project) {
+    return JSON.parse(JSON.stringify(project));
+  }
+
+  function defaultContextFiles() {
+    return cloneProject(global.DOVETELL_DEFAULT_CONTEXT_FILES || {
+      tasks: 'tasks.md',
+      decisions: 'decisions.md',
+      risks: 'risks.md',
+      opportunities: 'opportunities.md',
+      rules: 'business-rules.md',
+      changelog: 'changelog.md'
+    });
+  }
+
+  function defaultProjects() {
+    return (global.DOVETELL_DEFAULT_PROJECTS || global.DOVETELL_PROJECTS || []).map(cloneProject);
+  }
+
+  function readCustomProjects() {
+    try {
+      const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(project => project && project.id && project.owner && project.repo) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCustomProjects(projects) {
+    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+  }
+
+  function normalizeProject(project) {
+    const owner = (project.owner || '').trim();
+    const repo = (project.repo || '').trim();
+    const id = (project.id || `${owner}-${repo}`).trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
+    const contextFiles = { ...defaultContextFiles(), ...(project.contextFiles || {}) };
+    return {
+      id,
+      name: (project.name || repo || id).trim(),
+      owner,
+      repo,
+      visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
+      tokenKey: (project.tokenKey || `dovetell_pat_${owner}_${repo}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
+      contextFiles
+    };
+  }
+
+  function upsertCustomProject(project) {
+    const normalized = normalizeProject(project);
+    const projects = readCustomProjects().filter(item => item.id !== normalized.id);
+    projects.push(normalized);
+    saveCustomProjects(projects);
+    return normalized;
+  }
+
+  function deleteCustomProject(projectId) {
+    saveCustomProjects(readCustomProjects().filter(project => project.id !== projectId));
+  }
+
+  function projectIsCustom(projectId) {
+    return readCustomProjects().some(project => project.id === projectId);
+  }
+
+  function allProjects() {
+    const merged = new Map();
+    defaultProjects().forEach(project => merged.set(project.id, project));
+    readCustomProjects().map(normalizeProject).forEach(project => merged.set(project.id, project));
+    return [...merged.values()];
+  }
+
+  function projectsForSource(sourceKey) {
+    return allProjects().filter(project => project.contextFiles && project.contextFiles[sourceKey]);
+  }
+
+  function projectName(project) {
+    return project ? project.name || repoSlug(project) : 'unknown project';
+  }
+
+  function visibilityIcon(project) {
+    if (!project) return '?';
+    if (project.visibility === 'private') return '🔒';
+    if (project.visibility === 'public') return '🌐';
+    return '?';
+  }
+
+  function selectedProject(sourceKey) {
+    const projects = projectsForSource(sourceKey);
+    const params = new URLSearchParams(global.location.search);
+    const requested = params.get('project') || localStorage.getItem(`dovetell_project_${sourceKey}`);
+    const match = projects.find(project => project.id === requested) || projects[0] || null;
+    if (match) localStorage.setItem(`dovetell_project_${sourceKey}`, match.id);
+    return match;
+  }
+
+  function applyProjectConfig(config, sourceKey, project) {
+    if (!project) return;
+    config.owner = project.owner;
+    config.repo = project.repo;
+    config.path = project.contextFiles[sourceKey];
+    config.project = project;
+    config.token = readProjectToken(project);
+    const bannerPath = document.querySelector('.demo-banner span:last-child');
+    if (bannerPath) bannerPath.textContent = `${repoSlug(project)} · ${config.path}`;
+  }
+
+  function renderProjectSelect(sourceKey, currentProject) {
+    const projects = projectsForSource(sourceKey);
+    if (!projects.length || document.getElementById('project-select')) return;
+    const topbar = document.querySelector('.topbar-right');
+    if (!topbar) return;
+    const select = document.createElement('select');
+    select.id = 'project-select';
+    select.className = 'project-select';
+    select.title = 'Project source';
+    projects.forEach(project => {
+      const option = document.createElement('option');
+      option.value = project.id;
+      option.textContent = `${visibilityIcon(project)} ${projectName(project)}`;
+      option.selected = currentProject && project.id === currentProject.id;
+      select.appendChild(option);
+    });
+    select.addEventListener('change', () => {
+      localStorage.setItem(`dovetell_project_${sourceKey}`, select.value);
+      const url = new URL(global.location.href);
+      url.searchParams.set('project', select.value);
+      url.searchParams.delete('id');
+      global.location.href = url.toString();
+    });
+    topbar.insertBefore(select, topbar.firstChild);
+  }
+
+  function initProjectPage(config, sourceKey) {
+    const project = selectedProject(sourceKey);
+    applyProjectConfig(config, sourceKey, project);
+    renderProjectSelect(sourceKey, project);
+    return project;
+  }
+
+  function expandDeepLink(items, prefix, buttonSelector) {
+    const params = new URLSearchParams(global.location.search);
+    const targetId = params.get('id');
+    if (!targetId) return;
+    const match = items.find(item => item.id === targetId);
+    if (!match) return;
+    setTimeout(() => {
+      const el = document.getElementById(`${prefix}-${match.lineIndex}`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('expanded');
+      const btn = buttonSelector ? el.querySelector(buttonSelector) : null;
+      if (btn) btn.textContent = '▲';
+    }, 200);
   }
 
   function readTokenInput(id = 'token-input') {
@@ -167,7 +360,9 @@
 
   global.Dovetell = {
     TOKEN_KEY,
+    PROJECTS_STORAGE_KEY,
     nanoid,
+    fetchWithTimeout,
     githubGet,
     githubPut,
     nowTimestamp,
@@ -176,6 +371,28 @@
     readToken,
     saveToken,
     clearToken,
+    repoSlug,
+    projectTokenKey,
+    readProjectToken,
+    saveProjectToken,
+    clearProjectToken,
+    defaultContextFiles,
+    defaultProjects,
+    readCustomProjects,
+    saveCustomProjects,
+    normalizeProject,
+    upsertCustomProject,
+    deleteCustomProject,
+    projectIsCustom,
+    allProjects,
+    projectsForSource,
+    projectName,
+    visibilityIcon,
+    selectedProject,
+    applyProjectConfig,
+    renderProjectSelect,
+    initProjectPage,
+    expandDeepLink,
     readTokenInput,
     setStatus,
     showToast,
@@ -193,4 +410,6 @@
   global.nowTimestamp = function() { return nowTimestamp(CONFIG); };
   global.todayDate = function() { return todayDate(CONFIG); };
   global.escHtml = function(str) { return escHtml(str); };
+  global.setStatus = function(state, text) { return setStatus(state, text); };
+  global.showToast = function(message, type) { return showToast(message, type); };
 })(window);

@@ -318,8 +318,11 @@ body{font-family:var(--sans);background:var(--near-black);color:var(--text);min-
 <div class="toast" id="toast"></div>
 
 <script src="../assets/js/shared.js"></script>
+<script src="../assets/js/projects.js"></script>
 <script>
 const CONFIG={owner:'dovetell-io',repo:'dovetell-sandbox',path:'risks.md',token:null,timezone:'America/New_York',tzLabel:'ET',sessionId:'a3f7c291'}
+const SOURCE_KEY='risks'
+let activeProject=null
 let currentSha=null,currentContent='',isSaving=false
 let filters={impact:'all',status:'all'}
 let expandedRisks=new Set()
@@ -394,6 +397,7 @@ function renderRisks(risks){
   const highCount=risks.filter(r=>r.status==='open'&&r.impact==='high').length;
   setStatus('ready',`${openCount} open · ${highCount} high impact`);
   expandedRisks.forEach(idx=>{const el=document.getElementById(`risk-${idx}`);if(el)el.classList.add('expanded');});
+  Dovetell.expandDeepLink(risks,'risk','.risk-expand-btn');
 }
 
 function renderCard(risk){
@@ -529,16 +533,17 @@ async function loadRisks(){
 
 function showTokenPrompt(){
   setStatus('error','Token required');
-  document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Shared with all dovetell pages.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--red);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
+  document.getElementById('main').innerHTML=`<div class="empty"><div class="empty-icon">🔑</div><div class="empty-text" style="max-width:420px;margin:0 auto"><div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Enter your GitHub token</div><div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Stored on this device for ${Dovetell.projectName(activeProject)}.</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><input id="token-input" type="password" placeholder="github_pat_…" style="flex:1;min-width:220px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveToken()"/><button onclick="saveToken()" style="padding:10px 20px;background:var(--red);color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;">Save &amp; load →</button></div><div style="margin-top:12px"><button onclick="clearToken()" style="background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:var(--sans);">Clear saved token</button></div></div></div>`;
   setTimeout(()=>{const i=document.getElementById('token-input');if(i)i.focus();},50);
 }
-function saveToken(){const t=Dovetell.readTokenInput();if(!t)return;Dovetell.saveToken(t);CONFIG.token=t;loadRisks();}
-function clearToken(){Dovetell.clearToken();CONFIG.token=null;showTokenPrompt();}
-function handleAuthError(){Dovetell.clearToken();CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
+function saveToken(){const t=Dovetell.readTokenInput();if(!t)return;Dovetell.saveProjectToken(activeProject,t);CONFIG.token=t;loadRisks();}
+function clearToken(){Dovetell.clearProjectToken(activeProject);CONFIG.token=null;showTokenPrompt();}
+function handleAuthError(){Dovetell.clearProjectToken(activeProject);CONFIG.token=null;setTimeout(()=>showTokenPrompt(),1500);}
 function setStatus(state,text){Dovetell.setStatus(state,text);}
 function showToast(msg,type=''){Dovetell.showToast(msg,type);}
 
-const savedToken=Dovetell.readToken();
+activeProject=Dovetell.initProjectPage(CONFIG,SOURCE_KEY);
+const savedToken=Dovetell.readProjectToken(activeProject);
 if(savedToken){CONFIG.token=savedToken;loadRisks();}else{showTokenPrompt();}
 </script>
 </body>
