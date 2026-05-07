@@ -279,6 +279,23 @@
   action: updated
   summary: Started the project-navigation and dashboard-density pass, including sidebar project links, add-project access, compact row treatment, and a traceable UI style guide.
 
+- rev-7f2a8d3c
+  date: 2026-05-07T02:47Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - assets/css/shared.css: updated
+    - task-4d9c0a7e: completed
+    - task-8e2f6b91: created
+    - task-f3a92c10: completed
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+  action: updated
+  summary: Marked the project-navigation/density pass complete, compacted project chips to visibility icon plus initials, queued the project source flow revisit, and completed the mobile bottom-nav width fix.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

@@ -35,6 +35,50 @@
 
 [Entries moved here from tasks.md on completion. Newest at bottom.]
 
+- [x] Add project navigation and dashboard density pass
+  id: task-4d9c0a7e
+  priority: now
+  revisionId: rev-7f2a8d3c
+  created: 2026-05-07T01:59Z
+  completed: 2026-05-07T02:47Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Move project navigation into the desktop sidebar under Dashboard, keep Dashboard global and object pages project-specific, provide an add-project affordance, tighten dashboard row/card density so text clamps instead of overlapping, and establish .dovetell-tasks-context/style-guide.md as human-readable UI guidance with traceable bullet references.
+
+  completion-notes:
+    Added desktop sidebar project navigation under Dashboard with public/private indicators and an add-project affordance. Kept Dashboard global while object pages remain project-specific. Added .dovetell-tasks-context/style-guide.md for human-readable UI guidance. Tightened dashboard rows so long titles and metadata clamp or truncate instead of overlapping. Follow-up tasks created for the project source management flow and mobile bottom-nav width cleanup.
+
+- [x] Fix mobile bottom navigation width
+  id: task-f3a92c10
+  priority: now
+  revisionId: rev-7f2a8d3c
+  created: 2026-05-07T02:47Z
+  completed: 2026-05-07T02:47Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Remove the mobile bottom-nav scale hack and make the six-tab navigation span the full viewport width without clipping, shrinking, or leaving a blank strip.
+
+  completion-notes:
+    Removed the mobile bottom-nav scale transform and switched the six-tab layout to full-width equal grid columns at small breakpoints.
+
 - [x] Extract shared CSS and GitHub/auth utilities
   id: task-a27da8f3
   priority: now

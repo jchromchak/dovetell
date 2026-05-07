@@ -63,7 +63,7 @@
 .risk-score.medium{color:var(--amber)}
 .risk-score.low{color:var(--teal)}
 .status-chip,.rev-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap}
-.project-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.project-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px;max-width:62px;overflow:hidden;text-overflow:ellipsis;flex:0 0 auto}
 .project-chip.private{color:var(--amber);border-color:rgba(245,158,11,0.28)}
 .project-chip.public{color:var(--cyan);border-color:rgba(103,232,249,0.24)}
 .status-active,.status-approved,.status-implemented{color:var(--green);border-color:rgba(52,211,153,0.28)}
@@ -404,9 +404,17 @@ function projectName(project) {
   return project ? project.name || `${project.owner}/${project.repo}` : 'unknown project'
 }
 
+function projectInitials(project) {
+  const source = projectName(project).replace(/^dovetell\s+/i, '').replace(/[^a-zA-Z0-9\s-]/g, ' ')
+  const parts = source.split(/[\s-]+/).filter(Boolean)
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase()
+  const compact = (parts[0] || project.repo || project.id || 'DT').replace(/[^a-zA-Z0-9]/g, '')
+  return compact.slice(0, 2).toUpperCase() || 'DT'
+}
+
 function projectChip(project) {
   if (!project) return ''
-  return `<span class="project-chip ${escHtml(project.visibility || 'unknown')}" title="${escHtml(`${project.owner}/${project.repo}`)}">${visibilityIcon(project)} ${escHtml(projectName(project))}</span>`
+  return `<span class="project-chip ${escHtml(project.visibility || 'unknown')}" title="${escHtml(`${projectName(project)} · ${project.owner}/${project.repo}`)}">${visibilityIcon(project)} ${escHtml(projectInitials(project))}</span>`
 }
 
 function itemHref(section, item) {

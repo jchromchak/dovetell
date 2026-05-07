@@ -38,13 +38,13 @@
 [Append new tasks below. Newest at bottom.]
 [When a task is completed, move the full entry to completed-tasks.md.]
 
-- [ ] Add project navigation and dashboard density pass
-  id: task-4d9c0a7e
-  priority: now
-  status: in-progress
-  revisionId: rev-1d4e8c2a
-  created: 2026-05-07T01:59Z
-  updated: 2026-05-07T01:59Z
+- [ ] Revisit project source management flow
+  id: task-8e2f6b91
+  priority: next
+  status: open
+  revisionId: rev-7f2a8d3c
+  created: 2026-05-07T02:47Z
+  updated: 2026-05-07T02:47Z
   due: none
 
   owner: john
@@ -56,7 +56,7 @@
   risk: none
 
   notes:
-    Move project navigation into the desktop sidebar under Dashboard, keep Dashboard global and object pages project-specific, provide an add-project affordance, tighten dashboard row/card density so text clamps instead of overlapping, and establish .dovetell-tasks-context/style-guide.md as human-readable UI guidance with traceable bullet references.
+    Redesign and debug the project source sheet. The current sheet is useful as a local settings editor but feels deceiving for first-time project addition, and a manual add-project test did not work as expected. Revisit copy, required fields, validation, default paths, token setup, post-save confirmation, and whether add-project should immediately verify repo/file access.
 
   blocked-by:
     - none
