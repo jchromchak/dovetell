@@ -249,6 +249,20 @@
   action: updated
   summary: Seeded the private context repo and added the missing sandbox changelog file so configured project sources can load without file-path 404s.
 
+- rev-c63d9a74
+  date: 2026-05-07T00:26Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - task-9a1c2691: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Replaced the dashboard context-health CSS border gauge with an SVG gauge to keep rail and fill alignment stable across responsive widths.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

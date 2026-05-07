@@ -42,9 +42,9 @@
   id: task-9a1c2691
   priority: next
   status: blocked
-  revisionId: rev-b8d3a6e1
+  revisionId: rev-c63d9a74
   created: 2026-05-06T15:18Z
-  updated: 2026-05-06T23:56Z
+  updated: 2026-05-07T00:26Z
   due: none
 
   owner: john
@@ -60,6 +60,7 @@
     Progress: improved dashboard handling for bad-token and partial-source states. Mocked validation passed for hot tasks, active risks, recent decisions, changelog, context health, bad-token handling, partial-load warnings, public project markers, private project markers, missing per-project token prompts, project-aware item-page routing, source selection, per-project token mapping, and local project source add/edit/delete storage without exposing or requesting a PAT.
     Progress: live browser validation exposed a dashboard loading-screen crash caused by dashboard/index.html calling global setStatus before shared.js exposed that compatibility wrapper. Patched shared.js to expose global setStatus/showToast, added request timeouts for GitHub reads/writes, cache-busted the dashboard shared script URLs, and made project source failures render visibly. Current live state renders dashboard data and shows source issues for missing configured files: dovetell sandbox changelog.md 404 and dovetell private .dovetell-tasks-context path 404s.
     Progress: created the configured private context folder shape in jchromchak/dovetell-private and pushed commit 98ff4ff. Added missing dovetell-io/dovetell-sandbox changelog.md and pushed commit e277d61. The previous source-file 404 causes should now be cleared; final status still needs a browser reload with the existing per-project PATs.
+    Progress: replaced the dashboard context-health CSS border gauge with an SVG semicircle so the fill and rail share one path and stay aligned across desktop, iPad, and mobile widths.
 
   blocked-by:
     - final live browser reload with existing public and private repo PATs
