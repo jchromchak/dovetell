@@ -125,6 +125,7 @@ decision-[8char]    decisions.md
 rule-[8char]        rules.md
 risk-[8char]        risks.md
 process-[8char]     processes.md
+journal-[8char]     journal.md
 
 Generation: cryptographically random 8-character lowercase hex string.
 Good examples: 4fd8063e · ed54693b · 8393d543 · 7a2f91bc · c38d05e1
@@ -176,6 +177,19 @@ The revisionId is the join key between objects and changelog.
 Objects carry only revisionId. All lineage detail lives in changelog.
 This is flat file normalization — no redundant data.
 
+### Common flags
+
+Objects may carry a `flags:` list when the flag changes routing, promotion,
+governance, or reconciliation behavior. Flags are lowercase namespaced strings.
+
+Known flags:
+  dovetell:global — candidate concept, rule, decision, schema, or workflow that
+  should be reconciled for promotion into the shared/global dovetell model rather
+  than treated as project-local only.
+
+Definitions for common flags must be reconciled explicitly before automation
+depends on them. Until reconciled, flags are advisory routing metadata.
+
 ---
 
 ## 6. File Conventions
@@ -186,6 +200,22 @@ No headers inside data files unless specified in the schema.
 No tables inside data files — flat bullet format only.
 lowercase kebab-case for all filenames and field names.
 No version suffixes on production files.
+
+### Task context blocks
+
+Tasks may include a `context:` block after `notes:`. Use it when the task needs
+enough background to resume later with full or near-full knowledge. Treat the
+block as the task prompt: include the user intent, constraints, relevant file
+or object references, acceptance signals, and known non-goals. Do not store
+credentials, secrets, or sensitive personal data in task context.
+
+### Journal entries
+
+Project journals live in .dovetell-tasks-context/journal.md. Journal entries are
+free-flow capture records that may later reconcile into tasks, decisions, risks,
+rules, opportunities, or changelog entries. Slash-style actions may create
+objects from a journal entry, but reconciliation must preserve context and record
+created object IDs in the journal entry `actions:` field.
 
 ---
 
@@ -233,6 +263,7 @@ The handoff is a snapshot of now, not a log. The log lives in the individual fil
 | .dovetell-tasks-context/opportunities.md | Landscape file. Not commitments. Scope-checked before elevating. |
 | .dovetell-tasks-context/tasks.md | Active work queue. Flat append log. |
 | .dovetell-tasks-context/tasks-completed.md | Completed tasks. Moved here from tasks.md on completion. |
+| .dovetell-tasks-context/journal.md | Free-flow project journal entries and reconciliation source. |
 | .dovetell-tasks-context/decisions.md | Commitments made. Flat append log. |
 | .dovetell-tasks-context/rules.md | Business rules and constraints. Flat append log. |
 | .dovetell-tasks-context/risks.md | Risk register. |

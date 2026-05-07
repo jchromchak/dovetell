@@ -23,9 +23,15 @@
   process: process-[8char]
   opp: opp-[8char]
   risk: risk-[8char]
+  flags:
+    - dovetell:global
 
   notes:
     [Free text. What needs to happen and why.]
+
+  context:
+    [Detailed resumability context: user intent, constraints, relevant files,
+    object IDs, acceptance signals, non-goals, and useful prompt background.]
 
   blocked-by:
     - task-[8char]
@@ -38,32 +44,39 @@
 [Append new tasks below. Newest at bottom.]
 [When a task is completed, move the full entry to completed-tasks.md.]
 
-- [ ] Validate dashboard loaded state with GitHub data
-  id: task-9a1c2691
-  priority: next
-  status: blocked
-  revisionId: rev-c63d9a74
-  created: 2026-05-06T15:18Z
-  updated: 2026-05-07T00:26Z
+- [ ] Add project journal capture and reconciliation flow
+  id: task-e7c3a9d4
+  priority: now
+  status: in-progress
+  revisionId: rev-4a9e2c73
+  created: 2026-05-07T03:27Z
+  updated: 2026-05-07T03:49Z
   due: none
 
   owner: john
   persona: none
-  decision: none
+  decision: decision-6b2f4a91
   rule: none
   process: none
   opp: none
   risk: none
+  flags:
+    - dovetell:global
 
   notes:
-    Verify the dashboard and project-aware item pages using live GitHub-loaded markdown data on a local device with existing per-project PATs. Confirm public and private project sources render together, public/private indicators appear, settings-added local project sources persist, and task, risk, decision, rule, opportunity, and changelog summaries render correctly after authentication. Refine empty, partial-load, loaded, source-switching, and local project-settings states without changing markdown data formats or GitHub write semantics.
-    Progress: improved dashboard handling for bad-token and partial-source states. Mocked validation passed for hot tasks, active risks, recent decisions, changelog, context health, bad-token handling, partial-load warnings, public project markers, private project markers, missing per-project token prompts, project-aware item-page routing, source selection, per-project token mapping, and local project source add/edit/delete storage without exposing or requesting a PAT.
-    Progress: live browser validation exposed a dashboard loading-screen crash caused by dashboard/index.html calling global setStatus before shared.js exposed that compatibility wrapper. Patched shared.js to expose global setStatus/showToast, added request timeouts for GitHub reads/writes, cache-busted the dashboard shared script URLs, and made project source failures render visibly. Current live state renders dashboard data and shows source issues for missing configured files: dovetell sandbox changelog.md 404 and dovetell private .dovetell-tasks-context path 404s.
-    Progress: created the configured private context folder shape in jchromchak/dovetell-private and pushed commit 98ff4ff. Added missing dovetell-io/dovetell-sandbox changelog.md and pushed commit e277d61. The previous source-file 404 causes should now be cleared; final status still needs a browser reload with the existing per-project PATs.
-    Progress: replaced the dashboard context-health CSS border gauge with an SVG semicircle so the fill and rail share one path and stay aligned across desktop, iPad, and mobile widths.
+    Build a project journal feature backed by .dovetell-tasks-context/journal.md. On desktop, the journal should appear as a right-hand sidebar with a top composer for free-flow thoughts and truncated journal cards that can expand. Entries should support quick slash-style actions such as add task or add decision, with created object IDs captured in the journal entry actions field. Initial implementation may use a manual reconciliation step; future versions can move toward live LLM-assisted reconciliation.
+    Progress: started the first dashboard implementation slice. Added journal as a configured project context path, added dashboard journal loading with missing-file tolerance, added the desktop journal right rail, project selector, composer, expandable entry cards, and an append-to-GitHub journal write path that can create journal.md when absent.
+
+  context:
+    User intent: capture ideas in the moment without forcing immediate classification. The journal is a thinking surface that can later reconcile into formal context objects while honoring existing project context, rules, and decisions.
+    Initial journal schema: journal-id: journal-[random 8char hash]; create-date: UTC timestamp; edit-date: UTC timestamp; author: logged-in user; content: free-flow markdown/text; actions: IDs for any tasks, decisions, risks, rules, opportunities, or other objects created from the entry.
+    UI direction: desktop right sidebar; top new-entry composer; below it truncated entry cards that expand inline. Mobile behavior still needs design, likely a sheet or dedicated journal route rather than a permanent side rail.
+    Reconciliation direction: because there is no realtime LLM update yet, add a reconciliation pass that reviews journal entries, proposes or creates formal objects, and records created object IDs in actions. Reconciliation must preserve context and avoid inventing commitments without explicit user intent.
+    Related global decision: decision-6b2f4a91 records this as a dovetell:global concept candidate. The dovetell:global flag definition itself still needs reconciliation before automation depends on it.
 
   blocked-by:
-    - final live browser reload with existing public and private repo PATs
+    - browser verification of desktop rail and journal append behavior
+    - final decision on first mobile journal interaction pattern
 
 ---
 

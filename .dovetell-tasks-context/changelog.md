@@ -324,6 +324,42 @@
   action: updated
   summary: Completed the project source flow revisit by validating the redesigned sheet layout, keeping failed GitHub verification visible in-sheet, and recording the task completion.
 
+- rev-a2d4c8f1
+  date: 2026-05-07T03:27Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - launcher.md: updated
+    - seed.md: updated
+    - journal.md: created
+    - tasks.md: updated
+    - decisions.md: updated
+    - decision-6b2f4a91: created
+    - task-e7c3a9d4: created
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: created
+  summary: Added project journal as a planned context type, introduced task context blocks for resumability, and recorded the dovetell:global decision for future reconciliation.
+
+- rev-4a9e2c73
+  date: 2026-05-07T03:49Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-9a1c2691: completed
+    - task-e7c3a9d4: updated
+    - assets/js/shared.js: updated
+    - assets/js/projects.js: updated
+    - dashboard/index.html: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded successful live project-source validation and started the dashboard project journal implementation with load, display, composer, and append support.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

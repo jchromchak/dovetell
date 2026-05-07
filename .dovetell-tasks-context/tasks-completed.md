@@ -277,6 +277,28 @@
   completion-notes:
     Changed the dashboard sheet to a clearer Add GitHub project source flow. New projects generate project ID and token key from owner/repo, default to .dovetell-tasks-context/*.md paths, capture a per-project GitHub token, validate required context paths, and verify repo plus tasks path access before reload. Failed verification now stays in the sheet with the exact error and preserves the local project source for correction. Confirmed JavaScript parsing, whitespace checks, and a mobile screenshot of the redesigned sheet.
 
+- [x] Validate dashboard loaded state with GitHub data
+  id: task-9a1c2691
+  priority: next
+  revisionId: rev-4a9e2c73
+  created: 2026-05-06T15:18Z
+  completed: 2026-05-07T03:49Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Verify the dashboard and project-aware item pages using live GitHub-loaded markdown data on a local device with existing per-project PATs. Confirm public and private project sources render together, public/private indicators appear, settings-added local project sources persist, and task, risk, decision, rule, opportunity, and changelog summaries render correctly after authentication. Refine empty, partial-load, loaded, source-switching, and local project-settings states without changing markdown data formats or GitHub write semantics.
+
+  completion-notes:
+    User confirmed the pushed add-project flow worked with a real project/PAT. Prior checks covered mocked loaded state, bad-token handling, partial warnings, public/private markers, project-aware routing, local project source storage, and the visual gauge fix. The live validation blocker is cleared.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

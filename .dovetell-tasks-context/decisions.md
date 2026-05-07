@@ -13,6 +13,8 @@
   source: codex-[hash] | prompt-[hash]
   created: YYYY-MM-DDTHH:MMZ
   updated: YYYY-MM-DDTHH:MMZ
+  flags:
+    - dovetell:global
 
   context:
     [What situation or question prompted this decision?]
@@ -63,6 +65,51 @@
 ## Decisions
 
 [Append new decisions below. Newest at bottom.]
+
+- decision-6b2f4a91
+  title: Add project journal as a global dovetell concept candidate
+  status: active
+  revisionId: rev-a2d4c8f1
+  created: 2026-05-07T03:27Z
+  updated: 2026-05-07T03:27Z
+  flags:
+    - dovetell:global
+
+  context:
+    The product needs a lower-friction capture surface for thoughts that are not yet tasks, decisions, risks, rules, or opportunities. Users should be able to write free-flow notes during work and later reconcile those notes into formal context objects.
+
+  decision:
+    Add project journal as a new context content type backed by .dovetell-tasks-context/journal.md. Treat the concept as a candidate for promotion into the shared dovetell model by marking it with dovetell:global.
+
+  rationale:
+    Immediate classification can interrupt thinking. A journal creates a softer intake path while preserving traceability from raw thought to structured context. The feature also creates a natural future path for LLM-assisted reconciliation without requiring realtime automation in the first implementation.
+
+  constraints:
+    The first implementation must preserve static-app portability, direct GitHub markdown storage, per-project context files, and existing object schemas. Journal entries must not store credentials or secrets. The dovetell:global flag is advisory until its definition is reconciled.
+
+  outcomes:
+    A near-term implementation task will add a desktop right-sidebar journal, a composer, expandable truncated entries, journal.md read/write support, and manual reconciliation support that records created object IDs in each journal entry actions field.
+
+  persona: none
+
+  rule: none
+
+  task: task-e7c3a9d4
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - dovetell:global should become a common flag, but its exact definition and promotion workflow still need reconciliation.
+    - source: codex-7588c8e2
+    - date: 2026-05-07T03:27Z
 
 ---
 

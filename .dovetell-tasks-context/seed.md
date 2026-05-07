@@ -8,11 +8,11 @@
 
 project: dovetell-tasks
 last-updated: 2026-05-06
-revisionId: rev-8a8c830b
+revisionId: rev-a2d4c8f1
 
 name: dovetell-tasks
 description: Static Dovetell project tracking surface backed by markdown governance context.
-tagline: Track tasks, decisions, rules, risks, and session handoffs in one portable repo.
+tagline: Track tasks, decisions, rules, risks, journal notes, and session handoffs in one portable repo.
 
 ---
 
@@ -42,7 +42,7 @@ known-gaps:
 ## 4. Desired State
 
 desired-state:
-  [What does good look like when this is working?]
+  dovetell lets project work move from thought to traceable action without losing context. Users can capture free-flow thoughts in a project journal, reconcile them into structured tasks/decisions/risks/rules/opportunities, and preserve enough context on each task for a future session to resume with near-full understanding.
 
 success-indicators:
   [How will we know it's working? Not metrics yet — just observable signals.]
@@ -67,6 +67,7 @@ assumptions:
 
 - decision-[8char]: [one-line summary]
 - decision-[8char]: [one-line summary]
+- decision-6b2f4a91: Add project journal as a global dovetell concept candidate.
 
 ---
 
@@ -93,6 +94,8 @@ assumptions:
 open-questions:
   - [Questions that are unresolved and need a decision or more information]
   - [Add one per line]
+  - How should dovetell:global be formally defined, reconciled, and promoted across project-local and global models?
+  - What is the first mobile interaction pattern for journal capture: sheet, route, or bottom-nav action?
   - source: codex-[hash]
 
 ---
@@ -102,6 +105,7 @@ open-questions:
 [Flat append log — newest at bottom. One line per significant change.]
 
 - YYYY-MM-DD (codex-[hash]): [what changed and why]
+- 2026-05-07 (codex-7588c8e2): Added project journal as a planned context type, introduced task context blocks for resumability, and flagged the journal concept for dovetell:global reconciliation.
 
 ---
 

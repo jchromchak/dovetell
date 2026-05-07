@@ -46,7 +46,7 @@
         body: JSON.stringify({
           message,
           content: btoa(unescape(encodeURIComponent(content))),
-          sha
+          ...(sha ? { sha } : {})
         })
       },
       20000
@@ -137,6 +137,7 @@
       risks: 'risks.md',
       opportunities: 'opportunities.md',
       rules: 'business-rules.md',
+      journal: 'journal.md',
       changelog: 'changelog.md'
     });
   }

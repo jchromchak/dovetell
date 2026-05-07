@@ -5,6 +5,7 @@
     risks: 'risks.md',
     opportunities: 'opportunities.md',
     rules: 'business-rules.md',
+    journal: 'journal.md',
     changelog: 'changelog.md'
   };
 
@@ -31,6 +32,7 @@
         risks: '.dovetell-tasks-context/risks.md',
         opportunities: '.dovetell-tasks-context/opportunities.md',
         rules: '.dovetell-tasks-context/rules.md',
+        journal: '.dovetell-tasks-context/journal.md',
         changelog: '.dovetell-tasks-context/changelog.md'
       }
     }

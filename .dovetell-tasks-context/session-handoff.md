@@ -49,12 +49,16 @@ project-nav-density-update: Started the information-architecture and density pas
 project-nav-closeout-update: Marked task-4d9c0a7e complete after desktop project navigation, add-project access, mobile Projects button behavior, and dashboard density improved. Compact project chips now show visibility icon plus initials with full project details on hover. Queued task-8e2f6b91 to redesign/debug the project source management flow after a manual add-project test failed. Completed task-f3a92c10 by removing the mobile bottom-nav scale hack and restoring full-width equal columns.
 project-source-flow-update: Began task-8e2f6b91. The project sheet now presents itself as "Add GitHub project source," generates project ID and token key from owner/repo, defaults new projects to .dovetell-tasks-context/*.md paths, captures a per-project PAT, validates required paths, and verifies repo plus tasks path access before reload. Failed verification remains visible in the sheet and leaves the local project source available for correction.
 project-source-flow-closeout: Completed task-8e2f6b91. The redesigned project sheet passed JavaScript parsing, whitespace checks, and a mobile screenshot review. The sheet now keeps GitHub verification failures visible, prevents silent reload failures, and preserves the local source entry for correction without exposing PAT values.
-decisions-made: none
+journal-planning-update: Added .dovetell-tasks-context/journal.md as the planned free-flow capture file, updated launcher and seed guidance, added task context blocks for resumability, and recorded decision-6b2f4a91 with the dovetell:global flag so the journal concept can be reconciled for promotion to the shared/global dovetell model.
+journal-implementation-update: Started task-e7c3a9d4. Journal is now a configured per-project context path. The dashboard can load journal entries, tolerate missing journal.md as empty, render a desktop right rail with project selector, composer, expandable cards, and append new entries to GitHub, creating journal.md on first write when needed.
+decisions-made:
+  - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
   - task-bd02e9a4: Add project-aware drill-in and write target selection
   - task-c8e72b9d: Add editable project source management
+  - task-e7c3a9d4: Add project journal capture and reconciliation flow
 tasks-completed:
   - task-a27da8f3: Extract shared CSS and GitHub/auth utilities
   - task-51a43e7c: Extract shared shell and interaction helpers
@@ -65,6 +69,7 @@ tasks-completed:
   - task-bd02e9a4: Add project-aware drill-in and write target selection
   - task-c8e72b9d: Add editable project source management
   - task-8e2f6b91: Revisit project source management flow
+  - task-9a1c2691: Validate dashboard loaded state with GitHub data
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -90,5 +95,7 @@ validation:
   - In-app browser visual check passed for the SVG context-health gauge alignment after replacing the CSS border arc.
   - JavaScript parse check passed after adding sidebar project navigation and dashboard row density rules. Local browser confirmed project navigation is present in the DOM; current in-app browser width uses mobile bottom navigation, so desktop sidebar should be visually rechecked at a wide viewport.
   - JavaScript parse check and git diff whitespace check passed after redesigning the project source sheet. Headless Chrome mobile screenshot confirmed the add-project sheet opens with stacked fields rather than a clipped two-column form.
-pending: task-9a1c2691 is blocked only on final browser reload with existing public/private repo PATs. No PAT value was exposed, logged, or requested.
-next-session-start-here: Recheck dashboard/ with existing PATs, then use the redesigned Add GitHub project source sheet to add one real project and confirm verification success, reload behavior, and the selected project source.
+  - Context-only journal planning update completed; no app code was changed.
+  - User confirmed the pushed project-source flow worked with a real project/PAT.
+pending: task-e7c3a9d4 needs browser verification of the desktop journal rail and journal append behavior. Mobile journal interaction remains an open design decision.
+next-session-start-here: Verify dashboard/ at desktop width and confirm the Project Journal rail fits without crowding dashboard cards. Add one test journal note against a real project, confirm journal.md is created or updated in the selected repo, and then decide whether the first reconciliation action should create tasks only or support tasks and decisions together.
