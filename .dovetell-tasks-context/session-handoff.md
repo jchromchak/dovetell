@@ -57,9 +57,11 @@ context-commit-decision-update: User decided that context updates should be comm
 dashboard-health-update: Added a tooltip explaining the Context Health formula and added the source project badge to the Last Change panel.
 dashboard-refresh-update: Dashboard already auto-refreshed, but at ten minutes with generic status text. Changed refresh cadence to five minutes and updated the upper-right status to show Updating, Connected, or Disconnected with the last local update time.
 activity-feed-update: Replaced the dashboard Changelog panel with a derived Activity Feed that combines recent changelog entries, journal notes, and dated tasks across configured projects. The feed is read-only and uses existing loaded markdown data.
+project-controls-json-update: Added assets/config/account-projects.json as the repo-backed default source for account and project controls. assets/js/projects.js now loads the JSON synchronously to preserve the existing Dovetell.allProjects API, falls back to embedded defaults if the file is unavailable, and continues to merge browser-local custom project additions through shared helpers. PAT values remain local-only. The project sheet copy now explains that local additions should eventually be promoted to account-projects.json.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
+  - decision-55bcfc5c: Store default account and project controls in repo JSON
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
@@ -79,6 +81,7 @@ tasks-completed:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
   - task-e7c3a9d4: Add project journal capture and reconciliation flow
   - task-a6541f36: Add dashboard recent activity feed
+  - task-55bcfc5c: Introduce repo-backed account and project controls JSON
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -117,5 +120,6 @@ validation:
   - JavaScript parse checks and git diff whitespace checks passed after five-minute refresh and local last-update status changes.
   - User completed the live browser/PAT smoke test: wrote to the journal, refreshed and saw the note, created a task, and saw the task appear in the task list.
   - JavaScript parse checks, git diff whitespace checks, and a mocked mixed feed order/render path passed after adding Activity Feed.
-pending: none for task-e7c3a9d4; it is completed.
-next-session-start-here: Validate Activity Feed with live project data, then pick the next slice. Likely candidates: create-decision from journal, activity feed filtering by project/type, or exporting a feed endpoint for the active-project tracker. Continue committing context files with meaningful checkpoints.
+  - JavaScript parse checks, JSON parsing, git diff whitespace checks, and a headless dashboard render passed after adding repo-backed project controls. The local server log confirmed /assets/config/account-projects.json returned 200.
+pending: none; active task list is empty after task-55bcfc5c completion.
+next-session-start-here: Pick the next slice. Likely candidates: promote/export local project additions into account-projects.json, convert project config bootstrapping to async, create-decision from journal, activity feed filtering by project/type, or exporting a feed endpoint for the active-project tracker. Continue committing context files with meaningful checkpoints.

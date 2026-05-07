@@ -343,6 +343,30 @@
   completion-notes:
     Changed the dashboard Changelog panel to Activity Feed. The feed merges recent changelog entries, journal notes, and dated tasks across configured projects, sorts them by date, shows compact type avatars, project chips, metadata, and links task activity back to the relevant task page. Verified JavaScript parsing, whitespace checks, and a mocked mixed feed order/render path.
 
+- [x] Introduce repo-backed account and project controls JSON
+  id: task-55bcfc5c
+  priority: now
+  revisionId: rev-0862d875
+  created: 2026-05-07T15:05Z
+  completed: 2026-05-07T15:36Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-55bcfc5c
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Move default account/project controls out of hidden browser-local state and into repo-backed JSON so project continuity and external active-project feeds can rely on versioned configuration. Preserve local-only PAT storage and keep browser-local project additions as temporary overrides until a promotion flow exists.
+
+  completion-notes:
+    Added assets/config/account-projects.json as the versioned default source for account and project controls, including default context file paths and the configured sandbox/private project sources. Updated assets/js/projects.js to load the JSON while preserving the current synchronous Dovetell.allProjects API and keeping an embedded fallback for static demo resilience. PATs remain browser-local only; later work should promote local project additions back into repo JSON and move project bootstrapping to an async path.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

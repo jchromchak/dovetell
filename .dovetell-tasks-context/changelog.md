@@ -441,6 +441,25 @@
   action: completed
   summary: Replaced the dashboard changelog panel with a derived recent activity feed that combines changelog entries, journal notes, and dated tasks across projects.
 
+- rev-0862d875
+  date: 2026-05-07T15:36Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-55bcfc5c: created
+    - task-55bcfc5c: completed
+    - assets/config/account-projects.json: created
+    - assets/js/projects.js: updated
+    - dashboard/index.html: updated
+    - decisions.md: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Added repo-backed account/project controls JSON, kept PATs local-only, and preserved the current project-loading API with an embedded fallback.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

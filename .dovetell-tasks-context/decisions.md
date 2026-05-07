@@ -156,6 +156,51 @@
     - source: codex-7588c8e2
     - date: 2026-05-07T13:50Z
 
+- decision-55bcfc5c
+  title: Store default account and project controls in repo JSON
+  status: active
+  revisionId: rev-0862d875
+  created: 2026-05-07T15:05Z
+  updated: 2026-05-07T15:05Z
+  flags:
+    - dovetell:global
+
+  context:
+    Browser-local project metadata made continuity feel brittle. The user's active-project workflow needs project/account controls that can travel with the repo and be consumed by future sessions or external feed tools.
+
+  decision:
+    Introduce repo-backed JSON for default account and project controls. Browser-local projects remain a temporary override/addition layer, and PATs remain local only.
+
+  rationale:
+    Repo JSON makes project identity, visibility, context file paths, and default source controls inspectable, versioned, and portable. Keeping tokens local preserves the existing security boundary while reducing hidden configuration.
+
+  constraints:
+    The static app currently initializes project controls synchronously, so the first implementation should preserve the existing Dovetell.allProjects API. Do not commit credentials or PAT values into JSON.
+
+  outcomes:
+    assets/config/account-projects.json becomes the default project/account source. assets/js/projects.js loads that JSON and falls back to embedded defaults if needed. Later work can promote local project additions back into repo JSON and replace synchronous loading with a cleaner async boot path.
+
+  persona: none
+
+  rule: none
+
+  task: task-55bcfc5c
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - This is a dovetell:global model candidate for account/project configuration across Dovetell-managed projects.
+    - source: codex-7588c8e2
+    - date: 2026-05-07T15:05Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*
