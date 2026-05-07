@@ -47,6 +47,8 @@ source-shape-update: Seeded jchromchak/dovetell-private with the configured .dov
 dashboard-visual-update: Replaced the context-health CSS border gauge with a shared-path SVG gauge. This fixes the misaligned teal/gray arcs seen on wider dashboard cards and keeps the gauge visible on tablet/mobile breakpoints.
 project-nav-density-update: Started the information-architecture and density pass. Added .dovetell-tasks-context/style-guide.md with fixed H3 guidance sections and traceable bullet references. Added shared sidebar project navigation under Dashboard for desktop layouts, retained the dashboard Projects button as the mobile/manage-project path, and tightened dashboard row text so titles clamp and metadata truncates instead of colliding.
 project-nav-closeout-update: Marked task-4d9c0a7e complete after desktop project navigation, add-project access, mobile Projects button behavior, and dashboard density improved. Compact project chips now show visibility icon plus initials with full project details on hover. Queued task-8e2f6b91 to redesign/debug the project source management flow after a manual add-project test failed. Completed task-f3a92c10 by removing the mobile bottom-nav scale hack and restoring full-width equal columns.
+project-source-flow-update: Began task-8e2f6b91. The project sheet now presents itself as "Add GitHub project source," generates project ID and token key from owner/repo, defaults new projects to .dovetell-tasks-context/*.md paths, captures a per-project PAT, validates required paths, and verifies repo plus tasks path access before reload. Failed verification remains visible in the sheet and leaves the local project source available for correction.
+project-source-flow-closeout: Completed task-8e2f6b91. The redesigned project sheet passed JavaScript parsing, whitespace checks, and a mobile screenshot review. The sheet now keeps GitHub verification failures visible, prevents silent reload failures, and preserves the local source entry for correction without exposing PAT values.
 decisions-made: none
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
@@ -62,6 +64,7 @@ tasks-completed:
   - task-1f3704d5: Define private context project source configuration
   - task-bd02e9a4: Add project-aware drill-in and write target selection
   - task-c8e72b9d: Add editable project source management
+  - task-8e2f6b91: Revisit project source management flow
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -86,5 +89,6 @@ validation:
   - Repo source-shape fixes pushed for the known missing files: private context folder at jchromchak/dovetell-private@98ff4ff and sandbox changelog at dovetell-io/dovetell-sandbox@e277d61.
   - In-app browser visual check passed for the SVG context-health gauge alignment after replacing the CSS border arc.
   - JavaScript parse check passed after adding sidebar project navigation and dashboard row density rules. Local browser confirmed project navigation is present in the DOM; current in-app browser width uses mobile bottom navigation, so desktop sidebar should be visually rechecked at a wide viewport.
+  - JavaScript parse check and git diff whitespace check passed after redesigning the project source sheet. Headless Chrome mobile screenshot confirmed the add-project sheet opens with stacked fields rather than a clipped two-column form.
 pending: task-9a1c2691 is blocked only on final browser reload with existing public/private repo PATs. No PAT value was exposed, logged, or requested.
-next-session-start-here: Recheck dashboard/ at desktop width. Confirm project links render under Dashboard in the sidebar, long dashboard row titles clamp without overlap, and the add-project path works from the sidebar on desktop and the Projects button on mobile.
+next-session-start-here: Recheck dashboard/ with existing PATs, then use the redesigned Add GitHub project source sheet to add one real project and confirm verification success, reload behavior, and the selected project source.

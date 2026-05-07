@@ -93,9 +93,15 @@
 .project-settings-actions{display:flex;gap:6px;align-items:center}
 .project-path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .project-hint{font-size:11px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
+.project-form-section{margin:14px 0 8px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
+.project-verify{display:none;margin:10px 0 0;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(18,27,43,0.54);font-size:12px;line-height:1.45;color:var(--muted-2)}
+.project-verify.visible{display:block}
+.project-verify.success{border-color:rgba(52,211,153,0.35);color:var(--green)}
+.project-verify.warning{border-color:rgba(245,158,11,0.35);color:var(--amber)}
+.project-verify.error{border-color:rgba(255,77,77,0.38);color:var(--red)}
 @media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}.project-chip{max-width:180px}}
 @media (max-width: 900px){.dashboard-hero,.dash-grid{grid-template-columns:1fr}.session-panel{grid-column:auto}.health-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;justify-content:stretch}.health-label{grid-column:1/-1;margin-bottom:0}.health-gauge{width:112px;height:58px;margin:0}.health-gauge path{stroke-width:9}.health-value{justify-content:flex-end}.health-score{font-size:34px}}
-@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.row-title{-webkit-line-clamp:2}.project-chip{max-width:calc(100vw - 170px)}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid{grid-template-columns:1fr}}
+@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.row-title{-webkit-line-clamp:2}.project-chip{max-width:calc(100vw - 170px)}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid,#project-sheet .form-row-2{grid-template-columns:1fr}.project-settings-item{grid-template-columns:1fr}.project-settings-actions{justify-content:flex-start;flex-wrap:wrap}}
 </style>
 <link rel="stylesheet" href="../assets/css/shared.css?v=20260506-projects5"/>
 </head>
@@ -143,19 +149,10 @@
 <div class="add-sheet-overlay" id="project-overlay" onclick="closeProjectSettings()"></div>
 <div class="add-sheet" id="project-sheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title">Project sources</div>
-  <div class="project-hint">Project metadata stays in this browser. PATs are stored separately per project and only used for GitHub API reads or writes.</div>
+  <div class="sheet-title">Add GitHub project source</div>
+  <div class="project-hint">Project metadata and PATs stay in this browser. Saving a source does not change the repo; it only tells dovetell where to read and write context files.</div>
   <div class="project-settings-list" id="project-settings-list"></div>
-  <div class="form-row-2">
-    <div class="form-field">
-      <label class="form-label">ID</label>
-      <input class="form-input" id="project-id" placeholder="my-project"/>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Display name</label>
-      <input class="form-input" id="project-name" placeholder="my project"/>
-    </div>
-  </div>
+  <div class="project-form-section">Repository</div>
   <div class="form-row-2">
     <div class="form-field">
       <label class="form-label">Owner</label>
@@ -168,18 +165,35 @@
   </div>
   <div class="form-row-2">
     <div class="form-field">
+      <label class="form-label">Display name</label>
+      <input class="form-input" id="project-name" placeholder="my project"/>
+    </div>
+    <div class="form-field">
       <label class="form-label">Visibility</label>
       <select class="form-select" id="project-visibility">
-        <option value="public">Public</option>
         <option value="private">Private</option>
+        <option value="public">Public</option>
         <option value="unknown">Unknown</option>
       </select>
+    </div>
+  </div>
+  <div class="project-form-section">Local identifiers</div>
+  <div class="form-row-2">
+    <div class="form-field">
+      <label class="form-label">Project ID</label>
+      <input class="form-input" id="project-id" placeholder="auto-generated"/>
     </div>
     <div class="form-field">
       <label class="form-label">Token key</label>
       <input class="form-input" id="project-token-key" placeholder="auto-generated"/>
     </div>
   </div>
+  <div class="form-field">
+    <label class="form-label">GitHub token for this repo</label>
+    <input class="form-input" id="project-token" type="password" placeholder="github_pat_…"/>
+  </div>
+  <div class="project-form-section">Context file paths</div>
+  <div class="project-hint">Defaults use the private context repo shape. Edit these only when the repo stores context files somewhere else.</div>
   <div class="project-path-grid">
     <div class="form-field"><label class="form-label">Tasks</label><input class="form-input" id="project-path-tasks"/></div>
     <div class="form-field"><label class="form-label">Decisions</label><input class="form-input" id="project-path-decisions"/></div>
@@ -188,6 +202,7 @@
     <div class="form-field"><label class="form-label">Rules</label><input class="form-input" id="project-path-rules"/></div>
     <div class="form-field"><label class="form-label">Changelog</label><input class="form-input" id="project-path-changelog"/></div>
   </div>
+  <div class="project-verify" id="project-verify"></div>
   <div class="sheet-actions">
     <button class="btn-sheet-cancel" onclick="closeProjectSettings()">Cancel</button>
     <button class="btn-sheet-save" onclick="saveProjectSettings()">Save project</button>
@@ -635,7 +650,75 @@ function projectPathKeys() {
   return ['tasks', 'decisions', 'risks', 'opportunities', 'rules', 'changelog']
 }
 
+function projectContextDefaults() {
+  return {
+    tasks: '.dovetell-tasks-context/tasks.md',
+    decisions: '.dovetell-tasks-context/decisions.md',
+    risks: '.dovetell-tasks-context/risks.md',
+    opportunities: '.dovetell-tasks-context/opportunities.md',
+    rules: '.dovetell-tasks-context/rules.md',
+    changelog: '.dovetell-tasks-context/changelog.md'
+  }
+}
+
+function projectSlug(value) {
+  return (value || '').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
+}
+
+function suggestedProjectId(owner, repo) {
+  return projectSlug(`${owner}-${repo}`)
+}
+
+function suggestedTokenKey(owner, repo) {
+  return `dovetell_pat_${owner}_${repo}`.replace(/[^a-zA-Z0-9_-]/g, '_')
+}
+
+function setProjectVerify(message = '', state = '') {
+  const box = document.getElementById('project-verify')
+  if (!box) return
+  box.textContent = message
+  box.className = `project-verify ${message ? 'visible' : ''} ${state}`
+}
+
+function syncProjectGeneratedFields() {
+  const owner = document.getElementById('project-owner').value.trim()
+  const repo = document.getElementById('project-repo').value.trim()
+  const idInput = document.getElementById('project-id')
+  const tokenInput = document.getElementById('project-token-key')
+  if (owner && repo && (!idInput.value.trim() || idInput.dataset.generated === 'true')) {
+    idInput.value = suggestedProjectId(owner, repo)
+    idInput.dataset.generated = 'true'
+  }
+  if (owner && repo && (!tokenInput.value.trim() || tokenInput.dataset.generated === 'true')) {
+    tokenInput.value = suggestedTokenKey(owner, repo)
+    tokenInput.dataset.generated = 'true'
+  }
+  const nameInput = document.getElementById('project-name')
+  if (repo && !nameInput.value.trim()) nameInput.value = repo.replace(/[-_]+/g, ' ')
+}
+
+function wireProjectForm() {
+  ;['project-owner', 'project-repo'].forEach(id => {
+    const input = document.getElementById(id)
+    if (input && !input.dataset.wired) {
+      input.addEventListener('input', () => {
+        syncProjectGeneratedFields()
+        setProjectVerify()
+      })
+      input.dataset.wired = 'true'
+    }
+  })
+  ;['project-id', 'project-token-key'].forEach(id => {
+    const input = document.getElementById(id)
+    if (input && !input.dataset.manualWired) {
+      input.addEventListener('input', () => { input.dataset.generated = 'false' })
+      input.dataset.manualWired = 'true'
+    }
+  })
+}
+
 function openProjectSettings(projectId = '') {
+  wireProjectForm()
   renderProjectSettingsList()
   fillProjectForm(projectId ? findProject(projectId) : null)
   Dovetell.openSheet('project-sheet', 'project-overlay')
@@ -666,30 +749,62 @@ function findProjectForSettings(projectId) {
 }
 
 function fillProjectForm(project) {
-  const defaults = Dovetell.defaultContextFiles()
+  const defaults = projectContextDefaults()
   const data = project || { contextFiles: defaults, visibility: 'private' }
   document.getElementById('project-id').value = data.id || ''
+  document.getElementById('project-id').dataset.generated = project ? 'false' : 'true'
   document.getElementById('project-name').value = data.name || ''
   document.getElementById('project-owner').value = data.owner || ''
   document.getElementById('project-repo').value = data.repo || ''
   document.getElementById('project-visibility').value = data.visibility || 'unknown'
   document.getElementById('project-token-key').value = data.tokenKey || ''
+  document.getElementById('project-token-key').dataset.generated = project ? 'false' : 'true'
+  document.getElementById('project-token').value = ''
   projectPathKeys().forEach(key => {
     document.getElementById(`project-path-${key}`).value = (data.contextFiles && data.contextFiles[key]) || defaults[key] || ''
   })
+  setProjectVerify(project ? 'Editing an existing local source. Add a new token only if you want to replace the saved one.' : 'Enter an owner and repo. The project ID, token key, and context paths are generated locally.', 'warning')
+  syncProjectGeneratedFields()
 }
 
-function saveProjectSettings() {
+async function verifyProjectAccess(project, token) {
+  const headers = { 'Accept': 'application/vnd.github.v3+json' }
+  if (token) headers.Authorization = `Bearer ${token}`
+  const repoRes = await Dovetell.fetchWithTimeout(`https://api.github.com/repos/${project.owner}/${project.repo}`, { headers }, 15000)
+  if (repoRes.status === 401 || repoRes.status === 403) throw new Error(`GitHub ${repoRes.status}: token cannot access this repo`)
+  if (repoRes.status === 404) throw new Error('GitHub 404: repo not found or token cannot see it')
+  if (!repoRes.ok) throw new Error(`GitHub ${repoRes.status}: ${repoRes.statusText}`)
+  const firstPath = project.contextFiles.tasks
+  const pathRes = await Dovetell.fetchWithTimeout(`https://api.github.com/repos/${project.owner}/${project.repo}/contents/${firstPath}`, { headers }, 15000)
+  if (pathRes.ok) return `Repo verified and ${firstPath} is readable.`
+  if (pathRes.status === 404) return `Repo verified. ${firstPath} does not exist yet; the first write can create it.`
+  if (pathRes.status === 401 || pathRes.status === 403) throw new Error(`Repo exists, but token cannot read ${firstPath}`)
+  throw new Error(`Repo verified, but ${firstPath} returned GitHub ${pathRes.status}`)
+}
+
+async function saveProjectSettings() {
   const owner = document.getElementById('project-owner').value.trim()
   const repo = document.getElementById('project-repo').value.trim()
   if (!owner || !repo) {
-    Dovetell.showToast('Owner and repo are required', 'error-state')
+    setProjectVerify('Owner and repo are required.', 'error')
     return
   }
   const contextFiles = {}
   projectPathKeys().forEach(key => {
     contextFiles[key] = document.getElementById(`project-path-${key}`).value.trim()
   })
+  const missingPaths = projectPathKeys().filter(key => !contextFiles[key])
+  if (missingPaths.length) {
+    setProjectVerify(`Missing context paths: ${missingPaths.join(', ')}`, 'error')
+    return
+  }
+  syncProjectGeneratedFields()
+  const token = document.getElementById('project-token').value.trim()
+  const saveButton = document.querySelector('#project-sheet .btn-sheet-save')
+  if (saveButton) {
+    saveButton.disabled = true
+    saveButton.textContent = 'Verifying...'
+  }
   const project = Dovetell.upsertCustomProject({
     id: document.getElementById('project-id').value.trim(),
     name: document.getElementById('project-name').value.trim(),
@@ -699,9 +814,19 @@ function saveProjectSettings() {
     tokenKey: document.getElementById('project-token-key').value.trim(),
     contextFiles
   })
-  localStorage.setItem('dovetell_project_tasks', project.id)
-  Dovetell.showToast('Project saved · reloading', 'success')
-  setTimeout(() => window.location.reload(), 500)
+  if (token) Dovetell.saveProjectToken(project, token)
+  try {
+    const message = await verifyProjectAccess(project, token || Dovetell.readProjectToken(project))
+    localStorage.setItem('dovetell_project_tasks', project.id)
+    setProjectVerify(`${message} Saved project source. Reloading...`, 'success')
+    setTimeout(() => window.location.reload(), 900)
+  } catch (err) {
+    setProjectVerify(`${err.message}. Project source was saved locally so you can adjust it without retyping.`, 'error')
+    if (saveButton) {
+      saveButton.disabled = false
+      saveButton.textContent = 'Save project'
+    }
+  }
 }
 
 function deleteProjectSettings(projectId) {

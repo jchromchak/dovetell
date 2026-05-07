@@ -38,29 +38,6 @@
 [Append new tasks below. Newest at bottom.]
 [When a task is completed, move the full entry to completed-tasks.md.]
 
-- [ ] Revisit project source management flow
-  id: task-8e2f6b91
-  priority: next
-  status: open
-  revisionId: rev-7f2a8d3c
-  created: 2026-05-07T02:47Z
-  updated: 2026-05-07T02:47Z
-  due: none
-
-  owner: john
-  persona: none
-  decision: none
-  rule: none
-  process: none
-  opp: none
-  risk: none
-
-  notes:
-    Redesign and debug the project source sheet. The current sheet is useful as a local settings editor but feels deceiving for first-time project addition, and a manual add-project test did not work as expected. Revisit copy, required fields, validation, default paths, token setup, post-save confirmation, and whether add-project should immediately verify repo/file access.
-
-  blocked-by:
-    - none
-
 - [ ] Validate dashboard loaded state with GitHub data
   id: task-9a1c2691
   priority: next

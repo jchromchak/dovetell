@@ -296,6 +296,34 @@
   action: updated
   summary: Marked the project-navigation/density pass complete, compacted project chips to visibility icon plus initials, queued the project source flow revisit, and completed the mobile bottom-nav width fix.
 
+- rev-9c4e1f70
+  date: 2026-05-07T03:03Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - task-8e2f6b91: updated
+    - tasks.md: updated
+    - changelog.md: updated
+  action: updated
+  summary: Started the project source management flow redesign with clearer add-project copy, generated local IDs, per-project token capture, context-path validation, and GitHub access verification.
+
+- rev-3f77a1d2
+  date: 2026-05-07T03:13Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - task-8e2f6b91: completed
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Completed the project source flow revisit by validating the redesigned sheet layout, keeping failed GitHub verification visible in-sheet, and recording the task completion.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

@@ -255,6 +255,28 @@
   completion-notes:
     Added local project source storage helpers that merge built-in defaults with browser-local custom sources and overrides. Added a dashboard Project sources sheet for adding, editing, and deleting local project source metadata, including context file paths and token storage keys. Existing built-in projects remain available, while local overrides can adjust them without editing assets/js/projects.js.
 
+- [x] Revisit project source management flow
+  id: task-8e2f6b91
+  priority: next
+  revisionId: rev-3f77a1d2
+  created: 2026-05-07T02:47Z
+  completed: 2026-05-07T03:13Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Redesign and debug the project source sheet. The previous sheet was useful as a local settings editor but felt deceiving for first-time project addition, and a manual add-project test did not work as expected. Revisit copy, required fields, validation, default paths, token setup, post-save confirmation, and whether add-project should immediately verify repo/file access.
+
+  completion-notes:
+    Changed the dashboard sheet to a clearer Add GitHub project source flow. New projects generate project ID and token key from owner/repo, default to .dovetell-tasks-context/*.md paths, capture a per-project GitHub token, validate required context paths, and verify repo plus tasks path access before reload. Failed verification now stays in the sheet with the exact error and preserves the local project source for correction. Confirmed JavaScript parsing, whitespace checks, and a mobile screenshot of the redesigned sheet.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*
