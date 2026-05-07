@@ -55,6 +55,7 @@ journal-reconciliation-update: Continued task-e7c3a9d4 by choosing tasks as the 
 journal-mobile-update: User agreed with mobile journal as a dashboard-launched sheet and with an initial create-item workflow. Dashboard now shows Open journal on mobile, opens a bottom sheet with selector/composer/cards, and uses a create-task preview sheet with editable title and priority before writing.
 context-commit-decision-update: User decided that context updates should be committed at each meaningful run/checkpoint so external active-project feeds can consume the repo as the current project event stream. Recorded decision-90e1768a with dovetell:global.
 dashboard-health-update: Added a tooltip explaining the Context Health formula and added the source project badge to the Last Change panel.
+dashboard-refresh-update: Dashboard already auto-refreshed, but at ten minutes with generic status text. Changed refresh cadence to five minutes and updated the upper-right status to show Updating, Connected, or Disconnected with the last local update time.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
@@ -110,5 +111,6 @@ validation:
   - Mocked create-task preview flow passed: sheet opens, custom task title and priority are applied, tasks.md is written, and journal.md receives the created task ID.
   - Headless mobile screenshot confirmed the Open journal trigger is visible without colliding with the bottom nav, and the journal sheet opens with selector, composer, and journal cards.
   - JavaScript parse checks and git diff whitespace checks passed after latest-change project badge and context health tooltip.
+  - JavaScript parse checks and git diff whitespace checks passed after five-minute refresh and local last-update status changes.
 pending: task-e7c3a9d4 still needs a real browser/PAT smoke test for journal append and create-task writes against an actual configured repo.
 next-session-start-here: Use a saved browser PAT to add one test journal note against a real project, create a task from that note using the preview sheet, and confirm journal.md and tasks.md updated in the selected repo. Continue committing context files with meaningful checkpoints.

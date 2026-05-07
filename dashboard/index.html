@@ -301,9 +301,10 @@ const CONFIG = {
 
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
-const REFRESH_INTERVAL_MS = 10 * 60 * 1000
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000
 let dashboardState = { journals: [], journalFiles: new Map(), taskFiles: new Map(), sourceStates: [] }
 let pendingJournalTask = null
+let lastDashboardUpdate = null
 Dovetell.renderSidebarProjects({ addAction: 'openProjectSettings()' })
 
 function parseTasks(md) {
@@ -519,6 +520,29 @@ function shortDate(value) {
   return value.replace(/T.*/, '').replace(/^2026-/, '')
 }
 
+function localUpdateTime(date) {
+  if (!date) return 'not updated'
+  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
+function updateConnectionStatus(state, detail = '') {
+  const last = localUpdateTime(lastDashboardUpdate)
+  const label = document.getElementById('status-text')
+  if (state === 'updating') {
+    setStatus('loading', lastDashboardUpdate ? `Updating · last ${last}` : 'Updating')
+    if (label) label.title = detail || 'Refreshing project sources'
+    return
+  }
+  if (state === 'connected') {
+    setStatus('ready', `Connected · ${last}`)
+    if (label) label.title = 'Project sources refreshed'
+    return
+  }
+  const suffix = lastDashboardUpdate ? `last ${last}` : last
+  setStatus('error', `Disconnected · ${suffix}`)
+  if (label) label.title = detail || 'Project sources unavailable'
+}
+
 function taskPriorityDot(priority) {
   return priority === 'now' ? 'dot-now' : priority === 'next' ? 'dot-next' : 'dot-later'
 }
@@ -600,7 +624,7 @@ function renderAuthError(message) {
     <div class="token-copy">${escHtml(message)} Check that each saved project token can read its configured repository contents.</div>
     ${renderProjectTokenForms(PROJECTS, 'Replace token')}
   </div>`
-  setStatus('error', 'GitHub access failed')
+  updateConnectionStatus('disconnected', 'GitHub access failed')
 }
 
 function renderDashboard(data, sourceStates = []) {
@@ -674,7 +698,7 @@ function renderDashboard(data, sourceStates = []) {
   renderJournalSheetBody(data.journals || [])
   document.getElementById('footer-sha').textContent = latestChange ? latestChange.revisionId : '—'
   const failedCount = sourceStates.filter(source => !source.ok).length
-  setStatus(failedCount ? 'error' : 'ready', failedCount ? `${failedCount} source${failedCount === 1 ? '' : 's'} unavailable` : `${openTasks.length} open · ${activeRisks.length} risks`)
+  updateConnectionStatus(failedCount ? 'disconnected' : 'connected', failedCount ? `${failedCount} source${failedCount === 1 ? '' : 's'} unavailable` : '')
 }
 
 function emptyPanel(text) {
@@ -1051,7 +1075,7 @@ function renderTokenPrompt() {
     <div class="token-copy">Tokens stay on this device. Use one readable PAT per repo.</div>
     ${renderProjectTokenForms(missingTokenProjects(), 'Save & load')}
   </div>`
-  setStatus('error', 'Token required')
+  updateConnectionStatus('disconnected', 'Token required')
 }
 
 function renderProjectTokenForms(projects, label) {
@@ -1290,7 +1314,7 @@ function deleteProjectSettings(projectId) {
 
 async function loadDashboard() {
   if (!PROJECTS.length) {
-    setStatus('error', 'No projects configured')
+    updateConnectionStatus('disconnected', 'No projects configured')
     document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No project sources configured.</div></div>`
     return
   }
@@ -1298,7 +1322,7 @@ async function loadDashboard() {
     renderTokenPrompt()
     return
   }
-  setStatus('loading', 'Loading dashboard…')
+  updateConnectionStatus('updating')
   try {
     const entries = await Promise.all(PROJECTS.flatMap(project => SOURCE_KEYS.map(async key => {
       const path = project.contextFiles && project.contextFiles[key]
@@ -1345,9 +1369,10 @@ async function loadDashboard() {
       taskFiles: new Map(entries.filter(entry => entry.key === 'tasks' && entry.ok).map(entry => [entry.project.id, { content: entry.content, sha: entry.sha }])),
       sourceStates: entries
     }
+    lastDashboardUpdate = new Date()
     renderDashboard(dashboardState, entries)
   } catch (err) {
-    setStatus('error', 'Load failed')
+    updateConnectionStatus('disconnected', 'Load failed')
     document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">${escHtml(err.message)}</div></div>`
   }
 }

@@ -401,6 +401,18 @@
   action: updated
   summary: Recorded the dovetell:global convention to commit context updates at meaningful checkpoints and added the latest-change project badge plus context health formula hint.
 
+- rev-41486859
+  date: 2026-05-07T14:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Changed dashboard auto-refresh to five minutes and replaced the header status copy with connected, updating, and disconnected states that show the last local update time.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
