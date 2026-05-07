@@ -259,10 +259,46 @@
     topbar.insertBefore(select, topbar.firstChild);
   }
 
+  function sectionForPath() {
+    const match = global.location.pathname.match(/\/(dashboard|tasks|decisions|opportunities|rules|risks)\/?$/);
+    return match ? match[1] : 'dashboard';
+  }
+
+  function renderSidebarProjects(options = {}) {
+    const nav = document.querySelector('.tab-bar');
+    if (!nav || document.getElementById('sidebar-projects')) return;
+    const projects = allProjects();
+    if (!projects.length) return;
+    const section = sectionForPath();
+    const activeProjectId = options.activeProjectId || '';
+    const projectHrefBase = section === 'dashboard' ? 'tasks' : section;
+    const addProjectAction = options.addAction || '';
+    const addProjectControl = addProjectAction
+      ? `<button class="sidebar-project-add" type="button" onclick="${addProjectAction}">+ Add project</button>`
+      : `<a class="sidebar-project-add" href="../dashboard/?projects=add">+ Add project</a>`;
+    const projectHtml = projects.map(project => `
+      <a class="sidebar-project ${project.id === activeProjectId ? 'active' : ''}" href="../${projectHrefBase}/?project=${encodeURIComponent(project.id)}" title="${escHtml(repoSlug(project))}">
+        <span class="sidebar-project-icon">${visibilityIcon(project)}</span>
+        <span class="sidebar-project-name">${escHtml(projectName(project))}</span>
+      </a>
+    `).join('');
+    const wrap = document.createElement('div');
+    wrap.className = 'sidebar-projects';
+    wrap.id = 'sidebar-projects';
+    wrap.innerHTML = `<div class="sidebar-project-label">Projects</div>${projectHtml}${addProjectControl}`;
+    const dashboardLink = nav.querySelector('a[href="../dashboard/"]') || nav.querySelector('.tab-item');
+    if (dashboardLink && dashboardLink.nextSibling) {
+      nav.insertBefore(wrap, dashboardLink.nextSibling);
+    } else {
+      nav.appendChild(wrap);
+    }
+  }
+
   function initProjectPage(config, sourceKey) {
     const project = selectedProject(sourceKey);
     applyProjectConfig(config, sourceKey, project);
     renderProjectSelect(sourceKey, project);
+    renderSidebarProjects({ activeProjectId: project && project.id });
     return project;
   }
 
@@ -391,6 +427,7 @@
     selectedProject,
     applyProjectConfig,
     renderProjectSelect,
+    renderSidebarProjects,
     initProjectPage,
     expandDeepLink,
     readTokenInput,

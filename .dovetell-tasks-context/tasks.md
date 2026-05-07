@@ -38,6 +38,29 @@
 [Append new tasks below. Newest at bottom.]
 [When a task is completed, move the full entry to completed-tasks.md.]
 
+- [ ] Add project navigation and dashboard density pass
+  id: task-4d9c0a7e
+  priority: now
+  status: in-progress
+  revisionId: rev-1d4e8c2a
+  created: 2026-05-07T01:59Z
+  updated: 2026-05-07T01:59Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Move project navigation into the desktop sidebar under Dashboard, keep Dashboard global and object pages project-specific, provide an add-project affordance, tighten dashboard row/card density so text clamps instead of overlapping, and establish .dovetell-tasks-context/style-guide.md as human-readable UI guidance with traceable bullet references.
+
+  blocked-by:
+    - none
+
 - [ ] Validate dashboard loaded state with GitHub data
   id: task-9a1c2691
   priority: next

@@ -263,6 +263,22 @@
   action: updated
   summary: Replaced the dashboard context-health CSS border gauge with an SVG gauge to keep rail and fill alignment stable across responsive widths.
 
+- rev-1d4e8c2a
+  date: 2026-05-07T01:59Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - .dovetell-tasks-context/style-guide.md: created
+    - task-4d9c0a7e: created
+    - assets/js/shared.js: updated
+    - assets/css/shared.css: updated
+    - dashboard/index.html: updated
+    - tasks.md: updated
+    - changelog.md: updated
+  action: updated
+  summary: Started the project-navigation and dashboard-density pass, including sidebar project links, add-project access, compact row treatment, and a traceable UI style guide.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

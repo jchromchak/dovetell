@@ -45,6 +45,7 @@ project-settings-update: Added browser-local project source management. Built-in
 dashboard-live-fix-update: Patched a live dashboard loading-screen crash by exposing shared setStatus/showToast compatibility wrappers from assets/js/shared.js. Added timeout-backed GitHub fetch helpers, cache-busted dashboard shared script URLs, and changed project source failures to render as grouped visible warnings with per-project token replacement forms where relevant.
 source-shape-update: Seeded jchromchak/dovetell-private with the configured .dovetell-tasks-context/tasks.md, decisions.md, risks.md, opportunities.md, rules.md, and changelog.md files; pushed private commit 98ff4ff. Added root changelog.md to dovetell-io/dovetell-sandbox; pushed sandbox commit e277d61.
 dashboard-visual-update: Replaced the context-health CSS border gauge with a shared-path SVG gauge. This fixes the misaligned teal/gray arcs seen on wider dashboard cards and keeps the gauge visible on tablet/mobile breakpoints.
+project-nav-density-update: Started the information-architecture and density pass. Added .dovetell-tasks-context/style-guide.md with fixed H3 guidance sections and traceable bullet references. Added shared sidebar project navigation under Dashboard for desktop layouts, retained the dashboard Projects button as the mobile/manage-project path, and tightened dashboard row text so titles clamp and metadata truncates instead of colliding.
 decisions-made: none
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
@@ -83,5 +84,6 @@ validation:
   - In-app browser reload passed after the live dashboard loading fix: dashboard rendered sandbox data and showed grouped source warnings instead of staying on the loading screen.
   - Repo source-shape fixes pushed for the known missing files: private context folder at jchromchak/dovetell-private@98ff4ff and sandbox changelog at dovetell-io/dovetell-sandbox@e277d61.
   - In-app browser visual check passed for the SVG context-health gauge alignment after replacing the CSS border arc.
+  - JavaScript parse check passed after adding sidebar project navigation and dashboard row density rules. Local browser confirmed project navigation is present in the DOM; current in-app browser width uses mobile bottom navigation, so desktop sidebar should be visually rechecked at a wide viewport.
 pending: task-9a1c2691 is blocked only on final browser reload with existing public/private repo PATs. No PAT value was exposed, logged, or requested.
-next-session-start-here: Reload dashboard/ with the existing project tokens. Confirm no source-warning panel appears, then drill into one item from each project and verify selected-project writes still target the intended repo.
+next-session-start-here: Recheck dashboard/ at desktop width. Confirm project links render under Dashboard in the sidebar, long dashboard row titles clamp without overlap, and the add-project path works from the sidebar on desktop and the Projects button on mobile.

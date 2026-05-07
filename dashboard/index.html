@@ -46,22 +46,24 @@
 .panel-link{font-size:12px;font-weight:700;color:var(--blurple-light);text-decoration:none;white-space:nowrap}
 .panel-link:hover{text-decoration:underline}
 .dash-list{display:grid}
-.dash-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(148,163,184,0.12);text-decoration:none;color:inherit}
+.dash-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(148,163,184,0.12);text-decoration:none;color:inherit;min-width:0}
 .dash-row:last-child{border-bottom:none}
+.row-body{min-width:0;display:grid;gap:3px}
 .row-dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
 .dot-p0,.dot-now,.risk-high{background:var(--red)}
 .dot-p1,.dot-next,.risk-medium{background:var(--amber)}
 .dot-p2{background:#FACC15}
 .dot-p3,.dot-later,.risk-low{background:var(--muted-2)}
-.row-title{font-size:14px;font-weight:650;color:var(--text);line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row-sub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row-meta{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
-.risk-score{font-family:var(--mono);font-size:20px;font-weight:700;min-width:34px}
+.row-title{font-size:13px;font-weight:750;color:var(--text);line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row-sub{font-size:11px;color:var(--muted);line-height:1.3;display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden}
+.row-sub-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-meta{font-family:var(--mono);font-size:10px;color:var(--muted);white-space:nowrap;justify-self:end}
+.risk-score{font-family:var(--mono);font-size:18px;font-weight:700;min-width:30px}
 .risk-score.high{color:var(--red)}
 .risk-score.medium{color:var(--amber)}
 .risk-score.low{color:var(--teal)}
 .status-chip,.rev-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap}
-.project-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.project-chip{font-family:var(--mono);font-size:10px;border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.9);border:1px solid var(--border);color:var(--muted-2);white-space:nowrap;display:inline-flex;align-items:center;gap:4px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
 .project-chip.private{color:var(--amber);border-color:rgba(245,158,11,0.28)}
 .project-chip.public{color:var(--cyan);border-color:rgba(103,232,249,0.24)}
 .status-active,.status-approved,.status-implemented{color:var(--green);border-color:rgba(52,211,153,0.28)}
@@ -91,9 +93,9 @@
 .project-settings-actions{display:flex;gap:6px;align-items:center}
 .project-path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .project-hint{font-size:11px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
-@media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}}
+@media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}.project-chip{max-width:180px}}
 @media (max-width: 900px){.dashboard-hero,.dash-grid{grid-template-columns:1fr}.session-panel{grid-column:auto}.health-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;justify-content:stretch}.health-label{grid-column:1/-1;margin-bottom:0}.health-gauge{width:112px;height:58px;margin:0}.health-gauge path{stroke-width:9}.health-value{justify-content:flex-end}.health-score{font-size:34px}}
-@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid{grid-template-columns:1fr}}
+@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.row-title{-webkit-line-clamp:2}.project-chip{max-width:calc(100vw - 170px)}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid{grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="../assets/css/shared.css?v=20260506-projects5"/>
 </head>
@@ -210,6 +212,7 @@ const CONFIG = {
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog']
 const REFRESH_INTERVAL_MS = 10 * 60 * 1000
+Dovetell.renderSidebarProjects({ addAction: 'openProjectSettings()' })
 
 function parseTasks(md) {
   const lines = md.split('\n')
@@ -535,7 +538,7 @@ function emptyPanel(text) {
 function renderTaskRow(task) {
   return `<a class="dash-row" href="${itemHref('tasks', task)}">
     <span class="row-dot ${taskPriorityDot(task.priority)}"></span>
-    <span><span class="row-title">${escHtml(task.title)}</span><span class="row-sub">${projectChip(task.project)} ${escHtml(task.notes || task.owner || task.source || 'Task')}</span></span>
+    <span class="row-body"><span class="row-title">${escHtml(task.title)}</span><span class="row-sub">${projectChip(task.project)} <span class="row-sub-text">${escHtml(task.notes || task.owner || task.source || 'Task')}</span></span></span>
     <span class="row-meta">${escHtml((task.priority || 'later').toUpperCase())}</span>
   </a>`
 }
@@ -545,7 +548,7 @@ function renderRiskRow(risk) {
   const klass = scoreClass(score)
   return `<a class="dash-row" href="${itemHref('risks', risk)}">
     <span class="risk-score ${klass}">${score}</span>
-    <span><span class="row-title">${escHtml(risk.title)}</span><span class="row-sub">${projectChip(risk.project)} ${escHtml(risk.description || `${risk.likelihood} likelihood · ${risk.impact} impact`)}</span></span>
+    <span class="row-body"><span class="row-title">${escHtml(risk.title)}</span><span class="row-sub">${projectChip(risk.project)} <span class="row-sub-text">${escHtml(risk.description || `${risk.likelihood} likelihood · ${risk.impact} impact`)}</span></span></span>
     <span class="row-meta">${shortDate(risk.date)}</span>
   </a>`
 }
@@ -553,7 +556,7 @@ function renderRiskRow(risk) {
 function renderDecisionRow(decision) {
   return `<a class="dash-row" href="${itemHref('decisions', decision)}">
     <span class="row-dot"></span>
-    <span><span class="row-title">${escHtml(decision.title)}</span><span class="row-sub">${projectChip(decision.project)} ${escHtml(decision.id || decision.rationale || 'Decision')}</span></span>
+    <span class="row-body"><span class="row-title">${escHtml(decision.title)}</span><span class="row-sub">${projectChip(decision.project)} <span class="row-sub-text">${escHtml(decision.id || decision.rationale || 'Decision')}</span></span></span>
     <span class="status-chip status-${escHtml(decision.status || 'active')}">${escHtml(decision.status || 'active')}</span>
   </a>`
 }
@@ -561,7 +564,7 @@ function renderDecisionRow(decision) {
 function renderChangeRow(change) {
   return `<div class="dash-row">
     <span class="change-avatar">${escHtml(initials(change.user))}</span>
-    <span><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${projectChip(change.project)} ${escHtml(change.date || 'undated')}</span></span>
+    <span class="row-body"><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${projectChip(change.project)} <span class="row-sub-text">${escHtml(change.date || 'undated')}</span></span></span>
     <span class="rev-chip">${escHtml(change.revisionId)}</span>
   </div>`
 }
@@ -756,6 +759,9 @@ async function loadDashboard() {
 
 loadDashboard()
 setInterval(loadDashboard, REFRESH_INTERVAL_MS)
+if (new URLSearchParams(window.location.search).get('projects') === 'add') {
+  setTimeout(() => openProjectSettings(), 250)
+}
 </script>
 </body>
 </html>
