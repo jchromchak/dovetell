@@ -391,6 +391,30 @@
   completion-notes:
     Added shared account config helpers that merge repo defaults with browser-local project additions and overrides into a canonical, token-free account-projects.json payload. The dashboard project sheet now includes a Repo JSON promotion panel with preview and copy actions, and project source labels distinguish default, local, and local override entries. Hardened assets/js/projects.js so loaded JSON is normalized and malformed project entries fall back safely before reaching the rest of the app.
 
+- [x] Fix Activity Feed schema task leak
+  id: task-e3f8c2b0
+  priority: now
+  revisionId: rev-6d94c2f8
+  created: 2026-05-07T19:04Z
+  completed: 2026-05-07T19:04Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-2a8f4d91
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    User reported two Activity Feed rows titled "Task title" on the dashboard.
+
+  completion-notes:
+    Fixed dashboard task parsing so it starts after the ## Tasks section instead of reading the schema sample at the top of tasks.md. Added a date guard so placeholder values like YYYY-MM-DDTHH:MMZ cannot appear as feed activity, and made task metadata parsing tolerate spaces after colons.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

@@ -527,6 +527,20 @@
   action: updated
   summary: Captured the agnostic .project-context direction and queued multi-team context audit design for cross-project truth maintenance.
 
+- rev-6d94c2f8
+  date: 2026-05-07T19:04Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-e3f8c2b0: completed
+    - dashboard/index.html: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Fixed Activity Feed task parsing so schema examples and placeholder dates no longer render as task activity.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

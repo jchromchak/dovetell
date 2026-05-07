@@ -61,6 +61,7 @@ project-controls-json-update: Added assets/config/account-projects.json as the r
 project-json-promotion-update: Added shared helpers to build a canonical account-projects.json from repo defaults plus browser-local project additions and overrides. Dashboard Project sources now includes a Repo JSON promotion panel with Preview JSON and Copy JSON actions. The generated payload includes project metadata, context paths, and token keys but never token values. The project settings list now labels default, local, and local override sources. assets/js/projects.js also normalizes loaded config JSON before exposing it globally.
 context-awareness-direction-update: User clarified Dovetell should become a context management awareness system, not primarily a project operating system or task manager. It should answer what has been happening behind the scenes across projects, keep tasks alive as one signal, and help reconcile activity into shared stable knowledge. Future persistence may move toward Postgres where appropriate. User prefers a standard context folder like .dovetell-context or .project-context over the current project-specific .dovetell-tasks-context name.
 agnostic-context-update: User clarified the context system should be agnostic, so .project-context is the preferred folder direction over a Dovetell-branded name. Next conceptual direction is easier auditing between projects in a multi-team view, with attention to whether truth is maintained or appended to the primary role. User plans to upload concepts before deeper implementation.
+activity-feed-bugfix-update: User reported duplicate Activity Feed rows titled "Task title." Root cause was dashboard parseTasks reading the schema example before ## Tasks in each project tasks.md, then treating placeholder created/updated dates as activity. dashboard/index.html now parses tasks after ## Tasks, filters activity dates to real YYYY-MM-DD values, and tolerates spaces after task metadata colons.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
@@ -95,6 +96,7 @@ tasks-completed:
   - task-a6541f36: Add dashboard recent activity feed
   - task-55bcfc5c: Introduce repo-backed account and project controls JSON
   - task-2c4a9f18: Promote local project sources into repo JSON
+  - task-e3f8c2b0: Fix Activity Feed schema task leak
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -138,5 +140,6 @@ validation:
   - A VM-based helper test exported repo defaults plus a simulated local project into valid account-projects.json and confirmed no token-like value was leaked.
   - git diff --check passed after repo JSON promotion changes.
   - Headless Chrome rendered the dashboard token prompt after the project config normalization and promotion UI changes.
+  - Dashboard inline script parse, git diff whitespace check, and a parser regression harness passed after the Activity Feed schema task leak fix.
 pending: Six active tasks remain open: task-bf4d0a73, task-c9e2fb64, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
 next-session-start-here: Pause before deeper implementation if the user is still thinking or uploading concepts. The strongest next slice is task-bf4d0a73, standardizing around .project-context, followed by task-c9e2fb64 after the user's concepts arrive. Continue committing context files with meaningful checkpoints.

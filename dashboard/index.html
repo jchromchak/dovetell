@@ -323,7 +323,9 @@ let lastDashboardUpdate = null
 Dovetell.renderSidebarProjects({ addAction: 'openProjectSettings()' })
 
 function parseTasks(md) {
-  const lines = md.split('\n')
+  const allLines = md.split('\n')
+  const taskStart = allLines.findIndex(line => /^## Tasks\s*$/.test(line.trim()))
+  const lines = taskStart >= 0 ? allLines.slice(taskStart + 1) : allLines
   const tasks = []
   let task = null
   for (let i = 0; i < lines.length; i++) {
@@ -336,14 +338,14 @@ function parseTasks(md) {
     }
     if (task && /^  /.test(line) && line.trim()) {
       const meta = line.trim()
-      const id = meta.match(/^id:(task-[\w-]+)/); if (id) task.id = id[1]
-      const pri = meta.match(/^priority:(\w+)/); if (pri) task.priority = pri[1]
-      const due = meta.match(/^due:([\d-]+)/); if (due) task.due = due[1]
+      const id = meta.match(/^id:\s*(task-[\w-]+)/); if (id) task.id = id[1]
+      const pri = meta.match(/^priority:\s*(\w+)/); if (pri) task.priority = pri[1]
+      const due = meta.match(/^due:\s*([\d-]+)/); if (due) task.due = due[1]
       const created = meta.match(/^created:\s*(.+)/); if (created) task.created = created[1]
       const updated = meta.match(/^updated:\s*(.+)/); if (updated) task.updated = updated[1]
-      const own = meta.match(/^owner:(\w+)/); if (own) task.owner = own[1]
+      const own = meta.match(/^owner:\s*(\w+)/); if (own) task.owner = own[1]
       const notes = meta.match(/^notes:(.+)/); if (notes) task.notes = notes[1].trim()
-      const src = meta.match(/^source:([\S]+)/); if (src) task.source = src[1]
+      const src = meta.match(/^source:\s*([\S]+)/); if (src) task.source = src[1]
     }
     if (task && !/^  /.test(line) && line.trim() && !/^- \[/.test(line) && !/^#/.test(line) && !/^<!/.test(line)) {
       tasks.push(task); task = null
@@ -351,6 +353,10 @@ function parseTasks(md) {
   }
   if (task) tasks.push(task)
   return tasks
+}
+
+function isActivityDate(value) {
+  return /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2})?/.test(value || '')
 }
 
 function parseDecisions(md) {
@@ -590,7 +596,7 @@ function projectChip(project) {
 
 function activityFeed(tasks, changes, journals) {
   const taskItems = tasks
-    .filter(task => task.created || task.updated)
+    .filter(task => isActivityDate(task.updated) || isActivityDate(task.created))
     .map(task => ({
       type: 'task',
       date: task.updated || task.created,
