@@ -58,6 +58,7 @@ dashboard-health-update: Added a tooltip explaining the Context Health formula a
 dashboard-refresh-update: Dashboard already auto-refreshed, but at ten minutes with generic status text. Changed refresh cadence to five minutes and updated the upper-right status to show Updating, Connected, or Disconnected with the last local update time.
 activity-feed-update: Replaced the dashboard Changelog panel with a derived Activity Feed that combines recent changelog entries, journal notes, and dated tasks across configured projects. The feed is read-only and uses existing loaded markdown data.
 project-controls-json-update: Added assets/config/account-projects.json as the repo-backed default source for account and project controls. assets/js/projects.js now loads the JSON synchronously to preserve the existing Dovetell.allProjects API, falls back to embedded defaults if the file is unavailable, and continues to merge browser-local custom project additions through shared helpers. PAT values remain local-only. The project sheet copy now explains that local additions should eventually be promoted to account-projects.json.
+project-json-promotion-update: Added shared helpers to build a canonical account-projects.json from repo defaults plus browser-local project additions and overrides. Dashboard Project sources now includes a Repo JSON promotion panel with Preview JSON and Copy JSON actions. The generated payload includes project metadata, context paths, and token keys but never token values. The project settings list now labels default, local, and local override sources. assets/js/projects.js also normalizes loaded config JSON before exposing it globally.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
@@ -87,6 +88,7 @@ tasks-completed:
   - task-e7c3a9d4: Add project journal capture and reconciliation flow
   - task-a6541f36: Add dashboard recent activity feed
   - task-55bcfc5c: Introduce repo-backed account and project controls JSON
+  - task-2c4a9f18: Promote local project sources into repo JSON
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -126,5 +128,9 @@ validation:
   - User completed the live browser/PAT smoke test: wrote to the journal, refreshed and saw the note, created a task, and saw the task appear in the task list.
   - JavaScript parse checks, git diff whitespace checks, and a mocked mixed feed order/render path passed after adding Activity Feed.
   - JavaScript parse checks, JSON parsing, git diff whitespace checks, and a headless dashboard render passed after adding repo-backed project controls. The local server log confirmed /assets/config/account-projects.json returned 200.
-pending: Five active tasks are open: task-2c4a9f18, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
-next-session-start-here: Active backlog is populated again. Recommended first slice is task-2c4a9f18, promoting local project sources into account-projects.json, because it directly addresses continuity and unblocks cleaner external feed work. Continue committing context files with meaningful checkpoints.
+  - JavaScript parse checks passed for assets/js/projects.js, assets/js/shared.js, and the dashboard inline script after repo JSON promotion changes.
+  - A VM-based helper test exported repo defaults plus a simulated local project into valid account-projects.json and confirmed no token-like value was leaked.
+  - git diff --check passed after repo JSON promotion changes.
+  - Headless Chrome rendered the dashboard token prompt after the project config normalization and promotion UI changes.
+pending: Four active tasks remain open: task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
+next-session-start-here: Recommended next slice is task-9f1a62d0, refactoring project config boot to async loading, now that JSON promotion exists. Continue committing context files with meaningful checkpoints.

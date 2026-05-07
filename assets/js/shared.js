@@ -146,6 +146,15 @@
     return (global.DOVETELL_DEFAULT_PROJECTS || global.DOVETELL_PROJECTS || []).map(cloneProject);
   }
 
+  function accountConfig() {
+    return cloneProject(global.DOVETELL_PROJECT_CONFIG || {
+      schemaVersion: 1,
+      account: { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
+      defaultContextFiles: defaultContextFiles(),
+      projects: defaultProjects()
+    });
+  }
+
   function readCustomProjects() {
     try {
       const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
@@ -192,11 +201,58 @@
     return readCustomProjects().some(project => project.id === projectId);
   }
 
+  function projectIsDefault(projectId) {
+    return defaultProjects().some(project => project.id === projectId);
+  }
+
+  function projectSource(projectId) {
+    const isDefault = projectIsDefault(projectId);
+    const isCustom = projectIsCustom(projectId);
+    if (isDefault && isCustom) return 'local override';
+    if (isCustom) return 'local';
+    return 'default';
+  }
+
   function allProjects() {
     const merged = new Map();
     defaultProjects().forEach(project => merged.set(project.id, project));
     readCustomProjects().map(normalizeProject).forEach(project => merged.set(project.id, project));
     return [...merged.values()];
+  }
+
+  function serializableProject(project) {
+    const normalized = normalizeProject(project);
+    return {
+      id: normalized.id,
+      name: normalized.name,
+      owner: normalized.owner,
+      repo: normalized.repo,
+      visibility: normalized.visibility,
+      tokenKey: normalized.tokenKey,
+      contextFiles: normalized.contextFiles
+    };
+  }
+
+  function buildAccountProjectConfig(projects = allProjects()) {
+    const base = accountConfig();
+    const serializedProjects = projects
+      .map(serializableProject)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const defaultProjectId = (base.account && base.account.defaultProjectId) || (serializedProjects[0] && serializedProjects[0].id) || '';
+    return {
+      schemaVersion: Number(base.schemaVersion) || 1,
+      account: {
+        id: (base.account && base.account.id) || 'local',
+        name: (base.account && base.account.name) || 'Local',
+        defaultProjectId
+      },
+      defaultContextFiles: { ...defaultContextFiles(), ...(base.defaultContextFiles || {}) },
+      projects: serializedProjects
+    };
+  }
+
+  function accountProjectConfigJson(projects = allProjects()) {
+    return `${JSON.stringify(buildAccountProjectConfig(projects), null, 2)}\n`;
   }
 
   function projectsForSource(sourceKey) {
@@ -415,13 +471,19 @@
     clearProjectToken,
     defaultContextFiles,
     defaultProjects,
+    accountConfig,
     readCustomProjects,
     saveCustomProjects,
     normalizeProject,
     upsertCustomProject,
     deleteCustomProject,
     projectIsCustom,
+    projectIsDefault,
+    projectSource,
     allProjects,
+    serializableProject,
+    buildAccountProjectConfig,
+    accountProjectConfigJson,
     projectsForSource,
     projectName,
     visibilityIcon,

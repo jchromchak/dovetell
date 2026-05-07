@@ -367,6 +367,30 @@
   completion-notes:
     Added assets/config/account-projects.json as the versioned default source for account and project controls, including default context file paths and the configured sandbox/private project sources. Updated assets/js/projects.js to load the JSON while preserving the current synchronous Dovetell.allProjects API and keeping an embedded fallback for static demo resilience. PATs remain browser-local only; later work should promote local project additions back into repo JSON and move project bootstrapping to an async path.
 
+- [x] Promote local project sources into repo JSON
+  id: task-2c4a9f18
+  priority: now
+  revisionId: rev-4d52e8c1
+  created: 2026-05-07T15:44Z
+  completed: 2026-05-07T16:13Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-55bcfc5c
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Add a promotion/export path so browser-local project source additions can become entries in assets/config/account-projects.json. This should reduce continuity gaps while keeping PATs local-only.
+
+  completion-notes:
+    Added shared account config helpers that merge repo defaults with browser-local project additions and overrides into a canonical, token-free account-projects.json payload. The dashboard project sheet now includes a Repo JSON promotion panel with preview and copy actions, and project source labels distinguish default, local, and local override entries. Hardened assets/js/projects.js so loaded JSON is normalized and malformed project entries fall back safely before reaching the rest of the app.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

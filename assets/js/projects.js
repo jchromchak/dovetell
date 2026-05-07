@@ -43,6 +43,45 @@
     return new URL('../config/account-projects.json', src || global.location.href).href;
   }
 
+  function mergeContextFiles(contextFiles, fallback = FALLBACK_CONTEXT_FILES) {
+    return { ...fallback, ...(contextFiles || {}) };
+  }
+
+  function normalizeProjectConfig(project, fallbackContextFiles) {
+    if (!project || !project.owner || !project.repo) return null;
+    const owner = String(project.owner).trim();
+    const repo = String(project.repo).trim();
+    const id = String(project.id || `${owner}-${repo}`)
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    if (!id || !owner || !repo) return null;
+    return {
+      id,
+      name: String(project.name || repo || id).trim(),
+      owner,
+      repo,
+      visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
+      tokenKey: String(project.tokenKey || `dovetell_pat_${owner}_${repo}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
+      contextFiles: mergeContextFiles(project.contextFiles, fallbackContextFiles)
+    };
+  }
+
+  function normalizeProjectConfigFile(config) {
+    const source = config && typeof config === 'object' ? config : {};
+    const defaultContextFiles = mergeContextFiles(source.defaultContextFiles);
+    const normalizedProjects = (Array.isArray(source.projects) ? source.projects : [])
+      .map(project => normalizeProjectConfig(project, defaultContextFiles))
+      .filter(Boolean);
+    return {
+      schemaVersion: Number(source.schemaVersion) || 1,
+      account: source.account || { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
+      defaultContextFiles,
+      projects: normalizedProjects.length ? normalizedProjects : FALLBACK_PROJECTS.map(project => normalizeProjectConfig(project, defaultContextFiles))
+    };
+  }
+
   function readProjectConfig() {
     try {
       const request = new XMLHttpRequest();
@@ -50,21 +89,21 @@
       request.overrideMimeType('application/json');
       request.send(null);
       if (request.status && request.status !== 200) throw new Error(`HTTP ${request.status}`);
-      return JSON.parse(request.responseText);
+      return normalizeProjectConfigFile(JSON.parse(request.responseText));
     } catch (err) {
       console.warn('Falling back to embedded project configuration.', err);
-      return {
+      return normalizeProjectConfigFile({
         schemaVersion: 1,
         account: { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
         defaultContextFiles: FALLBACK_CONTEXT_FILES,
         projects: FALLBACK_PROJECTS
-      };
+      });
     }
   }
 
   const config = readProjectConfig();
-  const defaultContextFiles = config.defaultContextFiles || FALLBACK_CONTEXT_FILES;
-  const projects = Array.isArray(config.projects) && config.projects.length ? config.projects : FALLBACK_PROJECTS;
+  const defaultContextFiles = config.defaultContextFiles;
+  const projects = config.projects;
 
   global.DOVETELL_ACCOUNT_CONFIG = config.account || null;
   global.DOVETELL_PROJECT_CONFIG = config;

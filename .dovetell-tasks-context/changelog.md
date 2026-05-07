@@ -477,6 +477,23 @@
   action: created
   summary: Re-populated the active backlog with project JSON promotion, async config boot, journal-to-decision reconciliation, activity feed filtering, and active-project feed export tasks.
 
+- rev-4d52e8c1
+  date: 2026-05-07T16:13Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-2c4a9f18: completed
+    - assets/js/projects.js: updated
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Added a token-free repo JSON promotion path for browser-local project sources and hardened account-projects.json normalization.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

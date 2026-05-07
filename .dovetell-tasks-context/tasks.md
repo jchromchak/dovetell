@@ -44,41 +44,13 @@
 [Append new tasks below. Newest at bottom.]
 [When a task is completed, move the full entry to completed-tasks.md.]
 
-- [ ] Promote local project sources into repo JSON
-  id: task-2c4a9f18
+- [ ] Refactor project config boot to async loading
+  id: task-9f1a62d0
   priority: now
   status: open
   revisionId: rev-4b9d2f61
   created: 2026-05-07T15:44Z
-  updated: 2026-05-07T15:44Z
-  due: none
-
-  owner: john
-  persona: none
-  decision: decision-55bcfc5c
-  rule: none
-  process: none
-  opp: none
-  risk: none
-  flags:
-    - dovetell:global
-
-  notes:
-    Add a promotion/export path so browser-local project source additions can become entries in assets/config/account-projects.json. This should reduce continuity gaps while keeping PATs local-only.
-
-  context:
-    Current state: account/project defaults now load from assets/config/account-projects.json, while assets/js/shared.js still merges localStorage custom projects and overrides. The user dislikes local-only project storage because it makes continuity weak. Build a flow that makes local project metadata easy to promote into the repo-backed JSON source, without committing token values or changing the PAT storage model. Acceptance signals: user can identify local-only sources, produce or apply safe JSON entries, and understand what remains local-only.
-
-  blocked-by:
-    - none
-
-- [ ] Refactor project config boot to async loading
-  id: task-9f1a62d0
-  priority: next
-  status: open
-  revisionId: rev-4b9d2f61
-  created: 2026-05-07T15:44Z
-  updated: 2026-05-07T15:44Z
+  updated: 2026-05-07T16:13Z
   due: none
 
   owner: john
@@ -98,7 +70,7 @@
     Current state: assets/js/projects.js uses synchronous XMLHttpRequest so existing pages can continue calling Dovetell.allProjects() during initial script execution. This was an intentional first pass to avoid a broad refactor. Follow up with an async initialization model that loads repo JSON cleanly, preserves resilient fallback behavior, and updates dashboard/tasks/decisions/rules/risks/opportunities boot order without breaking static-file usage or token prompts.
 
   blocked-by:
-    - task-2c4a9f18
+    - none
 
 - [ ] Add create-decision reconciliation from journal
   id: task-6e8d4b25

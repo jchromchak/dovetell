@@ -96,6 +96,10 @@
 .project-settings-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .project-settings-actions{display:flex;gap:6px;align-items:center}
 .project-path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.project-json-tools{display:grid;gap:8px;margin:8px 0 14px}
+.project-json-actions{display:flex;gap:8px;flex-wrap:wrap}
+.project-json-output{display:none;width:100%;min-height:150px;max-height:260px;resize:vertical;padding:10px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:10px;line-height:1.45;outline:none}
+.project-json-output.visible{display:block}
 .project-hint{font-size:11px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
 .project-form-section{margin:14px 0 8px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
 .project-verify{display:none;margin:10px 0 0;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(18,27,43,0.54);font-size:12px;line-height:1.45;color:var(--muted-2)}
@@ -189,6 +193,15 @@
   <div class="sheet-title">Add GitHub project source</div>
   <div class="project-hint">Default project metadata loads from repo JSON. Local additions and PATs stay in this browser until promoted to account-projects.json.</div>
   <div class="project-settings-list" id="project-settings-list"></div>
+  <div class="project-form-section">Repo JSON promotion</div>
+  <div class="project-hint">Generate a token-free account-projects.json from default projects plus local additions and overrides.</div>
+  <div class="project-json-tools">
+    <div class="project-json-actions">
+      <button class="btn-action" onclick="previewProjectConfigJson()">Preview JSON</button>
+      <button class="btn-action" onclick="copyProjectConfigJson()">Copy JSON</button>
+    </div>
+    <textarea class="project-json-output" id="project-json-output" readonly spellcheck="false"></textarea>
+  </div>
   <div class="project-form-section">Repository</div>
   <div class="form-row-2">
     <div class="form-field">
@@ -1269,7 +1282,7 @@ function renderProjectSettingsList() {
     <div class="project-settings-item">
       <div>
         <div class="project-settings-title">${visibilityIcon(project)} ${escHtml(projectName(project))}</div>
-        <div class="project-settings-meta">${escHtml(`${project.owner}/${project.repo}`)} · ${Dovetell.projectIsCustom(project.id) ? 'local' : 'default'}</div>
+        <div class="project-settings-meta">${escHtml(`${project.owner}/${project.repo}`)} · ${Dovetell.projectSource(project.id)}</div>
       </div>
       <div class="project-settings-actions">
         <button class="btn-action" onclick="fillProjectForm(findProjectForSettings('${escHtml(project.id)}'))">Edit</button>
@@ -1277,6 +1290,36 @@ function renderProjectSettingsList() {
       </div>
     </div>
   `).join('')
+}
+
+function projectConfigJson() {
+  return Dovetell.accountProjectConfigJson()
+}
+
+function previewProjectConfigJson() {
+  const output = document.getElementById('project-json-output')
+  output.value = projectConfigJson()
+  output.classList.add('visible')
+  setProjectVerify('Generated account-projects.json preview. It includes project metadata and token keys only, never token values.', 'success')
+}
+
+async function copyProjectConfigJson() {
+  const json = projectConfigJson()
+  const output = document.getElementById('project-json-output')
+  output.value = json
+  output.classList.add('visible')
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(json)
+    } else {
+      output.focus()
+      output.select()
+      document.execCommand('copy')
+    }
+    setProjectVerify('Copied account-projects.json. Promote it by replacing assets/config/account-projects.json in the repo.', 'success')
+  } catch (err) {
+    setProjectVerify('JSON preview is ready, but clipboard access was blocked. Select the preview text to copy it.', 'warning')
+  }
 }
 
 function findProjectForSettings(projectId) {
