@@ -201,6 +201,52 @@
     - source: codex-7588c8e2
     - date: 2026-05-07T15:05Z
 
+- decision-2a8f4d91
+  title: Treat Dovetell as context management awareness
+  status: active
+  revisionId: rev-9c4f20ab
+  created: 2026-05-07T18:40Z
+  updated: 2026-05-07T18:40Z
+  flags:
+    - dovetell:global
+
+  context:
+    The user clarified that Dovetell should not primarily become a project operating system or a task manager. It should coordinate awareness across repositories, preserve what has been happening behind the scenes, and help shape project context into shared, stable knowledge. Tasks matter because they keep work alive, but they are one signal inside a broader context system.
+
+  decision:
+    Orient Dovetell toward context management awareness: a repo-backed coordination layer that observes project activity, captures evolving context, reconciles useful knowledge, and surfaces cross-project movement. Keep the dashboard useful for local project context files now, but design future storage and feed work so it can evolve toward a Postgres-backed model when appropriate.
+
+  rationale:
+    A context coordinator can explain what is happening across active projects without collapsing everything into task status. This supports the user's real goal: building shared common stable knowledge from project activity while preserving enough live task context to keep work from going stale.
+
+  constraints:
+    Avoid overfitting to the current dovetell-tasks repo shape. Context folder naming should move toward a standard such as .dovetell-context or .project-context rather than a project-specific folder name. Preserve the current security boundary: PATs and secrets remain outside committed context. Treat Postgres as a future persistence direction, not an immediate dependency for the static demo.
+
+  outcomes:
+    Feed, journal, task, decision, and project-control work should be framed as context coordination. Backlog should include context folder standardization and feed semantics that answer "what has been going on behind the scenes across projects" while helping promote stable knowledge.
+
+  persona: none
+
+  rule: none
+
+  task: none
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - The user prefers a standard folder like .dovetell-context or .project-context over .dovetell-tasks-context.
+    - The user eventually wants Postgres where appropriate.
+    - source: codex-7588c8e2
+    - date: 2026-05-07T18:40Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*

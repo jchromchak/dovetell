@@ -46,11 +46,11 @@
 
 - [ ] Refactor project config boot to async loading
   id: task-9f1a62d0
-  priority: now
+  priority: next
   status: open
   revisionId: rev-4b9d2f61
   created: 2026-05-07T15:44Z
-  updated: 2026-05-07T16:13Z
+  updated: 2026-05-07T18:40Z
   due: none
 
   owner: john
@@ -148,13 +148,41 @@
     - dovetell:global
 
   notes:
-    Produce a repo-readable feed for the user's external active-project tracker, derived from context files rather than browser-local state.
+    Produce a repo-readable feed for the user's external active-project tracker, derived from context files rather than browser-local state. The feed should answer what has been going on behind the scenes across projects.
 
   context:
-    Current state: the user has a separate tool tracking active projects in real time and wants a continuous feed. Dovetell now commits meaningful context checkpoints and has a dashboard Activity Feed derived from markdown. Define and implement an exportable feed artifact or endpoint that can be consumed outside the browser, likely from changelog, journal, tasks, and project controls. Avoid exposing PATs or user-private data beyond what is already committed to the relevant repo.
+    Current state: the user has a separate tool tracking active projects in real time and wants a continuous feed. Dovetell now commits meaningful context checkpoints and has a dashboard Activity Feed derived from markdown. Define and implement an exportable feed artifact or endpoint that can be consumed outside the browser, likely from changelog, journal, tasks, decisions, and project controls. This is less a task-manager feed than a context-coordination feed: it should preserve active work signals while helping surface stable shared knowledge and cross-project shape. Avoid exposing PATs or user-private data beyond what is already committed to the relevant repo.
 
   blocked-by:
     - task-2c4a9f18
+
+- [ ] Standardize context folder naming
+  id: task-bf4d0a73
+  priority: now
+  status: open
+  revisionId: rev-9c4f20ab
+  created: 2026-05-07T18:40Z
+  updated: 2026-05-07T18:40Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: decision-2a8f4d91
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Decide and migrate toward a standard context directory name, likely .dovetell-context or .project-context, instead of project-specific names like .dovetell-tasks-context.
+
+  context:
+    The user has been experimenting with context folder shapes and finds project-specific folder names cumbersome and nonstandard. This should be handled as a global Dovetell convention before deeper multi-project/feed work depends on the current naming. Evaluate .dovetell-context versus .project-context, note migration implications for account-projects.json, dashboard source config, existing context files, and external active-project feeds, then implement the chosen naming path in a coherent checkpoint.
+
+  blocked-by:
+    - none
 
 ---
 

@@ -494,6 +494,23 @@
   action: completed
   summary: Added a token-free repo JSON promotion path for browser-local project sources and hardened account-projects.json normalization.
 
+- rev-9c4f20ab
+  date: 2026-05-07T18:40Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-2a8f4d91: created
+    - task-bf4d0a73: created
+    - task-9f1a62d0: updated
+    - task-4dd0b71e: updated
+    - decisions.md: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded the dovetell:global direction that Dovetell is a context management awareness system, not primarily a task manager, and queued context folder standardization.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
