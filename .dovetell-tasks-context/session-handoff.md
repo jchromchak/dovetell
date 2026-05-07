@@ -51,8 +51,13 @@ project-source-flow-update: Began task-8e2f6b91. The project sheet now presents 
 project-source-flow-closeout: Completed task-8e2f6b91. The redesigned project sheet passed JavaScript parsing, whitespace checks, and a mobile screenshot review. The sheet now keeps GitHub verification failures visible, prevents silent reload failures, and preserves the local source entry for correction without exposing PAT values.
 journal-planning-update: Added .dovetell-tasks-context/journal.md as the planned free-flow capture file, updated launcher and seed guidance, added task context blocks for resumability, and recorded decision-6b2f4a91 with the dovetell:global flag so the journal concept can be reconciled for promotion to the shared/global dovetell model.
 journal-implementation-update: Started task-e7c3a9d4. Journal is now a configured per-project context path. The dashboard can load journal entries, tolerate missing journal.md as empty, render a desktop right rail with project selector, composer, expandable cards, and append new entries to GitHub, creating journal.md on first write when needed.
+journal-reconciliation-update: Continued task-e7c3a9d4 by choosing tasks as the first manual reconciliation action. Expanded journal cards now expose a create-task action that appends a task to the selected project's tasks.md and records the created task ID in the journal entry actions field.
+journal-mobile-update: User agreed with mobile journal as a dashboard-launched sheet and with an initial create-item workflow. Dashboard now shows Open journal on mobile, opens a bottom sheet with selector/composer/cards, and uses a create-task preview sheet with editable title and priority before writing.
+context-commit-decision-update: User decided that context updates should be committed at each meaningful run/checkpoint so external active-project feeds can consume the repo as the current project event stream. Recorded decision-90e1768a with dovetell:global.
+dashboard-health-update: Added a tooltip explaining the Context Health formula and added the source project badge to the Last Change panel.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
+  - decision-90e1768a: Commit context updates at each meaningful run checkpoint
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
@@ -97,5 +102,13 @@ validation:
   - JavaScript parse check and git diff whitespace check passed after redesigning the project source sheet. Headless Chrome mobile screenshot confirmed the add-project sheet opens with stacked fields rather than a clipped two-column form.
   - Context-only journal planning update completed; no app code was changed.
   - User confirmed the pushed project-source flow worked with a real project/PAT.
-pending: task-e7c3a9d4 needs browser verification of the desktop journal rail and journal append behavior. Mobile journal interaction remains an open design decision.
-next-session-start-here: Verify dashboard/ at desktop width and confirm the Project Journal rail fits without crowding dashboard cards. Add one test journal note against a real project, confirm journal.md is created or updated in the selected repo, and then decide whether the first reconciliation action should create tasks only or support tasks and decisions together.
+  - JavaScript parse checks passed for dashboard/index.html inline scripts, assets/js/shared.js, and assets/js/projects.js after journal reconciliation changes.
+  - git diff --check passed after journal reconciliation changes.
+  - Headless Chrome desktop screenshot at 1440x960 confirmed the dashboard token-prompt/shell still fits cleanly without PATs.
+  - Mocked journal create path passed: missing journal.md seeds the file, appends the entry, writes with sha:null, and parses back.
+  - Mocked journal-to-task reconciliation passed: create-task writes tasks.md, then writes journal.md with the created task ID in actions.
+  - Mocked create-task preview flow passed: sheet opens, custom task title and priority are applied, tasks.md is written, and journal.md receives the created task ID.
+  - Headless mobile screenshot confirmed the Open journal trigger is visible without colliding with the bottom nav, and the journal sheet opens with selector, composer, and journal cards.
+  - JavaScript parse checks and git diff whitespace checks passed after latest-change project badge and context health tooltip.
+pending: task-e7c3a9d4 still needs a real browser/PAT smoke test for journal append and create-task writes against an actual configured repo.
+next-session-start-here: Use a saved browser PAT to add one test journal note against a real project, create a task from that note using the preview sheet, and confirm journal.md and tasks.md updated in the selected repo. Continue committing context files with meaningful checkpoints.

@@ -111,6 +111,51 @@
     - source: codex-7588c8e2
     - date: 2026-05-07T03:27Z
 
+- decision-90e1768a
+  title: Commit context updates at each meaningful run checkpoint
+  status: active
+  revisionId: rev-ba0b1ebd
+  created: 2026-05-07T13:50Z
+  updated: 2026-05-07T13:50Z
+  flags:
+    - dovetell:global
+
+  context:
+    The user tracks active projects in real time through a tool that consumes project context from repositories. If context updates stay local, the continuous feed can miss current project state, decisions, handoffs, and active work.
+
+  decision:
+    At the end of each meaningful run or checkpoint, commit the relevant project context changes with the implementation or planning changes they describe. Use context-only commits when the run only changes planning, triage, audit, or handoff state.
+
+  rationale:
+    Context files are the project event stream. Committing them regularly keeps external feeds, future AI sessions, and project history aligned without requiring hidden local state.
+
+  constraints:
+    Do not commit credentials, PATs, local browser storage, screenshots with secrets, generated temporary harnesses, or unrelated local noise. Prefer coherent checkpoints over a commit for every tiny edit.
+
+  outcomes:
+    Project feeds can consume up-to-date decisions, tasks, handoffs, and changelog entries directly from GitHub. Code and context changes should travel together when they describe the same work.
+
+  persona: none
+
+  rule: none
+
+  task: none
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - This is a dovetell:global operating convention candidate for all context-managed projects, including Famframe and Dovetell.
+    - source: codex-7588c8e2
+    - date: 2026-05-07T13:50Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*

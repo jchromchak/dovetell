@@ -360,6 +360,47 @@
   action: updated
   summary: Recorded successful live project-source validation and started the dashboard project journal implementation with load, display, composer, and append support.
 
+- rev-18087956
+  date: 2026-05-07T13:08Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-e7c3a9d4: updated
+    - dashboard/index.html: updated
+    - tasks.md: updated
+    - changelog.md: updated
+  action: updated
+  summary: Added the first manual journal reconciliation action so a journal entry can create a task and record the created task ID back on the entry.
+
+- rev-8fa60ffe
+  date: 2026-05-07T13:36Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-e7c3a9d4: updated
+    - dashboard/index.html: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Added mobile journal capture as a bottom sheet and changed journal task creation to a preview flow with editable title and priority.
+
+- rev-ba0b1ebd
+  date: 2026-05-07T13:50Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-90e1768a: created
+    - dashboard/index.html: updated
+    - decisions.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded the dovetell:global convention to commit context updates at meaningful checkpoints and added the latest-change project badge plus context health formula hint.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
