@@ -60,11 +60,13 @@ activity-feed-update: Replaced the dashboard Changelog panel with a derived Acti
 project-controls-json-update: Added assets/config/account-projects.json as the repo-backed default source for account and project controls. assets/js/projects.js now loads the JSON synchronously to preserve the existing Dovetell.allProjects API, falls back to embedded defaults if the file is unavailable, and continues to merge browser-local custom project additions through shared helpers. PAT values remain local-only. The project sheet copy now explains that local additions should eventually be promoted to account-projects.json.
 project-json-promotion-update: Added shared helpers to build a canonical account-projects.json from repo defaults plus browser-local project additions and overrides. Dashboard Project sources now includes a Repo JSON promotion panel with Preview JSON and Copy JSON actions. The generated payload includes project metadata, context paths, and token keys but never token values. The project settings list now labels default, local, and local override sources. assets/js/projects.js also normalizes loaded config JSON before exposing it globally.
 context-awareness-direction-update: User clarified Dovetell should become a context management awareness system, not primarily a project operating system or task manager. It should answer what has been happening behind the scenes across projects, keep tasks alive as one signal, and help reconcile activity into shared stable knowledge. Future persistence may move toward Postgres where appropriate. User prefers a standard context folder like .dovetell-context or .project-context over the current project-specific .dovetell-tasks-context name.
+agnostic-context-update: User clarified the context system should be agnostic, so .project-context is the preferred folder direction over a Dovetell-branded name. Next conceptual direction is easier auditing between projects in a multi-team view, with attention to whether truth is maintained or appended to the primary role. User plans to upload concepts before deeper implementation.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
   - decision-55bcfc5c: Store default account and project controls in repo JSON
   - decision-2a8f4d91: Treat Dovetell as context management awareness
+  - decision-7c91d4a2: Prefer agnostic project context conventions
 decisions-proposed: A later prompt should decide whether to keep direct browser-to-GitHub writes as the long-term model before deeper multi-project work.
 tasks-added:
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
@@ -77,6 +79,7 @@ tasks-added:
   - task-d7a3e014: Add Activity Feed filters by project and object type
   - task-4dd0b71e: Export active-project tracker feed
   - task-bf4d0a73: Standardize context folder naming
+  - task-c9e2fb64: Design multi-team context audit view
 tasks-completed:
   - task-a27da8f3: Extract shared CSS and GitHub/auth utilities
   - task-51a43e7c: Extract shared shell and interaction helpers
@@ -135,5 +138,5 @@ validation:
   - A VM-based helper test exported repo defaults plus a simulated local project into valid account-projects.json and confirmed no token-like value was leaked.
   - git diff --check passed after repo JSON promotion changes.
   - Headless Chrome rendered the dashboard token prompt after the project config normalization and promotion UI changes.
-pending: Five active tasks remain open: task-bf4d0a73, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
-next-session-start-here: Pause before deeper implementation if the user is still thinking. The strongest next slice is task-bf4d0a73, standardizing the context folder name, because it is a global convention that will affect project config, feeds, and future Postgres migration. Continue committing context files with meaningful checkpoints.
+pending: Six active tasks remain open: task-bf4d0a73, task-c9e2fb64, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
+next-session-start-here: Pause before deeper implementation if the user is still thinking or uploading concepts. The strongest next slice is task-bf4d0a73, standardizing around .project-context, followed by task-c9e2fb64 after the user's concepts arrive. Continue committing context files with meaningful checkpoints.

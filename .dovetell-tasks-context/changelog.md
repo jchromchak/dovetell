@@ -511,6 +511,22 @@
   action: updated
   summary: Recorded the dovetell:global direction that Dovetell is a context management awareness system, not primarily a task manager, and queued context folder standardization.
 
+- rev-e158a7c9
+  date: 2026-05-07T18:53Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-7c91d4a2: created
+    - task-bf4d0a73: updated
+    - task-c9e2fb64: created
+    - decisions.md: updated
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Captured the agnostic .project-context direction and queued multi-team context audit design for cross-project truth maintenance.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

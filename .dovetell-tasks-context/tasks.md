@@ -176,13 +176,41 @@
     - dovetell:global
 
   notes:
-    Decide and migrate toward a standard context directory name, likely .dovetell-context or .project-context, instead of project-specific names like .dovetell-tasks-context.
+    Decide and migrate toward the agnostic standard context directory name .project-context instead of project-specific names like .dovetell-tasks-context.
 
   context:
-    The user has been experimenting with context folder shapes and finds project-specific folder names cumbersome and nonstandard. This should be handled as a global Dovetell convention before deeper multi-project/feed work depends on the current naming. Evaluate .dovetell-context versus .project-context, note migration implications for account-projects.json, dashboard source config, existing context files, and external active-project feeds, then implement the chosen naming path in a coherent checkpoint.
+    The user has been experimenting with context folder shapes and finds project-specific folder names cumbersome and nonstandard. The user clarified this is part of an agnostic solution, so .project-context is now the preferred candidate over .dovetell-context. This should be handled as a global convention before deeper multi-project/feed work depends on the current naming. Note migration implications for account-projects.json, dashboard source config, existing context files, and external active-project feeds, then implement the chosen naming path in a coherent checkpoint.
 
   blocked-by:
     - none
+
+- [ ] Design multi-team context audit view
+  id: task-c9e2fb64
+  priority: next
+  status: open
+  revisionId: rev-e158a7c9
+  created: 2026-05-07T18:53Z
+  updated: 2026-05-07T18:53Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: decision-7c91d4a2
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Design a multi-team audit view for comparing context across projects and checking whether truth is being maintained or appended to the primary role.
+
+  context:
+    User wants to easily audit between projects and treat the system as a multi-team context view. The goal is to know what has been going on behind the scenes across projects, while ensuring shared truth is maintained, appended, and reconciled into the primary role or stable knowledge layer. The user plans to upload concepts; this task should absorb those concepts, define terms such as project truth, primary role, append-only knowledge, divergence, and audit signal, then turn the direction into UI/data requirements.
+
+  blocked-by:
+    - user concept uploads
 
 ---
 

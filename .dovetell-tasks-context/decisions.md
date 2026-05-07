@@ -247,6 +247,51 @@
     - source: codex-7588c8e2
     - date: 2026-05-07T18:40Z
 
+- decision-7c91d4a2
+  title: Prefer agnostic project context conventions
+  status: active
+  revisionId: rev-e158a7c9
+  created: 2026-05-07T18:53Z
+  updated: 2026-05-07T18:53Z
+  flags:
+    - dovetell:global
+
+  context:
+    The user clarified that the context model is part of an agnostic solution rather than a Dovetell-branded-only convention. The next directions include easier audits between projects and a multi-team view that can check whether truth is being maintained or appended to the primary role.
+
+  decision:
+    Prefer agnostic project context conventions. Use .project-context as the leading candidate for the standard context directory, and frame future cross-project work around auditability, multi-team visibility, and truth maintenance rather than only dashboard navigation.
+
+  rationale:
+    A tool-agnostic convention can travel across repositories, teams, and future storage layers more cleanly than a Dovetell-branded folder name. Audit views need common structure so context can be compared across projects and stable knowledge can be maintained without each repo inventing its own shape.
+
+  constraints:
+    Do not immediately migrate every file until the concept iteration lands. The user plans to upload concepts, so implementation should leave room for changes to vocabulary, roles, truth layers, and audit views. Maintain compatibility with current .dovetell-tasks-context files until a deliberate migration is chosen.
+
+  outcomes:
+    task-bf4d0a73 should evaluate .project-context as the preferred target. Add a separate backlog item for multi-team context audit and truth maintenance so upcoming concepts can be reconciled into a concrete design.
+
+  persona: none
+
+  rule: none
+
+  task: task-bf4d0a73
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - User expects to upload concepts and iterate before deeper implementation.
+    - source: codex-7588c8e2
+    - date: 2026-05-07T18:53Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*
