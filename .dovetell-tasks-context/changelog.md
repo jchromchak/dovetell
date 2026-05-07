@@ -460,6 +460,23 @@
   action: completed
   summary: Added repo-backed account/project controls JSON, kept PATs local-only, and preserved the current project-loading API with an embedded fallback.
 
+- rev-4b9d2f61
+  date: 2026-05-07T15:44Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-2c4a9f18: created
+    - task-9f1a62d0: created
+    - task-6e8d4b25: created
+    - task-d7a3e014: created
+    - task-4dd0b71e: created
+    - tasks.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: created
+  summary: Re-populated the active backlog with project JSON promotion, async config boot, journal-to-decision reconciliation, activity feed filtering, and active-project feed export tasks.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

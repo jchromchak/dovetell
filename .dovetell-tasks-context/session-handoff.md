@@ -68,6 +68,11 @@ tasks-added:
   - task-bd02e9a4: Add project-aware drill-in and write target selection
   - task-c8e72b9d: Add editable project source management
   - task-e7c3a9d4: Add project journal capture and reconciliation flow
+  - task-2c4a9f18: Promote local project sources into repo JSON
+  - task-9f1a62d0: Refactor project config boot to async loading
+  - task-6e8d4b25: Add create-decision reconciliation from journal
+  - task-d7a3e014: Add Activity Feed filters by project and object type
+  - task-4dd0b71e: Export active-project tracker feed
 tasks-completed:
   - task-a27da8f3: Extract shared CSS and GitHub/auth utilities
   - task-51a43e7c: Extract shared shell and interaction helpers
@@ -121,5 +126,5 @@ validation:
   - User completed the live browser/PAT smoke test: wrote to the journal, refreshed and saw the note, created a task, and saw the task appear in the task list.
   - JavaScript parse checks, git diff whitespace checks, and a mocked mixed feed order/render path passed after adding Activity Feed.
   - JavaScript parse checks, JSON parsing, git diff whitespace checks, and a headless dashboard render passed after adding repo-backed project controls. The local server log confirmed /assets/config/account-projects.json returned 200.
-pending: none; active task list is empty after task-55bcfc5c completion.
-next-session-start-here: Pick the next slice. Likely candidates: promote/export local project additions into account-projects.json, convert project config bootstrapping to async, create-decision from journal, activity feed filtering by project/type, or exporting a feed endpoint for the active-project tracker. Continue committing context files with meaningful checkpoints.
+pending: Five active tasks are open: task-2c4a9f18, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
+next-session-start-here: Active backlog is populated again. Recommended first slice is task-2c4a9f18, promoting local project sources into account-projects.json, because it directly addresses continuity and unblocks cleaner external feed work. Continue committing context files with meaningful checkpoints.
