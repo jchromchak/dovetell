@@ -56,6 +56,7 @@ journal-mobile-update: User agreed with mobile journal as a dashboard-launched s
 context-commit-decision-update: User decided that context updates should be committed at each meaningful run/checkpoint so external active-project feeds can consume the repo as the current project event stream. Recorded decision-90e1768a with dovetell:global.
 dashboard-health-update: Added a tooltip explaining the Context Health formula and added the source project badge to the Last Change panel.
 dashboard-refresh-update: Dashboard already auto-refreshed, but at ten minutes with generic status text. Changed refresh cadence to five minutes and updated the upper-right status to show Updating, Connected, or Disconnected with the last local update time.
+activity-feed-update: Replaced the dashboard Changelog panel with a derived Activity Feed that combines recent changelog entries, journal notes, and dated tasks across configured projects. The feed is read-only and uses existing loaded markdown data.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
@@ -77,6 +78,7 @@ tasks-completed:
   - task-8e2f6b91: Revisit project source management flow
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
   - task-e7c3a9d4: Add project journal capture and reconciliation flow
+  - task-a6541f36: Add dashboard recent activity feed
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -114,5 +116,6 @@ validation:
   - JavaScript parse checks and git diff whitespace checks passed after latest-change project badge and context health tooltip.
   - JavaScript parse checks and git diff whitespace checks passed after five-minute refresh and local last-update status changes.
   - User completed the live browser/PAT smoke test: wrote to the journal, refreshed and saw the note, created a task, and saw the task appear in the task list.
-pending: none for task-e7c3a9d4; it is completed. Next product direction is likely project feed/recent activity or create-decision from journal.
-next-session-start-here: Pick the next journal-adjacent slice: project feed/recent activity is recommended before create-decision from journal because it connects directly to the active-project tracker. Continue committing context files with meaningful checkpoints.
+  - JavaScript parse checks, git diff whitespace checks, and a mocked mixed feed order/render path passed after adding Activity Feed.
+pending: none for task-e7c3a9d4; it is completed.
+next-session-start-here: Validate Activity Feed with live project data, then pick the next slice. Likely candidates: create-decision from journal, activity feed filtering by project/type, or exporting a feed endpoint for the active-project tracker. Continue committing context files with meaningful checkpoints.

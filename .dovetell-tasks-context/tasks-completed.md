@@ -321,6 +321,28 @@
   completion-notes:
     Added journal as a configured per-project context path. Dashboard loads journal entries, tolerates missing journal.md, renders a desktop journal column, exposes mobile journal capture through a bottom sheet, appends notes to GitHub, and creates journal.md on first write. Added task reconciliation through a preview sheet with editable title and priority, then records the created task ID in the journal entry actions field. User confirmed the live flow with a saved PAT: wrote to the journal, refreshed and saw the note, created a task from it, and saw the task appear in the task list.
 
+- [x] Add dashboard recent activity feed
+  id: task-a6541f36
+  priority: next
+  revisionId: rev-aace2a68
+  created: 2026-05-07T14:26Z
+  completed: 2026-05-07T14:26Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-90e1768a
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Replace the narrow dashboard changelog panel with a project activity feed that better supports the user's external active-project tracker direction. Keep it read-only and derived from existing loaded markdown files.
+
+  completion-notes:
+    Changed the dashboard Changelog panel to Activity Feed. The feed merges recent changelog entries, journal notes, and dated tasks across configured projects, sorts them by date, shows compact type avatars, project chips, metadata, and links task activity back to the relevant task page. Verified JavaScript parsing, whitespace checks, and a mocked mixed feed order/render path.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

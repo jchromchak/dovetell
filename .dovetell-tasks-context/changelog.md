@@ -427,6 +427,20 @@
   action: completed
   summary: Closed the project journal capture and reconciliation task after live PAT-backed validation wrote a journal note, refreshed it, created a task, and showed it in the task list.
 
+- rev-aace2a68
+  date: 2026-05-07T14:26Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-a6541f36: completed
+    - dashboard/index.html: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Replaced the dashboard changelog panel with a derived recent activity feed that combines changelog entries, journal notes, and dated tasks across projects.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

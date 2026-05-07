@@ -72,6 +72,8 @@
 .status-deferred,.status-open{color:var(--amber);border-color:rgba(245,158,11,0.28)}
 .status-superseded,.status-closed{color:var(--muted-2)}
 .change-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--purple),var(--blurple));font-size:12px;font-weight:800;color:#fff}
+.change-avatar.task{background:linear-gradient(135deg,var(--teal),var(--green));color:#042f2e}
+.change-avatar.journal{background:linear-gradient(135deg,var(--purple),var(--blurple-light))}
 .dashboard-empty{padding:22px 0;text-align:center;color:var(--muted);font-size:13px}
 .token-card{width:100%;max-width:520px;margin:48px auto;text-align:center}
 .token-projects{display:grid;gap:14px;text-align:left;margin-top:18px}
@@ -316,7 +318,7 @@ function parseTasks(md) {
     const m = line.match(/^- \[([ x])\] (.+)/)
     if (m) {
       if (task) tasks.push(task)
-      task = { checked: m[1] === 'x', title: m[2].trim(), id: null, priority: 'later', due: null, owner: null, notes: null, source: null }
+      task = { checked: m[1] === 'x', title: m[2].trim(), id: null, priority: 'later', due: null, owner: null, notes: null, source: null, created: null, updated: null }
       continue
     }
     if (task && /^  /.test(line) && line.trim()) {
@@ -324,6 +326,8 @@ function parseTasks(md) {
       const id = meta.match(/^id:(task-[\w-]+)/); if (id) task.id = id[1]
       const pri = meta.match(/^priority:(\w+)/); if (pri) task.priority = pri[1]
       const due = meta.match(/^due:([\d-]+)/); if (due) task.due = due[1]
+      const created = meta.match(/^created:\s*(.+)/); if (created) task.created = created[1]
+      const updated = meta.match(/^updated:\s*(.+)/); if (updated) task.updated = updated[1]
       const own = meta.match(/^owner:(\w+)/); if (own) task.owner = own[1]
       const notes = meta.match(/^notes:(.+)/); if (notes) task.notes = notes[1].trim()
       const src = meta.match(/^source:([\S]+)/); if (src) task.source = src[1]
@@ -571,6 +575,38 @@ function projectChip(project) {
   return `<span class="project-chip ${escHtml(project.visibility || 'unknown')}" title="${escHtml(`${projectName(project)} · ${project.owner}/${project.repo}`)}">${visibilityIcon(project)} ${escHtml(projectInitials(project))}</span>`
 }
 
+function activityFeed(tasks, changes, journals) {
+  const taskItems = tasks
+    .filter(task => task.created || task.updated)
+    .map(task => ({
+      type: 'task',
+      date: task.updated || task.created,
+      title: task.title,
+      meta: task.id || task.source || 'Task',
+      project: task.project,
+      href: itemHref('tasks', task)
+    }))
+  const changeItems = changes.map(change => ({
+    type: 'change',
+    date: change.date,
+    title: change.summary || 'Updated project context',
+    meta: change.revisionId,
+    project: change.project,
+    user: change.user
+  }))
+  const journalItems = journals.map(entry => ({
+    type: 'journal',
+    date: entry.editDate || entry.createDate,
+    title: entry.content || 'Journal note',
+    meta: entry.journalId || entry.id,
+    project: entry.project
+  }))
+  return [...taskItems, ...changeItems, ...journalItems]
+    .filter(item => item.date)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .slice(0, 8)
+}
+
 function itemHref(section, item) {
   const params = new URLSearchParams()
   if (item.project && item.project.id) params.set('project', item.project.id)
@@ -633,12 +669,14 @@ function renderDashboard(data, sourceStates = []) {
   const risks = data.risks || []
   const opportunities = data.opportunities || []
   const changes = data.changelog || []
+  const journals = data.journals || []
   const openTasks = tasks.filter(t => !t.checked)
   const priorityRank = { now: 0, next: 1, later: 2 }
   const hotTasks = openTasks.sort((a, b) => priorityRank[a.priority || 'later'] - priorityRank[b.priority || 'later']).slice(0, 6)
   const activeRisks = risks.filter(r => r.status === 'open').sort((a, b) => riskScore(b) - riskScore(a)).slice(0, 5)
   const recentDecisions = decisions.sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 4)
   const recentChanges = changes.sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 7)
+  const recentActivity = activityFeed(tasks, changes, journals)
   const health = contextHealth(tasks, risks, decisions, changes)
   const latestChange = recentChanges[0]
   const warning = sourceWarning(sourceStates)
@@ -686,8 +724,8 @@ function renderDashboard(data, sourceStates = []) {
             </div>
           </div>
           <div class="dash-panel">
-            <div class="panel-head"><div class="panel-title">Changelog <span class="panel-count">${recentChanges.length}</span></div><span class="panel-kicker">Recent</span></div>
-            <div class="dash-list">${recentChanges.length ? recentChanges.map(renderChangeRow).join('') : emptyPanel('No changes loaded')}</div>
+            <div class="panel-head"><div class="panel-title">Activity Feed <span class="panel-count">${recentActivity.length}</span></div><span class="panel-kicker">Recent</span></div>
+            <div class="dash-list">${recentActivity.length ? recentActivity.map(renderActivityRow).join('') : emptyPanel('No activity loaded')}</div>
           </div>
         </section>
       </div>
@@ -1066,6 +1104,26 @@ function renderChangeRow(change) {
     <span class="row-body"><span class="row-title">${escHtml(change.summary || 'Updated project context')}</span><span class="row-sub">${projectChip(change.project)} <span class="row-sub-text">${escHtml(change.date || 'undated')}</span></span></span>
     <span class="rev-chip">${escHtml(change.revisionId)}</span>
   </div>`
+}
+
+function activityAvatar(item) {
+  if (item.type === 'task') return 'T'
+  if (item.type === 'journal') return 'J'
+  return initials(item.user)
+}
+
+function activityTypeLabel(type) {
+  if (type === 'task') return 'Task'
+  if (type === 'journal') return 'Journal'
+  return 'Change'
+}
+
+function renderActivityRow(item) {
+  const row = `<span class="change-avatar ${escHtml(item.type)}">${escHtml(activityAvatar(item))}</span>
+    <span class="row-body"><span class="row-title">${escHtml(item.title)}</span><span class="row-sub">${projectChip(item.project)} <span class="row-sub-text">${escHtml(activityTypeLabel(item.type))} · ${escHtml(item.date || 'undated')}</span></span></span>
+    <span class="rev-chip">${escHtml(item.meta || item.type)}</span>`
+  if (item.href) return `<a class="dash-row" href="${item.href}">${row}</a>`
+  return `<div class="dash-row">${row}</div>`
 }
 
 function renderTokenPrompt() {
