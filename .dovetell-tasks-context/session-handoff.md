@@ -76,6 +76,7 @@ tasks-completed:
   - task-c8e72b9d: Add editable project source management
   - task-8e2f6b91: Revisit project source management flow
   - task-9a1c2691: Validate dashboard loaded state with GitHub data
+  - task-e7c3a9d4: Add project journal capture and reconciliation flow
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -112,5 +113,6 @@ validation:
   - Headless mobile screenshot confirmed the Open journal trigger is visible without colliding with the bottom nav, and the journal sheet opens with selector, composer, and journal cards.
   - JavaScript parse checks and git diff whitespace checks passed after latest-change project badge and context health tooltip.
   - JavaScript parse checks and git diff whitespace checks passed after five-minute refresh and local last-update status changes.
-pending: task-e7c3a9d4 still needs a real browser/PAT smoke test for journal append and create-task writes against an actual configured repo.
-next-session-start-here: Use a saved browser PAT to add one test journal note against a real project, create a task from that note using the preview sheet, and confirm journal.md and tasks.md updated in the selected repo. Continue committing context files with meaningful checkpoints.
+  - User completed the live browser/PAT smoke test: wrote to the journal, refreshed and saw the note, created a task, and saw the task appear in the task list.
+pending: none for task-e7c3a9d4; it is completed. Next product direction is likely project feed/recent activity or create-decision from journal.
+next-session-start-here: Pick the next journal-adjacent slice: project feed/recent activity is recommended before create-decision from journal because it connects directly to the active-project tracker. Continue committing context files with meaningful checkpoints.

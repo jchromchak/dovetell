@@ -299,6 +299,28 @@
   completion-notes:
     User confirmed the pushed add-project flow worked with a real project/PAT. Prior checks covered mocked loaded state, bad-token handling, partial warnings, public/private markers, project-aware routing, local project source storage, and the visual gauge fix. The live validation blocker is cleared.
 
+- [x] Add project journal capture and reconciliation flow
+  id: task-e7c3a9d4
+  priority: now
+  revisionId: rev-6056726b
+  created: 2026-05-07T03:27Z
+  completed: 2026-05-07T14:11Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-6b2f4a91
+  rule: none
+  process: none
+  opp: none
+  risk: none
+
+  notes:
+    Build a project journal feature backed by .dovetell-tasks-context/journal.md. On desktop, the journal should appear as a right-hand sidebar with a top composer for free-flow thoughts and truncated journal cards that can expand. Entries should support quick slash-style actions such as add task or add decision, with created object IDs captured in the journal entry actions field. Initial implementation may use a manual reconciliation step; future versions can move toward live LLM-assisted reconciliation.
+
+  completion-notes:
+    Added journal as a configured per-project context path. Dashboard loads journal entries, tolerates missing journal.md, renders a desktop journal column, exposes mobile journal capture through a bottom sheet, appends notes to GitHub, and creates journal.md on first write. Added task reconciliation through a preview sheet with editable title and priority, then records the created task ID in the journal entry actions field. User confirmed the live flow with a saved PAT: wrote to the journal, refreshed and saw the note, created a task from it, and saw the task appear in the task list.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

@@ -413,6 +413,20 @@
   action: updated
   summary: Changed dashboard auto-refresh to five minutes and replaced the header status copy with connected, updating, and disconnected states that show the last local update time.
 
+- rev-6056726b
+  date: 2026-05-07T14:11Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-e7c3a9d4: completed
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Closed the project journal capture and reconciliation task after live PAT-backed validation wrote a journal note, refreshed it, created a task, and showed it in the task list.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
