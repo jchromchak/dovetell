@@ -566,7 +566,7 @@
   }
 
   function sectionForPath() {
-    const match = global.location.pathname.match(/\/(dashboard|tasks|decisions|opportunities|rules|risks)\/?$/);
+    const match = global.location.pathname.match(/\/(dashboard|tasks|decisions|opportunities|rules|risks|refinery)\/?$/);
     return match ? match[1] : 'dashboard';
   }
 

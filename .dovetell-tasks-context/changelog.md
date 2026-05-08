@@ -652,6 +652,19 @@
   action: updated
   summary: Added source-profile defaults so asset-refinery repos use asset files instead of task-dashboard files, and kept the dashboard aggregation focused on dashboard-ready context sources.
 
+- rev-8d1b7a3e
+  date: 2026-05-08T19:46Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - refinery/index.html: created
+    - assets/css/shared.css: updated
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+  action: created
+  summary: Added an initial asset refinery view for asset-refinery sources, including file presence status, source metadata, and a first-pass promotion candidate reader.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

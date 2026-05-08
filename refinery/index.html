@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>dovetell — Asset Refinery</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" type="image/png" href="../assets/sandbox-favicon.png">
+<link rel="apple-touch-icon" href="../assets/sandbox-apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="dovetell refinery">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/css/shared.css?v=20260508-source-profile1"/>
+<style>
+.refinery-main{max-width:1180px}
+.refinery-hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,0.6fr);gap:14px;margin-bottom:16px}
+.refinery-panel{background:rgba(11,18,32,0.82);border:1px solid var(--border);border-radius:8px;padding:18px;box-shadow:0 18px 50px rgba(0,0,0,0.18)}
+.refinery-kicker{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.refinery-title{font-size:24px;line-height:1.08;font-weight:800;color:var(--text);letter-spacing:0;margin-bottom:9px}
+.refinery-copy{font-size:13px;line-height:1.55;color:var(--muted-2);max-width:680px}
+.refinery-source-meta{display:grid;gap:8px}
+.source-line{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted-2);border-bottom:1px solid rgba(148,163,184,0.10);padding-bottom:8px}
+.source-line:last-child{border-bottom:0;padding-bottom:0}
+.source-line span:first-child{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
+.refinery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.file-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;min-height:132px;display:flex;flex-direction:column;gap:10px}
+.file-card.present{border-color:rgba(45,212,191,0.28)}
+.file-card.missing{border-color:rgba(245,158,11,0.30)}
+.file-card.error{border-color:rgba(255,77,77,0.30)}
+.file-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.file-card-title{font-size:14px;font-weight:800;color:var(--text);line-height:1.25}
+.file-status{font-family:var(--mono);font-size:10px;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px solid var(--border);color:var(--muted-2);white-space:nowrap}
+.file-card.present .file-status{color:var(--teal);border-color:rgba(45,212,191,0.34);background:rgba(45,212,191,0.08)}
+.file-card.missing .file-status{color:var(--amber);border-color:rgba(245,158,11,0.34);background:rgba(245,158,11,0.08)}
+.file-card.error .file-status{color:var(--red);border-color:rgba(255,77,77,0.34);background:rgba(255,77,77,0.08)}
+.file-path{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.45;word-break:break-word}
+.file-metrics{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.metric-chip{font-family:var(--mono);font-size:10px;color:var(--muted-2);border:1px solid var(--border);border-radius:5px;padding:3px 7px;background:rgba(18,27,43,0.58)}
+.refinery-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,0.45fr);gap:14px}
+.candidate-list,.ref-doc-list{display:grid;gap:8px}
+.candidate-row,.ref-doc-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px;border:1px solid var(--border);background:var(--surface);border-radius:8px}
+.candidate-index{font-family:var(--mono);font-size:11px;color:var(--teal);padding-top:2px}
+.candidate-title,.ref-doc-title{font-size:13px;font-weight:800;color:var(--text);line-height:1.35}
+.candidate-meta,.ref-doc-meta{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
+.candidate-tag{font-family:var(--mono);font-size:10px;color:var(--blurple-light);border:1px solid rgba(110,168,255,0.26);border-radius:5px;padding:3px 7px;background:rgba(59,130,246,0.08);white-space:nowrap}
+.ref-doc-row{grid-template-columns:minmax(0,1fr) auto}
+.doc-count{font-family:var(--mono);font-size:18px;color:var(--text);font-weight:700}
+.token-card{max-width:720px;margin:40px auto}
+.token-projects{display:grid;gap:10px;margin-top:16px}
+.token-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}
+@media (max-width: 900px){
+  .refinery-hero,.refinery-columns{grid-template-columns:1fr}
+  .refinery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width: 560px){
+  .refinery-grid{grid-template-columns:1fr}
+  .candidate-row{grid-template-columns:auto minmax(0,1fr)}
+  .candidate-tag{grid-column:2}
+  .token-input-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>// Asset Refinery</span>
+  <span class="demo-banner-divider">·</span>
+  <span>source profile · asset-refinery</span>
+</div>
+
+<div class="topbar">
+  <a class="topbar-logo" href="../dashboard/">
+    <img src="../assets/sandbox-apple-touch-icon.png" class="logo-img" alt="dovetell"/>
+    <div class="logo-wordmark">dove<span>tell</span></div>
+  </a>
+  <div class="topbar-right">
+    <button class="btn-sm" onclick="loadRefinery()">↻</button>
+    <div class="status-row">
+      <div class="status-dot loading" id="status-dot"></div>
+      <span class="status-text" id="status-text">Loading…</span>
+    </div>
+  </div>
+</div>
+
+<main class="main refinery-main" id="main">
+  <div class="empty"><div class="empty-icon">⋯</div><div class="empty-text">Loading asset refinery…</div></div>
+</main>
+
+<nav class="tab-bar">
+  <a href="../dashboard/" class="tab-item"><span class="tab-icon">⌂</span><span class="tab-label">Dashboard</span></a>
+  <a href="../tasks/" class="tab-item"><span class="tab-icon">☑</span><span class="tab-label">Tasks</span></a>
+  <a href="../decisions/" class="tab-item"><span class="tab-icon">⚖</span><span class="tab-label">Decisions</span></a>
+  <a href="../opportunities/" class="tab-item"><span class="tab-icon">◇</span><span class="tab-label">Opportunities</span></a>
+  <a href="../rules/" class="tab-item"><span class="tab-icon">§</span><span class="tab-label">Rules</span></a>
+  <a href="../risks/" class="tab-item"><span class="tab-icon">⚠</span><span class="tab-label">Risks</span></a>
+  <a href="../refinery/" class="tab-item active"><span class="tab-icon">⬡</span><span class="tab-label">Refinery</span></a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/js/shared.js?v=20260508-source-profile1"></script>
+<script src="../assets/js/projects.js?v=20260508-source-profile1"></script>
+<script>
+const REFINERY_TYPES = new Set(['asset-refinery'])
+const FILE_LABELS = {
+  changelog: 'Changelog',
+  commands: 'Commands',
+  contextMap: 'Context Map',
+  contextStructure: 'Context Structure',
+  patternCandidates: 'Pattern Candidates',
+  promotionLifecycle: 'Promotion Lifecycle'
+}
+let selectedSourceId = localStorage.getItem('dovetell_refinery_source') || ''
+let refineryState = { source: null, files: [] }
+
+function escHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]))
+}
+
+function sourceName(source) {
+  return Dovetell.projectName ? Dovetell.projectName(source) : source.name || source.repo
+}
+
+function repoSlug(source) {
+  return `${source.owner}/${source.repo}`
+}
+
+function refinerySources() {
+  return Dovetell.allProjects().filter(source => REFINERY_TYPES.has(source.repoType))
+}
+
+function selectedSource() {
+  const sources = refinerySources()
+  const match = sources.find(source => source.id === selectedSourceId) || sources[0] || null
+  if (match) {
+    selectedSourceId = match.id
+    localStorage.setItem('dovetell_refinery_source', match.id)
+  }
+  return match
+}
+
+function contextFileEntries(source) {
+  return Object.entries(source.contextFiles || {}).map(([key, path]) => ({
+    key,
+    path,
+    label: FILE_LABELS[key] || key.replace(/([A-Z])/g, ' $1').replace(/^./, char => char.toUpperCase())
+  }))
+}
+
+function decodeGitHubContent(file) {
+  if (!file || !file.content) return ''
+  return decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))))
+}
+
+async function loadSourceFile(source, entry) {
+  const projectConfig = { ...source, token: Dovetell.readProjectToken(source) }
+  try {
+    const file = await Dovetell.githubGet(projectConfig, entry.path)
+    const content = decodeGitHubContent(file)
+    return { ...entry, ok: true, present: true, sha: file.sha, content, lineCount: content.split('\n').filter(Boolean).length }
+  } catch (err) {
+    if (/GitHub 404/i.test(err.message || '')) {
+      return { ...entry, ok: true, present: false, sha: null, content: '', lineCount: 0 }
+    }
+    return { ...entry, ok: false, present: false, error: err.message || 'Load failed', content: '', lineCount: 0 }
+  }
+}
+
+function parseCandidates(md) {
+  const rows = []
+  let section = ''
+  md.split('\n').forEach((line, index) => {
+    const heading = line.match(/^(#{1,4})\s+(.+)/)
+    if (heading) {
+      section = heading[2].trim()
+      return
+    }
+    const bullet = line.match(/^\s*[-*]\s+(?:\[[ x]\]\s+)?(.+)/)
+    if (!bullet) return
+    const raw = bullet[1].trim()
+    if (!raw || /^id:|^date:|^status:|^source:/i.test(raw)) return
+    const tag = (raw.match(/\b(ctx:[\w-]+|dovetell:[\w-]+)\b/i) || [])[1] || 'candidate'
+    rows.push({ id: `candidate-${index}`, title: raw.replace(/\s+\b(ctx:[\w-]+|dovetell:[\w-]+)\b/ig, '').trim(), section, tag })
+  })
+  return rows.slice(0, 16)
+}
+
+function parseReferenceDocs(files) {
+  return files
+    .filter(file => file.present)
+    .map(file => ({
+      key: file.key,
+      title: file.label,
+      path: file.path,
+      headings: (file.content.match(/^#{1,4}\s+/gm) || []).length,
+      lines: file.lineCount
+    }))
+}
+
+function statusText(file) {
+  if (!file.ok) return 'Error'
+  if (!file.present) return 'Missing'
+  return 'Present'
+}
+
+function fileCard(file) {
+  const state = !file.ok ? 'error' : file.present ? 'present' : 'missing'
+  return `<article class="file-card ${state}">
+    <div class="file-card-head">
+      <div class="file-card-title">${escHtml(file.label)}</div>
+      <span class="file-status">${escHtml(statusText(file))}</span>
+    </div>
+    <div class="file-path">${escHtml(file.path)}</div>
+    ${file.error ? `<div class="file-path">${escHtml(file.error)}</div>` : ''}
+    <div class="file-metrics">
+      <span class="metric-chip">${file.present ? escHtml(`${file.lineCount} lines`) : 'not created'}</span>
+      ${file.sha ? `<span class="metric-chip">${escHtml(file.sha.slice(0, 7))}</span>` : ''}
+    </div>
+  </article>`
+}
+
+function renderTokenPrompt(source) {
+  document.getElementById('main').innerHTML = `<section class="refinery-panel token-card">
+    <div class="refinery-kicker">Private Source</div>
+    <div class="refinery-title">Connect ${escHtml(sourceName(source))}</div>
+    <div class="refinery-copy">This source is private. Save a repo-readable PAT locally to load the asset refinery files.</div>
+    <div class="token-input-row">
+      <input class="form-input" id="refinery-token" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')saveRefineryToken()"/>
+      <button class="btn-sm" onclick="saveRefineryToken()">Save & load</button>
+    </div>
+  </section>`
+  Dovetell.setStatus('error', 'Token required')
+}
+
+function renderRefinery(state) {
+  const source = state.source
+  const files = state.files
+  const candidatesFile = files.find(file => file.key === 'patternCandidates')
+  const candidates = parseCandidates(candidatesFile ? candidatesFile.content : '')
+  const docs = parseReferenceDocs(files)
+  const missing = files.filter(file => file.ok && !file.present).length
+  const errors = files.filter(file => !file.ok).length
+  document.querySelector('.demo-banner span:last-child').textContent = `${repoSlug(source)} · asset-refinery`
+  document.getElementById('main').innerHTML = `
+    <section class="refinery-hero">
+      <div class="refinery-panel">
+        <div class="refinery-kicker">Asset Refinery</div>
+        <div class="refinery-title">${escHtml(sourceName(source))}</div>
+        <div class="refinery-copy">Working lab for reusable context assets, commands, maps, patterns, and promotion candidates before they move toward canonical assets.</div>
+      </div>
+      <div class="refinery-panel refinery-source-meta">
+        <div class="source-line"><span>Source</span><strong>${escHtml(repoSlug(source))}</strong></div>
+        <div class="source-line"><span>Profile</span><strong>${escHtml(source.repoType)}</strong></div>
+        <div class="source-line"><span>Files</span><strong>${files.filter(file => file.present).length}/${files.length} present</strong></div>
+        <div class="source-line"><span>Attention</span><strong>${errors ? `${errors} errors` : `${missing} missing`}</strong></div>
+      </div>
+    </section>
+
+    <section class="section-head">
+      <div class="section-title">Source Files</div>
+      <div class="section-count">${files.length}</div>
+    </section>
+    <section class="refinery-grid">${files.map(fileCard).join('')}</section>
+
+    <section class="refinery-columns">
+      <div>
+        <div class="section-head">
+          <div class="section-title">Promotion Candidates</div>
+          <div class="section-count">${candidates.length}</div>
+        </div>
+        <div class="candidate-list">
+          ${candidates.length ? candidates.map((candidate, index) => `
+            <article class="candidate-row">
+              <div class="candidate-index">${String(index + 1).padStart(2, '0')}</div>
+              <div>
+                <div class="candidate-title">${escHtml(candidate.title)}</div>
+                <div class="candidate-meta">${escHtml(candidate.section || 'Unsectioned')}</div>
+              </div>
+              <div class="candidate-tag">${escHtml(candidate.tag)}</div>
+            </article>
+          `).join('') : '<div class="empty"><div class="empty-text">No bullet-style promotion candidates found yet.</div></div>'}
+        </div>
+      </div>
+      <aside>
+        <div class="section-head">
+          <div class="section-title">Reference Docs</div>
+          <div class="section-count">${docs.length}</div>
+        </div>
+        <div class="ref-doc-list">
+          ${docs.map(doc => `
+            <article class="ref-doc-row">
+              <div>
+                <div class="ref-doc-title">${escHtml(doc.title)}</div>
+                <div class="ref-doc-meta">${escHtml(doc.path)} · ${doc.lines} lines</div>
+              </div>
+              <div class="doc-count">${doc.headings}</div>
+            </article>
+          `).join('')}
+        </div>
+      </aside>
+    </section>
+  `
+}
+
+function renderSourceSelect(source) {
+  const sources = refinerySources()
+  if (document.getElementById('refinery-source-select') || sources.length < 2) return
+  const select = document.createElement('select')
+  select.id = 'refinery-source-select'
+  select.className = 'project-select'
+  select.title = 'Asset refinery source'
+  sources.forEach(item => {
+    const option = document.createElement('option')
+    option.value = item.id
+    option.textContent = `${Dovetell.visibilityIcon(item)} ${sourceName(item)}`
+    option.selected = source && item.id === source.id
+    select.appendChild(option)
+  })
+  select.addEventListener('change', () => {
+    selectedSourceId = select.value
+    localStorage.setItem('dovetell_refinery_source', selectedSourceId)
+    loadRefinery()
+  })
+  const topbar = document.querySelector('.topbar-right')
+  topbar.insertBefore(select, topbar.firstChild)
+}
+
+function saveRefineryToken() {
+  const source = selectedSource()
+  const input = document.getElementById('refinery-token')
+  const token = input ? input.value.trim() : ''
+  if (!source || !token) return
+  Dovetell.saveProjectToken(source, token)
+  Dovetell.showToast('Refinery token saved locally', 'success')
+  loadRefinery()
+}
+
+async function loadRefinery() {
+  const source = selectedSource()
+  if (!source) {
+    Dovetell.setStatus('error', 'No refinery sources')
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No asset-refinery sources are configured.</div></div>`
+    return
+  }
+  renderSourceSelect(source)
+  if (source.visibility === 'private' && !Dovetell.readProjectToken(source)) {
+    renderTokenPrompt(source)
+    return
+  }
+  Dovetell.setStatus('loading', 'Loading refinery…')
+  const files = await Promise.all(contextFileEntries(source).map(entry => loadSourceFile(source, entry)))
+  refineryState = { source, files }
+  renderRefinery(refineryState)
+  const errors = files.filter(file => !file.ok).length
+  Dovetell.setStatus(errors ? 'error' : 'ok', errors ? `${errors} files unavailable` : 'Refinery loaded')
+}
+
+loadRefinery()
+</script>
+</body>
+</html>
