@@ -168,7 +168,7 @@
     <div class="logo-wordmark">dove<span>tell</span></div>
   </div>
   <div class="topbar-right">
-    <button class="btn-sm" onclick="openProjectSettings()" title="Project sources">Projects</button>
+    <button class="btn-sm" onclick="openProjectSettings()" title="Context sources">Sources</button>
     <button class="btn-sm" onclick="loadDashboard()" title="Refresh">↻</button>
     <div class="status-row">
       <div class="status-dot loading" id="status-dot"></div>
@@ -199,12 +199,12 @@
 <div class="add-sheet-overlay" id="project-overlay" onclick="closeProjectSettings()"></div>
 <div class="add-sheet" id="project-sheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title">Project Sources</div>
+  <div class="sheet-title">Context Sources</div>
   <div class="project-hint">Repo config is the durable source of truth. This page keeps a browser working copy and syncs account-projects.json back to GitHub when your token can write it.</div>
   <div class="project-home-view" id="project-home-view">
     <div class="project-source-head">
       <div class="project-form-section">Configured Sources</div>
-      <button class="btn-action" onclick="startProjectAdd()">Add project</button>
+      <button class="btn-action" onclick="startProjectAdd()">Add source</button>
     </div>
     <div class="project-settings-list" id="project-settings-list"></div>
     <div class="project-form-section">Repo JSON promotion</div>
@@ -229,7 +229,7 @@
   </div>
   <div class="project-verify" id="project-verify"></div>
   <div class="project-form-panel" id="project-form-panel">
-    <div class="project-form-title" id="project-form-title">Add project</div>
+    <div class="project-form-title" id="project-form-title">Add source</div>
     <div class="project-form-section">Repository</div>
     <div class="form-row-2">
       <div class="form-field">
@@ -255,7 +255,18 @@
         </select>
       </div>
     </div>
-    <div class="project-form-section">Project identity</div>
+    <div class="project-form-section">Source identity</div>
+    <div class="form-field">
+      <label class="form-label">Source type</label>
+      <select class="form-select" id="project-repo-type">
+        <option value="project-context">Project context</option>
+        <option value="business-context">Business context</option>
+        <option value="asset-refinery">Asset refinery</option>
+        <option value="canonical-assets">Canonical assets</option>
+        <option value="docs">Docs</option>
+        <option value="app">App</option>
+      </select>
+    </div>
     <div class="form-field">
       <label class="form-label">Project ID</label>
       <input class="form-input" id="project-id" placeholder="auto-generated"/>
@@ -277,7 +288,7 @@
     </div>
     <div class="sheet-actions">
       <button class="btn-sheet-cancel" onclick="showProjectSourceList()">Back</button>
-      <button class="btn-sheet-save" onclick="saveProjectSettings()">Save project</button>
+      <button class="btn-sheet-save" onclick="saveProjectSettings()">Save source</button>
     </div>
   </div>
 </div>
@@ -323,8 +334,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-missing-context1"></script>
-<script src="../assets/js/projects.js?v=20260508-missing-context1"></script>
+<script src="../assets/js/shared.js?v=20260508-repo-type1"></script>
+<script src="../assets/js/projects.js?v=20260508-repo-type1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
@@ -589,6 +600,10 @@ function visibilityIcon(project) {
   return '?'
 }
 
+function repoTypeLabel(repoType = 'project-context') {
+  return repoType.split('-').filter(Boolean).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
+}
+
 function projectName(project) {
   return project ? project.name || `${project.owner}/${project.repo}` : 'unknown project'
 }
@@ -724,7 +739,7 @@ function renderDashboard(data, sourceStates = []) {
               <span class="status-chip status-active">${openTasks.length} open tasks</span>
               <span class="status-chip status-open">${activeRisks.length} open risks</span>
               <span class="status-chip">${opportunities.filter(o => o.status !== 'closed').length} opportunities</span>
-              <span class="status-chip">${PROJECTS.length} projects</span>
+              <span class="status-chip">${PROJECTS.length} sources</span>
             </div>
           </div>
           <div class="summary-panel health-panel" title="${escHtml(contextHealthTitle())}">
@@ -1160,7 +1175,7 @@ function renderActivityRow(item) {
 function renderTokenPrompt() {
   document.getElementById('main').innerHTML = `<div class="summary-panel token-card">
     <div class="token-icon">🔑</div>
-    <div class="token-title">Connect project sources</div>
+    <div class="token-title">Connect context sources</div>
     <div class="token-copy">Tokens stay on this device. Use one readable PAT per repo.</div>
     ${renderProjectTokenForms(missingTokenProjects(), 'Save & load')}
   </div>`
@@ -1174,7 +1189,7 @@ function renderProjectTokenForms(projects, label) {
       <div class="token-project-head">
         <div>
           <div class="token-project-title">${visibilityIcon(project)} ${escHtml(projectName(project))}</div>
-          <div class="token-project-repo">${escHtml(`${project.owner}/${project.repo}`)}</div>
+          <div class="token-project-repo">${escHtml(`${project.owner}/${project.repo} · ${repoTypeLabel(project.repoType)}`)}</div>
         </div>
         <button class="token-clear" onclick="clearProjectToken('${escHtml(project.id)}')">Clear</button>
       </div>
@@ -1375,9 +1390,9 @@ function startProjectEdit(projectId) {
 function showProjectForm(project, mode = 'add') {
   setProjectFormVisible(true)
   const title = document.getElementById('project-form-title')
-  if (title) title.textContent = mode === 'edit' ? 'Edit project' : 'Add project'
+  if (title) title.textContent = mode === 'edit' ? 'Edit source' : 'Add source'
   const saveButton = document.querySelector('#project-sheet .btn-sheet-save')
-  if (saveButton) saveButton.textContent = mode === 'edit' ? 'Save changes' : 'Add project'
+  if (saveButton) saveButton.textContent = mode === 'edit' ? 'Save changes' : 'Add source'
   fillProjectForm(project)
   const focus = document.getElementById(project ? 'project-name' : 'project-owner')
   if (focus) setTimeout(() => focus.focus(), 80)
@@ -1389,7 +1404,7 @@ function renderProjectSettingsList() {
     <div class="project-settings-item">
       <div>
         <div class="project-settings-title">${visibilityIcon(project)} ${escHtml(projectName(project))}</div>
-        <div class="project-settings-meta">${escHtml(`${project.owner}/${project.repo}`)} · ${Dovetell.projectSource(project.id)}</div>
+        <div class="project-settings-meta">${escHtml(`${project.owner}/${project.repo}`)} · ${repoTypeLabel(project.repoType)} · ${Dovetell.projectSource(project.id)}</div>
       </div>
       <div class="project-settings-actions">
         <button class="btn-action" onclick="startProjectEdit('${escHtml(project.id)}')">Edit</button>
@@ -1441,6 +1456,7 @@ function fillProjectForm(project) {
   document.getElementById('project-name').value = data.name || ''
   document.getElementById('project-owner').value = data.owner || ''
   document.getElementById('project-repo').value = data.repo || ''
+  document.getElementById('project-repo-type').value = data.repoType || 'project-context'
   document.getElementById('project-visibility').value = data.visibility || 'unknown'
   document.getElementById('project-token').value = ''
   projectPathKeys().forEach(key => {
@@ -1493,6 +1509,7 @@ async function saveProjectSettings() {
     name: document.getElementById('project-name').value.trim(),
     owner,
     repo,
+    repoType: document.getElementById('project-repo-type').value,
     visibility: document.getElementById('project-visibility').value,
     contextFiles
   })
@@ -1567,7 +1584,7 @@ async function syncProjectConfigFromSheet() {
 async function loadDashboard() {
   if (!PROJECTS.length) {
     updateConnectionStatus('disconnected', 'No projects configured')
-    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No project sources configured.</div></div>`
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No context sources configured.</div></div>`
     return
   }
   if (missingTokenProjects().length) {

@@ -278,6 +278,7 @@
       name: (project.name || repo || id).trim(),
       owner,
       repo,
+      repoType: (project.repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context',
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
       legacyTokenKey: project.legacyTokenKey || project.tokenKey || null,
       contextFiles
@@ -371,6 +372,7 @@
       name: normalized.name,
       owner: normalized.owner,
       repo: normalized.repo,
+      repoType: normalized.repoType,
       visibility: normalized.visibility,
       contextFiles: normalized.contextFiles
     };
@@ -461,7 +463,7 @@
     const select = document.createElement('select');
     select.id = 'project-select';
     select.className = 'project-select';
-    select.title = 'Project source';
+    select.title = 'Context source';
     projects.forEach(project => {
       const option = document.createElement('option');
       option.value = project.id;
@@ -494,8 +496,8 @@
     const projectHrefBase = section === 'dashboard' ? 'tasks' : section;
     const addProjectAction = options.addAction || '';
     const addProjectControl = addProjectAction
-      ? `<button class="sidebar-project-add" type="button" onclick="${addProjectAction}">+ Add project</button>`
-      : `<a class="sidebar-project-add" href="../dashboard/?projects=add">+ Add project</a>`;
+      ? `<button class="sidebar-project-add" type="button" onclick="${addProjectAction}">+ Add source</button>`
+      : `<a class="sidebar-project-add" href="../dashboard/?projects=add">+ Add source</a>`;
     const projectHtml = projects.map(project => `
       <a class="sidebar-project ${project.id === activeProjectId ? 'active' : ''}" href="../${projectHrefBase}/?project=${encodeURIComponent(project.id)}" title="${escHtml(repoSlug(project))}">
         <span class="sidebar-project-icon">${visibilityIcon(project)}</span>
@@ -505,7 +507,7 @@
     const wrap = document.createElement('div');
     wrap.className = 'sidebar-projects';
     wrap.id = 'sidebar-projects';
-    wrap.innerHTML = `<div class="sidebar-project-label">Projects</div>${projectHtml}${addProjectControl}`;
+    wrap.innerHTML = `<div class="sidebar-project-label">Sources</div>${projectHtml}${addProjectControl}`;
     const dashboardLink = nav.querySelector('a[href="../dashboard/"]') || nav.querySelector('.tab-item');
     if (dashboardLink && dashboardLink.nextSibling) {
       nav.insertBefore(wrap, dashboardLink.nextSibling);

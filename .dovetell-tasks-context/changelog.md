@@ -602,6 +602,21 @@
   action: created
   summary: Reframed connected projects as connected context sources and identified repoType as the next model abstraction.
 
+- rev-3b4e8f91
+  date: 2026-05-08T17:20Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/config/account-projects.json: updated
+    - assets/config/account-projects.fixture.json: updated
+    - assets/js/projects.js: updated
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+    - decision-4f7b9c2e: implemented
+  action: updated
+  summary: Added repoType to context source configuration and renamed the dashboard source-management UI toward connected context sources.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

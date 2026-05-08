@@ -36,6 +36,7 @@
       name: String(project.name || repo || id).trim(),
       owner,
       repo,
+      repoType: String(project.repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context',
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
       legacyTokenKey: project.tokenKey ? String(project.tokenKey).replace(/[^a-zA-Z0-9_:-]/g, '_') : null,
       contextFiles: mergeContextFiles(project.contextFiles, fallbackContextFiles)
