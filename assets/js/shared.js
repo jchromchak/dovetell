@@ -134,15 +134,13 @@
     if (token) return token;
     const legacyKey = legacyProjectTokenKey(project);
     const legacyToken = legacyKey && legacyKey !== canonicalKey ? localStorage.getItem(legacyKey) : null;
-    if (legacyToken) {
-      localStorage.setItem(canonicalKey, legacyToken);
-      return legacyToken;
-    }
-    return null;
+    return legacyToken || null;
   }
 
   function saveProjectToken(project, token) {
     localStorage.setItem(projectTokenKey(project), token);
+    const legacyKey = legacyProjectTokenKey(project);
+    if (legacyKey && legacyKey !== projectTokenKey(project)) localStorage.setItem(legacyKey, token);
   }
 
   function clearProjectToken(project) {

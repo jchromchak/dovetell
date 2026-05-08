@@ -312,8 +312,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-project-config2"></script>
-<script src="../assets/js/projects.js?v=20260508-project-config2"></script>
+<script src="../assets/js/shared.js?v=20260508-token-bridge1"></script>
+<script src="../assets/js/projects.js?v=20260508-token-bridge1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
@@ -1175,6 +1175,12 @@ function renderProjectTokenForms(projects, label) {
   `).join('')}</div>`
 }
 
+function setTokenButtonState(button, label) {
+  if (!button) return
+  button.disabled = false
+  button.textContent = label
+}
+
 function findProject(projectId) {
   return PROJECTS.find(project => project.id === projectId)
 }
@@ -1198,12 +1204,9 @@ async function saveProjectToken(projectId) {
   try {
     await verifyProjectAccess(project, token)
   } catch (err) {
-    Dovetell.clearProjectToken(project)
-    if (button) {
-      button.disabled = false
-      button.textContent = 'Save & load'
-    }
-    Dovetell.showToast(err.message || 'Token could not access this repo', 'error')
+    setTokenButtonState(button, 'Saved')
+    Dovetell.showToast(`Token saved locally. Access check needs attention: ${err.message || 'Unable to verify repo'}`, 'warning')
+    setTimeout(() => loadDashboard(), 900)
     return
   }
   loadDashboard()
