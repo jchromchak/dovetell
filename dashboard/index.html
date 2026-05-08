@@ -323,8 +323,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-config-connection1"></script>
-<script src="../assets/js/projects.js?v=20260508-config-connection1"></script>
+<script src="../assets/js/shared.js?v=20260508-project-token-save1"></script>
+<script src="../assets/js/projects.js?v=20260508-project-token-save1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
@@ -1208,19 +1208,17 @@ async function saveProjectToken(projectId) {
   if (!token) return
   Dovetell.saveProjectToken(project, token)
   const button = input && input.nextElementSibling
-  if (button) {
-    button.disabled = true
-    button.textContent = 'Checking...'
-  }
+  if (button) button.textContent = 'Saved'
+  Dovetell.showToast('Project token saved locally · loading sources', 'success')
+  setTimeout(() => loadDashboard(), 250)
+}
+
+async function checkProjectToken(project, token) {
   try {
-    await verifyProjectAccess(project, token)
+    return await verifyProjectAccess(project, token)
   } catch (err) {
-    setTokenButtonState(button, 'Saved')
-    Dovetell.showToast(`Token saved locally. Access check needs attention: ${err.message || 'Unable to verify repo'}`, 'warning')
-    setTimeout(() => loadDashboard(), 900)
-    return
+    return `Project token saved, but source access needs attention: ${err.message || 'Unable to verify repo'}.`
   }
-  loadDashboard()
 }
 
 function clearProjectToken(projectId) {
@@ -1499,19 +1497,13 @@ async function saveProjectSettings() {
     contextFiles
   })
   if (token) Dovetell.saveProjectToken(project, token)
-  try {
-    const message = await verifyProjectAccess(project, token || Dovetell.readProjectToken(project))
-    localStorage.setItem('dovetell_project_tasks', project.id)
-    const syncMessage = await syncProjectConfig(bestConfigToken(), false)
-    setProjectVerify(`${message} ${syncMessage} Reloading...`, 'success')
-    setTimeout(() => window.location.reload(), 900)
-  } catch (err) {
-    setProjectVerify(`${err.message}. Browser working config was saved so you can adjust or sync it without retyping.`, 'error')
-    if (saveButton) {
-      saveButton.disabled = false
-      saveButton.textContent = 'Save project'
-    }
-  }
+  localStorage.setItem('dovetell_project_tasks', project.id)
+  const syncMessage = await syncProjectConfig(bestConfigToken(), false)
+  const projectToken = token || Dovetell.readProjectToken(project)
+  const accessMessage = projectToken ? await checkProjectToken(project, projectToken) : 'Project saved. Add a project token when you want to load private context files.'
+  const state = syncMessage.startsWith('Synced') && !accessMessage.includes('needs attention') ? 'success' : 'warning'
+  setProjectVerify(`${syncMessage} ${accessMessage} Reloading...`, state)
+  setTimeout(() => window.location.reload(), 1100)
 }
 
 function deleteProjectSettings(projectId) {
