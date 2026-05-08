@@ -292,6 +292,52 @@
     - source: codex-7588c8e2
     - date: 2026-05-07T18:53Z
 
+- decision-4f7b9c2e
+  title: Model connected repositories as context sources
+  status: active
+  revisionId: rev-c9d8a1f4
+  created: 2026-05-08T17:06Z
+  updated: 2026-05-08T17:06Z
+  flags:
+    - dovetell:global
+
+  context:
+    The tracker dashboard started with the language of connected projects, but the user connected dovetell-private, dovetell-sandbox, and dovetell-assets-private and discovered that not every connected repository has the same purpose or file structure. Project context repos, business/GTM repos, asset refinery repos, canonical asset repos, docs repos, and future database-backed sources should not all be forced into the same "project" shape.
+
+  decision:
+    Reframe the tracker model from connected projects to connected context sources. Add repoType as the next abstraction so each source can declare its role, expected context files, dashboard behavior, and promotion path. Initial repoType candidates are project-context, asset-refinery, canonical-assets, docs, app, and business-context.
+
+  rationale:
+    Dovetell is a shared context awareness system, not only a task/project tracker. The system needs to digitize team tribal knowledge, preserve shared project truth, and help promote stable learnings into reusable assets. Treating every repo as a project-context repo caused friction when dovetell-assets-private acted more like an asset refinery with different default files. Naming the source type lets the app respect different shapes without losing the unified portfolio view.
+
+  constraints:
+    Keep the current static GitHub-backed dashboard working while the model evolves. Do not require every repoType to support every default file immediately. Do not commit credentials. Preserve .project-context as the standard project-context convention, but allow asset-refinery sources to carry different files and later custom views.
+
+  outcomes:
+    Future project configuration should add repoType. The Project Sources UI should gradually become Connected Context Sources. Loading, warnings, and creation flows should be profile-aware so missing default project files are not treated as broken when the repoType expects a different structure.
+
+  persona: none
+
+  rule: none
+
+  task: none
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - This supports the user's product thesis: Dovetell should serve shared team context and common contextual awareness, not just local personal prompt libraries.
+    - dovetell-assets-private is the forcing example for asset-refinery.
+    - source: codex-7588c8e2
+    - date: 2026-05-08T17:06Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*

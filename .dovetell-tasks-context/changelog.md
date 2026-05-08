@@ -591,6 +591,17 @@
   action: completed
   summary: Cleaned up project PAT storage by deriving localStorage keys from project IDs and keeping legacy token keys as migration fallback only.
 
+- rev-c9d8a1f4
+  date: 2026-05-08T17:06Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-4f7b9c2e: created
+    - decisions.md: updated
+  action: created
+  summary: Reframed connected projects as connected context sources and identified repoType as the next model abstraction.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
