@@ -243,7 +243,7 @@
     <input class="form-input" id="project-token" type="password" placeholder="github_pat_…"/>
   </div>
   <div class="project-form-section">Context file paths</div>
-  <div class="project-hint">Defaults use the private context repo shape. Edit these only when the repo stores context files somewhere else.</div>
+  <div class="project-hint">Defaults use the agnostic .project-context convention. Edit these only when the repo stores context files somewhere else.</div>
   <div class="project-path-grid">
     <div class="form-field"><label class="form-label">Tasks</label><input class="form-input" id="project-path-tasks"/></div>
     <div class="form-field"><label class="form-label">Decisions</label><input class="form-input" id="project-path-decisions"/></div>
@@ -304,16 +304,6 @@
 <script src="../assets/js/shared.js?v=20260507-journal1"></script>
 <script src="../assets/js/projects.js?v=20260507-journal1"></script>
 <script>
-const CONFIG = {
-  owner: 'dovetell-io',
-  repo: 'dovetell-sandbox',
-  path: 'dashboard',
-  token: null,
-  timezone: 'America/New_York',
-  tzLabel: 'ET',
-  sessionId: 'a3f7c291'
-}
-
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000
@@ -1205,13 +1195,13 @@ function projectPathKeys() {
 
 function projectContextDefaults() {
   return {
-    tasks: '.dovetell-tasks-context/tasks.md',
-    decisions: '.dovetell-tasks-context/decisions.md',
-    risks: '.dovetell-tasks-context/risks.md',
-    opportunities: '.dovetell-tasks-context/opportunities.md',
-    rules: '.dovetell-tasks-context/rules.md',
-    journal: '.dovetell-tasks-context/journal.md',
-    changelog: '.dovetell-tasks-context/changelog.md'
+    tasks: '.project-context/tasks.md',
+    decisions: '.project-context/decisions.md',
+    risks: '.project-context/risks.md',
+    opportunities: '.project-context/opportunities.md',
+    rules: '.project-context/rules.md',
+    journal: '.project-context/journal.md',
+    changelog: '.project-context/changelog.md'
   }
 }
 

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "account": {
+    "id": "fixture",
+    "name": "Fixture",
+    "defaultProjectId": "dovetell-sandbox"
+  },
+  "defaultContextFiles": {
+    "tasks": "tasks.md",
+    "decisions": "decisions.md",
+    "risks": "risks.md",
+    "opportunities": "opportunities.md",
+    "rules": "business-rules.md",
+    "journal": "journal.md",
+    "changelog": "changelog.md"
+  },
+  "projects": [
+    {
+      "id": "dovetell-sandbox",
+      "name": "dovetell sandbox",
+      "owner": "dovetell-io",
+      "repo": "dovetell-sandbox",
+      "visibility": "public",
+      "tokenKey": "dovetell_pat",
+      "contextFiles": {
+        "tasks": "tasks.md",
+        "decisions": "decisions.md",
+        "risks": "risks.md",
+        "opportunities": "opportunities.md",
+        "rules": "business-rules.md",
+        "journal": "journal.md",
+        "changelog": "changelog.md"
+      }
+    },
+    {
+      "id": "dovetell-private",
+      "name": "dovetell private",
+      "owner": "jchromchak",
+      "repo": "dovetell-private",
+      "visibility": "private",
+      "tokenKey": "dovetell_pat_jchromchak_dovetell-private",
+      "contextFiles": {
+        "tasks": ".project-context/tasks.md",
+        "decisions": ".project-context/decisions.md",
+        "risks": ".project-context/risks.md",
+        "opportunities": ".project-context/opportunities.md",
+        "rules": ".project-context/rules.md",
+        "journal": ".project-context/journal.md",
+        "changelog": ".project-context/changelog.md"
+      }
+    }
+  ]
+}

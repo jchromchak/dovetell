@@ -9,36 +9,10 @@
     changelog: 'changelog.md'
   };
 
-  const FALLBACK_PROJECTS = [
-    {
-      id: 'dovetell-sandbox',
-      name: 'dovetell sandbox',
-      owner: 'dovetell-io',
-      repo: 'dovetell-sandbox',
-      visibility: 'public',
-      tokenKey: 'dovetell_pat',
-      contextFiles: FALLBACK_CONTEXT_FILES
-    },
-    {
-      id: 'dovetell-private',
-      name: 'dovetell private',
-      owner: 'jchromchak',
-      repo: 'dovetell-private',
-      visibility: 'private',
-      tokenKey: 'dovetell_pat_jchromchak_dovetell-private',
-      contextFiles: {
-        tasks: '.dovetell-tasks-context/tasks.md',
-        decisions: '.dovetell-tasks-context/decisions.md',
-        risks: '.dovetell-tasks-context/risks.md',
-        opportunities: '.dovetell-tasks-context/opportunities.md',
-        rules: '.dovetell-tasks-context/rules.md',
-        journal: '.dovetell-tasks-context/journal.md',
-        changelog: '.dovetell-tasks-context/changelog.md'
-      }
-    }
-  ];
-
   function configUrl() {
+    const params = new URL(global.location.href).searchParams;
+    const override = global.DOVETELL_PROJECT_CONFIG_URL || params.get('projectConfig');
+    if (override) return new URL(override, global.location.href).href;
     const src = document.currentScript && document.currentScript.src;
     return new URL('../config/account-projects.json', src || global.location.href).href;
   }
@@ -76,9 +50,9 @@
       .filter(Boolean);
     return {
       schemaVersion: Number(source.schemaVersion) || 1,
-      account: source.account || { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
+      account: source.account || { id: 'local', name: 'Local', defaultProjectId: '' },
       defaultContextFiles,
-      projects: normalizedProjects.length ? normalizedProjects : FALLBACK_PROJECTS.map(project => normalizeProjectConfig(project, defaultContextFiles))
+      projects: normalizedProjects
     };
   }
 
@@ -91,12 +65,12 @@
       if (request.status && request.status !== 200) throw new Error(`HTTP ${request.status}`);
       return normalizeProjectConfigFile(JSON.parse(request.responseText));
     } catch (err) {
-      console.warn('Falling back to embedded project configuration.', err);
+      console.warn('Project configuration unavailable. No default projects loaded.', err);
       return normalizeProjectConfigFile({
         schemaVersion: 1,
-        account: { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
+        account: { id: 'local', name: 'Local', defaultProjectId: '' },
         defaultContextFiles: FALLBACK_CONTEXT_FILES,
-        projects: FALLBACK_PROJECTS
+        projects: []
       });
     }
   }

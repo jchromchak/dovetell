@@ -415,6 +415,30 @@
   completion-notes:
     Fixed dashboard task parsing so it starts after the ## Tasks section instead of reading the schema sample at the top of tasks.md. Added a date guard so placeholder values like YYYY-MM-DDTHH:MMZ cannot appear as feed activity, and made task metadata parsing tolerate spaces after colons.
 
+- [x] Remove embedded project profiles from JavaScript
+  id: task-8bf12e44
+  priority: now
+  revisionId: rev-b1a9c073
+  created: 2026-05-08T01:11Z
+  completed: 2026-05-08T01:11Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-7c91d4a2
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    User wanted architecture hardened so project profiles are not duplicated in JavaScript as an intermediate fallback. If profiles are needed for testing, they should live in an explicit testing file that can be referenced like an environment variable.
+
+  completion-notes:
+    Removed embedded project profile objects from assets/js/projects.js. Runtime project profiles now come from assets/config/account-projects.json, while tests and demo overrides can opt into assets/config/account-projects.fixture.json through the projectConfig URL parameter or DOVETELL_PROJECT_CONFIG_URL. New project defaults now use the agnostic .project-context/* convention instead of .dovetell-tasks-context/*.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

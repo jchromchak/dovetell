@@ -541,6 +541,22 @@
   action: completed
   summary: Fixed Activity Feed task parsing so schema examples and placeholder dates no longer render as task activity.
 
+- rev-b1a9c073
+  date: 2026-05-08T01:11Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-8bf12e44: completed
+    - assets/config/account-projects.fixture.json: created
+    - assets/js/projects.js: updated
+    - dashboard/index.html: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Removed embedded project profiles from JavaScript, added an explicit config fixture for tests, and changed new project defaults to .project-context paths.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
