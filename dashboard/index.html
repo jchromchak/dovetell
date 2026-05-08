@@ -190,15 +190,16 @@
 <div class="add-sheet-overlay" id="project-overlay" onclick="closeProjectSettings()"></div>
 <div class="add-sheet" id="project-sheet">
   <div class="sheet-handle"></div>
-  <div class="sheet-title">Add GitHub project source</div>
-  <div class="project-hint">Default project metadata loads from repo JSON. Local additions and PATs stay in this browser until promoted to account-projects.json.</div>
+  <div class="sheet-title">Project Sources</div>
+  <div class="project-hint">Repo config is the durable source of truth. Browser drafts are temporary working copies until their generated JSON is promoted to account-projects.json.</div>
   <div class="project-settings-list" id="project-settings-list"></div>
   <div class="project-form-section">Repo JSON promotion</div>
-  <div class="project-hint">Generate a token-free account-projects.json from default projects plus local additions and overrides.</div>
+  <div class="project-hint">Generate a token-free account-projects.json from repo-configured projects plus browser drafts and overrides.</div>
   <div class="project-json-tools">
     <div class="project-json-actions">
       <button class="btn-action" onclick="previewProjectConfigJson()">Preview JSON</button>
       <button class="btn-action" onclick="copyProjectConfigJson()">Copy JSON</button>
+      <button class="btn-action danger" onclick="clearProjectDrafts()">Clear drafts</button>
     </div>
     <textarea class="project-json-output" id="project-json-output" readonly spellcheck="false"></textarea>
   </div>
@@ -1281,7 +1282,7 @@ function previewProjectConfigJson() {
   const output = document.getElementById('project-json-output')
   output.value = projectConfigJson()
   output.classList.add('visible')
-  setProjectVerify('Generated account-projects.json preview. It includes project metadata and token keys only, never token values.', 'success')
+  setProjectVerify('Generated account-projects.json preview. It includes project metadata only, never token values or token storage keys.', 'success')
 }
 
 async function copyProjectConfigJson() {
@@ -1297,7 +1298,7 @@ async function copyProjectConfigJson() {
       output.select()
       document.execCommand('copy')
     }
-    setProjectVerify('Copied account-projects.json. Promote it by replacing assets/config/account-projects.json in the repo.', 'success')
+    setProjectVerify('Copied account-projects.json. Promote it by replacing assets/config/account-projects.json in the app repo.', 'success')
   } catch (err) {
     setProjectVerify('JSON preview is ready, but clipboard access was blocked. Select the preview text to copy it.', 'warning')
   }
@@ -1320,7 +1321,7 @@ function fillProjectForm(project) {
   projectPathKeys().forEach(key => {
     document.getElementById(`project-path-${key}`).value = (data.contextFiles && data.contextFiles[key]) || defaults[key] || ''
   })
-  setProjectVerify(project ? 'Editing an existing local source. Add a new token only if you want to replace the saved one.' : 'Enter an owner and repo. The project ID and context paths are generated locally.', 'warning')
+  setProjectVerify(project ? `Editing ${Dovetell.projectSource(project.id)} metadata. Add a token only if you want to replace the saved browser token.` : 'Enter an owner and repo. This creates a browser draft until the generated JSON is promoted.', 'warning')
   syncProjectGeneratedFields()
 }
 
@@ -1374,10 +1375,10 @@ async function saveProjectSettings() {
   try {
     const message = await verifyProjectAccess(project, token || Dovetell.readProjectToken(project))
     localStorage.setItem('dovetell_project_tasks', project.id)
-    setProjectVerify(`${message} Saved project source. Reloading...`, 'success')
+    setProjectVerify(`${message} Saved browser draft. Promote generated JSON when this should become durable. Reloading...`, 'success')
     setTimeout(() => window.location.reload(), 900)
   } catch (err) {
-    setProjectVerify(`${err.message}. Project source was saved locally so you can adjust it without retyping.`, 'error')
+    setProjectVerify(`${err.message}. Browser draft was saved so you can adjust it without retyping.`, 'error')
     if (saveButton) {
       saveButton.disabled = false
       saveButton.textContent = 'Save project'
@@ -1387,7 +1388,17 @@ async function saveProjectSettings() {
 
 function deleteProjectSettings(projectId) {
   Dovetell.deleteCustomProject(projectId)
-  Dovetell.showToast('Project removed · reloading', 'success')
+  Dovetell.showToast('Project draft removed · reloading', 'success')
+  setTimeout(() => window.location.reload(), 500)
+}
+
+function clearProjectDrafts() {
+  if (!Dovetell.hasCustomProjects()) {
+    setProjectVerify('No browser drafts to clear.', 'warning')
+    return
+  }
+  Dovetell.clearCustomProjects()
+  Dovetell.showToast('Browser drafts cleared · reloading', 'success')
   setTimeout(() => window.location.reload(), 500)
 }
 

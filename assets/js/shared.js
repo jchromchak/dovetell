@@ -1,6 +1,7 @@
 (function(global){
   const TOKEN_KEY = 'dovetell_pat';
-  const PROJECTS_STORAGE_KEY = 'dovetell_projects_custom';
+  const PROJECTS_STORAGE_KEY = 'dvtl:projects:drafts';
+  const LEGACY_PROJECTS_STORAGE_KEY = 'dovetell_projects_custom';
 
   function nanoid(len = 8) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -175,7 +176,11 @@
 
   function readCustomProjects() {
     try {
-      const raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+      let raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
+      if (!raw) {
+        raw = localStorage.getItem(LEGACY_PROJECTS_STORAGE_KEY);
+        if (raw) localStorage.setItem(PROJECTS_STORAGE_KEY, raw);
+      }
       const parsed = raw ? JSON.parse(raw) : [];
       return Array.isArray(parsed) ? parsed.filter(project => project && project.id && project.owner && project.repo) : [];
     } catch {
@@ -185,6 +190,11 @@
 
   function saveCustomProjects(projects) {
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
+  }
+
+  function clearCustomProjects() {
+    localStorage.removeItem(PROJECTS_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_PROJECTS_STORAGE_KEY);
   }
 
   function normalizeProject(project) {
@@ -215,6 +225,10 @@
     saveCustomProjects(readCustomProjects().filter(project => project.id !== projectId));
   }
 
+  function hasCustomProjects() {
+    return readCustomProjects().length > 0;
+  }
+
   function projectIsCustom(projectId) {
     return readCustomProjects().some(project => project.id === projectId);
   }
@@ -226,9 +240,9 @@
   function projectSource(projectId) {
     const isDefault = projectIsDefault(projectId);
     const isCustom = projectIsCustom(projectId);
-    if (isDefault && isCustom) return 'local override';
-    if (isCustom) return 'local';
-    return 'default';
+    if (isDefault && isCustom) return 'browser override';
+    if (isCustom) return 'browser draft';
+    return 'repo config';
   }
 
   function allProjects() {
@@ -492,9 +506,11 @@
     accountConfig,
     readCustomProjects,
     saveCustomProjects,
+    clearCustomProjects,
     normalizeProject,
     upsertCustomProject,
     deleteCustomProject,
+    hasCustomProjects,
     projectIsCustom,
     projectIsDefault,
     projectSource,
