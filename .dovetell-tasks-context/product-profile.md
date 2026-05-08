@@ -8,7 +8,7 @@
 ## 1. Product Identity
 
 product:
-last-updated: YYYY-MM-DDTHH:MMZ
+last-updated: YYYY-MM-DDTHH:mm:ssZ
 source: codex-[hash]
 
 name:
@@ -110,7 +110,7 @@ resource:
 
 - [Unresolved question]
   source: codex-[hash]
-  date: YYYY-MM-DDTHH:MMZ
+  date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 
@@ -118,7 +118,7 @@ resource:
 
 [Flat append log — newest at bottom]
 
-- YYYY-MM-DDTHH:MMZ (codex-[hash]): [what changed and why]
+- YYYY-MM-DDTHH:mm:ssZ (codex-[hash]): [what changed and why]
 
 ---
 

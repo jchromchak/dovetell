@@ -19,7 +19,7 @@
   rationale: [why this alignment was made — which convention or rule governs it]
   rule: rule-[8char]
   source: codex-[hash] | prompt-[hash]
-  date: YYYY-MM-DDTHH:MMZ
+  date: YYYY-MM-DDTHH:mm:ssZ
 
 ### Entries
 
@@ -43,8 +43,8 @@
   recommendation: [if codex has a suggested resolution, state it here — otherwise: none]
   task: task-[8char]
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
   status: pending|resolved|deferred
 
   resolution:
@@ -52,12 +52,12 @@
     resolved-to: [the final value]
     rationale: [why]
     resolved-by: [codex-[hash] | prompt-[hash] | john]
-    date: YYYY-MM-DDTHH:MMZ
+    date: YYYY-MM-DDTHH:mm:ssZ
 
   notes:
     - [additional context]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ### Entries
 

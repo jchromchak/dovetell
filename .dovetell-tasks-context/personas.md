@@ -12,8 +12,8 @@
   role: [job title or function]
   status: active|retired
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
 
   context:
     [Who is this person? What is their environment and daily reality?]
@@ -36,7 +36,7 @@
   notes:
     - [Anything else relevant — edge cases, exceptions, behavioral quirks]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

@@ -10,8 +10,8 @@
 - journal-[8char]
   journal-id: journal-[8char]
   revisionId: rev-[8char]
-  create-date: YYYY-MM-DDTHH:MMZ
-  edit-date: YYYY-MM-DDTHH:MMZ
+  create-date: YYYY-MM-DDTHH:mm:ssZ
+  edit-date: YYYY-MM-DDTHH:mm:ssZ
   author: [logged-in user]
   flags:
     - dovetell:global

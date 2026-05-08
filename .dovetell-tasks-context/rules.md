@@ -12,8 +12,8 @@
   title:
   status: active|retired
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
 
   description:
     [What is the rule? State it explicitly and unambiguously.]
@@ -47,7 +47,7 @@
   notes:
     - [Additional context or edge cases]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

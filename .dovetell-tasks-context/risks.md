@@ -11,8 +11,8 @@
   title:
   status: open|mitigated|closed
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
 
   description:
     [what is the risk? what could go wrong and under what conditions?]
@@ -45,13 +45,13 @@
 
   closed-reason:
     [if status is closed or mitigated, why and how?]
-    date: YYYY-MM-DDTHH:MMZ
+    date: YYYY-MM-DDTHH:mm:ssZ
     source: codex-[hash] | prompt-[hash]
 
   notes:
     - [additional context or dependencies]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

@@ -12,9 +12,9 @@
   priority: now|next|later
   status: open|in-progress|blocked
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
-  due: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
+  due: YYYY-MM-DDTHH:mm:ssZ
 
   owner: [who is responsible]
   persona: persona-[8char]

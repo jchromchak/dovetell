@@ -11,8 +11,8 @@
   title:
   status: active|resolved|superseded
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
   flags:
     - dovetell:global
 
@@ -58,7 +58,7 @@
   notes:
     - [Additional context or follow-up observations]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

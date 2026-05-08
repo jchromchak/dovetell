@@ -12,8 +12,8 @@
   title:
   status: active|draft|retired
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
 
   rationale:
     [why does this process exist? what problem does it prevent or what workflow does it define?]
@@ -31,12 +31,12 @@
     1. [step description]
        rule: rule-[8char]
        decision: decision-[8char]
-       updated: YYYY-MM-DDTHH:MMZ (codex-[hash] | prompt-[hash])
+       updated: YYYY-MM-DDTHH:mm:ssZ (codex-[hash] | prompt-[hash])
        notes: [anything important about this step]
     2. [step description]
        rule: rule-[8char]
        decision: decision-[8char]
-       updated: YYYY-MM-DDTHH:MMZ (codex-[hash] | prompt-[hash])
+       updated: YYYY-MM-DDTHH:mm:ssZ (codex-[hash] | prompt-[hash])
        notes:
 
   outputs:
@@ -62,12 +62,12 @@
     [if this process was retired and replaced, reference the replacement]
 
   version-history:
-    - YYYY-MM-DDTHH:MMZ (codex-[hash] | prompt-[hash]): [what changed and why]
+    - YYYY-MM-DDTHH:mm:ssZ (codex-[hash] | prompt-[hash]): [what changed and why]
 
   notes:
     - [additional context, edge cases, or dependencies]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

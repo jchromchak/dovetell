@@ -9,7 +9,7 @@
 ## Schema
 
 - rev-[8char]
-  date: YYYY-MM-DDTHH:MMZ
+  date: YYYY-MM-DDTHH:mm:ssZ
   user: [username]
   origin: direct|codex|prompt
   codex-session: codex-[hash]
@@ -616,6 +616,27 @@
     - decision-4f7b9c2e: implemented
   action: updated
   summary: Added repoType to context source configuration and renamed the dashboard source-management UI toward connected context sources.
+
+- rev-7a2c6d40
+  date: 2026-05-08T17:25Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - changelog.md: updated
+    - decisions.md: updated
+    - journal.md: updated
+    - mapping-discrepancies.md: updated
+    - opportunities.md: updated
+    - personas.md: updated
+    - processes.md: updated
+    - product-profile.md: updated
+    - risks.md: updated
+    - rules.md: updated
+    - tasks-completed.md: updated
+    - tasks.md: updated
+  action: updated
+  summary: Standardized context template timestamp placeholders to YYYY-MM-DDTHH:mm:ssZ so minutes are not confused with month fields or normalized to midnight.
 
 ---
 

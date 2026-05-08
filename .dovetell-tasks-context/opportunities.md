@@ -11,8 +11,8 @@
   title:
   status: open|elevated|closed|deferred
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  updated: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  updated: YYYY-MM-DDTHH:mm:ssZ
 
   description:
     [What is the opportunity? What problem does it address or what value does it unlock?]
@@ -34,12 +34,12 @@
   elevation:
     [If elevated to a decision, reference here.]
     decision: decision-[8char]
-    date: YYYY-MM-DDTHH:MMZ
+    date: YYYY-MM-DDTHH:mm:ssZ
 
   notes:
     - [Additional context, constraints, or dependencies]
     - source: codex-[hash] | prompt-[hash]
-    - date: YYYY-MM-DDTHH:MMZ
+    - date: YYYY-MM-DDTHH:mm:ssZ
 
 ---
 

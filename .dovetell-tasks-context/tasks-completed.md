@@ -11,8 +11,8 @@
   id: task-[8char]
   priority: now|next|later
   source: codex-[hash] | prompt-[hash]
-  created: YYYY-MM-DDTHH:MMZ
-  completed: YYYY-MM-DDTHH:MMZ
+  created: YYYY-MM-DDTHH:mm:ssZ
+  completed: YYYY-MM-DDTHH:mm:ssZ
   completed-session: codex-[hash]
 
   owner: [who was responsible]
@@ -413,7 +413,7 @@
     User reported two Activity Feed rows titled "Task title" on the dashboard.
 
   completion-notes:
-    Fixed dashboard task parsing so it starts after the ## Tasks section instead of reading the schema sample at the top of tasks.md. Added a date guard so placeholder values like YYYY-MM-DDTHH:MMZ cannot appear as feed activity, and made task metadata parsing tolerate spaces after colons.
+    Fixed dashboard task parsing so it starts after the ## Tasks section instead of reading the schema sample at the top of tasks.md. Added a date guard so placeholder values like YYYY-MM-DDTHH:mm:ssZ cannot appear as feed activity, and made task metadata parsing tolerate spaces after colons.
 
 - [x] Remove embedded project profiles from JavaScript
   id: task-8bf12e44
