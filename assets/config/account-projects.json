@@ -43,7 +43,7 @@
       "name": "dovetell sandbox",
       "owner": "dovetell-io",
       "repo": "dovetell-sandbox",
-      "repoType": "business-context",
+      "repoType": "project-context",
       "visibility": "public",
       "contextFiles": {
         "tasks": "tasks.md",
@@ -60,15 +60,33 @@
       "name": "dovetell assets private",
       "owner": "jchromchak",
       "repo": "dovetell-assets-private",
-      "repoType": "asset-refinery",
+      "repoType": "project-context",
       "visibility": "private",
       "contextFiles": {
-        "changelog": ".project-context/changelog.md",
-        "commands": ".project-context/commands.md",
-        "contextMap": ".project-context/context-map.md",
-        "contextStructure": ".project-context/context-structure.md",
-        "patternCandidates": ".project-context/pattern-candidates.md",
-        "promotionLifecycle": ".project-context/promotion-lifecycle.md"
+        "tasks": ".project-context/tasks.md",
+        "decisions": ".project-context/decisions.md",
+        "risks": ".project-context/risks.md",
+        "opportunities": ".project-context/opportunities.md",
+        "rules": ".project-context/rules.md",
+        "journal": ".project-context/journal.md",
+        "changelog": ".project-context/changelog.md"
+      }
+    },
+    {
+      "id": "jchromchak-famframe-private",
+      "name": "famframe private",
+      "owner": "jchromchak",
+      "repo": "famframe-private",
+      "repoType": "project-context",
+      "visibility": "private",
+      "contextFiles": {
+        "tasks": ".project-context/tasks.md",
+        "decisions": ".project-context/decisions.md",
+        "risks": ".project-context/risks.md",
+        "opportunities": ".project-context/opportunities.md",
+        "rules": ".project-context/rules.md",
+        "journal": ".project-context/journal.md",
+        "changelog": ".project-context/changelog.md"
       }
     }
   ]
