@@ -323,8 +323,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-project-token-save1"></script>
-<script src="../assets/js/projects.js?v=20260508-project-token-save1"></script>
+<script src="../assets/js/shared.js?v=20260508-missing-context1"></script>
+<script src="../assets/js/projects.js?v=20260508-missing-context1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
@@ -1584,7 +1584,7 @@ async function loadDashboard() {
         const file = await Dovetell.githubGet(projectConfig, path)
         return { project, key, path, ok: true, sha: file.sha, content: decodeURIComponent(escape(atob(file.content.replace(/\n/g, '')))) }
       } catch (err) {
-        if (key === 'journal' && /GitHub 404/i.test(err.message || '')) {
+        if (/GitHub 404/i.test(err.message || '')) {
           return { project, key, path, ok: true, sha: null, content: '' }
         }
         console.warn(`Unable to load ${project.owner}/${project.repo}/${path}`, err)
