@@ -52,22 +52,6 @@
         "journal": "journal.md",
         "changelog": "changelog.md"
       }
-    },
-    {
-      "id": "jchromchak-dovetell-assets-private",
-      "name": "dovetell assets private",
-      "owner": "jchromchak",
-      "repo": "dovetell-assets-private",
-      "visibility": "private",
-      "contextFiles": {
-        "tasks": ".project-context/tasks.md",
-        "decisions": ".project-context/decisions.md",
-        "risks": ".project-context/risks.md",
-        "opportunities": ".project-context/opportunities.md",
-        "rules": ".project-context/rules.md",
-        "journal": ".project-context/journal.md",
-        "changelog": ".project-context/changelog.md"
-      }
     }
   ]
 }
