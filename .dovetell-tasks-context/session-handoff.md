@@ -63,6 +63,7 @@ context-awareness-direction-update: User clarified Dovetell should become a cont
 agnostic-context-update: User clarified the context system should be agnostic, so .project-context is the preferred folder direction over a Dovetell-branded name. Next conceptual direction is easier auditing between projects in a multi-team view, with attention to whether truth is maintained or appended to the primary role. User plans to upload concepts before deeper implementation.
 activity-feed-bugfix-update: User reported duplicate Activity Feed rows titled "Task title." Root cause was dashboard parseTasks reading the schema example before ## Tasks in each project tasks.md, then treating placeholder created/updated dates as activity. dashboard/index.html now parses tasks after ## Tasks, filters activity dates to real YYYY-MM-DD values, and tolerates spaces after task metadata colons.
 project-config-hardening-update: Removed real project profile objects from assets/js/projects.js so production profiles live in assets/config/account-projects.json only. Added assets/config/account-projects.fixture.json as an explicit test/demo config that can be loaded via ?projectConfig=... or DOVETELL_PROJECT_CONFIG_URL. The add-project flow now defaults context paths to .project-context/*.md and the copy reflects the agnostic convention.
+project-context-migration-update: Migrated jchromchak/dovetell-private from .dovetell-tasks-context to .project-context so it no longer has two context directories. The private repo now has .project-context/tasks.md, decisions.md, risks.md, opportunities.md, rules.md, changelog.md, and _retrospective.md. Updated assets/config/account-projects.json so the dashboard reads private project context from .project-context paths.
 decisions-made:
   - decision-6b2f4a91: Add project journal as a global dovetell concept candidate
   - decision-90e1768a: Commit context updates at each meaningful run checkpoint
@@ -99,6 +100,7 @@ tasks-completed:
   - task-2c4a9f18: Promote local project sources into repo JSON
   - task-e3f8c2b0: Fix Activity Feed schema task leak
   - task-8bf12e44: Remove embedded project profiles from JavaScript
+  - task-bf4d0a73: Standardize context folder naming
 rules-added: none
 boundary-conditions-triggered:
   - data-boundary-considered: PAT handling was refactored into shared utilities without exposing, logging, transmitting, or changing any stored PAT value.
@@ -144,5 +146,5 @@ validation:
   - Headless Chrome rendered the dashboard token prompt after the project config normalization and promotion UI changes.
   - Dashboard inline script parse, git diff whitespace check, and a parser regression harness passed after the Activity Feed schema task leak fix.
   - Project config override harness passed for default account-projects.json and fixture account-projects.fixture.json. assets/js/projects.js parse and dashboard inline script parse passed after removing embedded project profiles.
-pending: Six active tasks remain open: task-bf4d0a73, task-c9e2fb64, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
-next-session-start-here: Pause before deeper implementation if the user is still thinking or uploading concepts. The strongest next slice is task-bf4d0a73, standardizing around .project-context, followed by task-c9e2fb64 after the user's concepts arrive. Continue committing context files with meaningful checkpoints.
+pending: Five active tasks remain open: task-c9e2fb64, task-9f1a62d0, task-6e8d4b25, task-d7a3e014, and task-4dd0b71e.
+next-session-start-here: Pause before deeper implementation if the user is still thinking or uploading concepts. The strongest next slice is task-c9e2fb64 after the user's concepts arrive, with task-9f1a62d0 available as the next architecture hardening task. Continue committing context files with meaningful checkpoints.

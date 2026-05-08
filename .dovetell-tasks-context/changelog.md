@@ -557,6 +557,22 @@
   action: completed
   summary: Removed embedded project profiles from JavaScript, added an explicit config fixture for tests, and changed new project defaults to .project-context paths.
 
+- rev-4bb28c91
+  date: 2026-05-08T04:46Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-bf4d0a73: completed
+    - assets/config/account-projects.json: updated
+    - jchromchak/dovetell-private:.project-context: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Migrated the private context repo to the agnostic .project-context directory and updated dashboard project paths to match.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

@@ -439,6 +439,30 @@
   completion-notes:
     Removed embedded project profile objects from assets/js/projects.js. Runtime project profiles now come from assets/config/account-projects.json, while tests and demo overrides can opt into assets/config/account-projects.fixture.json through the projectConfig URL parameter or DOVETELL_PROJECT_CONFIG_URL. New project defaults now use the agnostic .project-context/* convention instead of .dovetell-tasks-context/*.
 
+- [x] Standardize context folder naming
+  id: task-bf4d0a73
+  priority: now
+  revisionId: rev-4bb28c91
+  created: 2026-05-07T18:40Z
+  completed: 2026-05-08T04:46Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-2a8f4d91
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Decide and migrate toward the agnostic standard context directory name .project-context instead of project-specific names like .dovetell-tasks-context.
+
+  completion-notes:
+    Migrated jchromchak/dovetell-private context files from .dovetell-tasks-context into .project-context so the retrospective and context files live under one agnostic folder. Updated assets/config/account-projects.json so the dashboard private project source reads tasks, decisions, risks, opportunities, rules, journal, and changelog from .project-context paths.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

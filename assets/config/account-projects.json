@@ -40,13 +40,13 @@
       "visibility": "private",
       "tokenKey": "dovetell_pat_jchromchak_dovetell-private",
       "contextFiles": {
-        "tasks": ".dovetell-tasks-context/tasks.md",
-        "decisions": ".dovetell-tasks-context/decisions.md",
-        "risks": ".dovetell-tasks-context/risks.md",
-        "opportunities": ".dovetell-tasks-context/opportunities.md",
-        "rules": ".dovetell-tasks-context/rules.md",
-        "journal": ".dovetell-tasks-context/journal.md",
-        "changelog": ".dovetell-tasks-context/changelog.md"
+        "tasks": ".project-context/tasks.md",
+        "decisions": ".project-context/decisions.md",
+        "risks": ".project-context/risks.md",
+        "opportunities": ".project-context/opportunities.md",
+        "rules": ".project-context/rules.md",
+        "journal": ".project-context/journal.md",
+        "changelog": ".project-context/changelog.md"
       }
     }
   ]

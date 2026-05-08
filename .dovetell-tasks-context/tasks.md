@@ -156,34 +156,6 @@
   blocked-by:
     - task-2c4a9f18
 
-- [ ] Standardize context folder naming
-  id: task-bf4d0a73
-  priority: now
-  status: open
-  revisionId: rev-9c4f20ab
-  created: 2026-05-07T18:40Z
-  updated: 2026-05-07T18:40Z
-  due: none
-
-  owner: john
-  persona: none
-  decision: decision-2a8f4d91
-  rule: none
-  process: none
-  opp: none
-  risk: none
-  flags:
-    - dovetell:global
-
-  notes:
-    Decide and migrate toward the agnostic standard context directory name .project-context instead of project-specific names like .dovetell-tasks-context.
-
-  context:
-    The user has been experimenting with context folder shapes and finds project-specific folder names cumbersome and nonstandard. The user clarified this is part of an agnostic solution, so .project-context is now the preferred candidate over .dovetell-context. This should be handled as a global convention before deeper multi-project/feed work depends on the current naming. Note migration implications for account-projects.json, dashboard source config, existing context files, and external active-project feeds, then implement the chosen naming path in a coherent checkpoint.
-
-  blocked-by:
-    - none
-
 - [ ] Design multi-team context audit view
   id: task-c9e2fb64
   priority: next
