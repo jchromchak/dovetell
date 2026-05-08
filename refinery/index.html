@@ -101,8 +101,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-source-profile1"></script>
-<script src="../assets/js/projects.js?v=20260508-source-profile1"></script>
+<script src="../assets/js/shared.js?v=20260508-refinery2"></script>
+<script src="../assets/js/projects.js?v=20260508-refinery2"></script>
 <script>
 const REFINERY_TYPES = new Set(['asset-refinery'])
 const FILE_LABELS = {
@@ -129,7 +129,15 @@ function repoSlug(source) {
 }
 
 function refinerySources() {
-  return Dovetell.allProjects().filter(source => REFINERY_TYPES.has(source.repoType))
+  const sources = [...Dovetell.allProjects(), ...Dovetell.baseDefaultProjects()]
+  const seen = new Set()
+  return sources
+    .filter(source => REFINERY_TYPES.has(source.repoType))
+    .filter(source => {
+      if (seen.has(source.id)) return false
+      seen.add(source.id)
+      return true
+    })
 }
 
 function selectedSource() {
