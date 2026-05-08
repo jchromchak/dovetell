@@ -51,6 +51,7 @@
     return {
       schemaVersion: Number(source.schemaVersion) || 1,
       account: source.account || { id: 'local', name: 'Local', defaultProjectId: '' },
+      configRepo: source.configRepo || null,
       defaultContextFiles,
       projects: normalizedProjects
     };

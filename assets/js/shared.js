@@ -1,5 +1,7 @@
 (function(global){
   const TOKEN_KEY = 'dovetell_pat';
+  const ACCOUNT_CONFIG_STORAGE_KEY = 'dvtl:account-project-config:working';
+  const CONFIG_SYNC_STORAGE_KEY = 'dvtl:account-project-config:sync';
   const PROJECTS_STORAGE_KEY = 'dvtl:projects:drafts';
   const LEGACY_PROJECTS_STORAGE_KEY = 'dovetell_projects_custom';
 
@@ -26,9 +28,12 @@
   }
 
   async function githubGet(config, path) {
+    const ref = config.branch ? `?ref=${encodeURIComponent(config.branch)}` : '';
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (config.token) headers.Authorization = `Bearer ${config.token}`;
     const res = await fetchWithTimeout(
-      `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`,
-      { headers: { 'Authorization': `Bearer ${config.token}`, 'Accept': 'application/vnd.github.v3+json' } }
+      `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}${ref}`,
+      { headers }
     );
     if (!res.ok) throw new Error(`GitHub ${res.status}: ${res.statusText}`);
     return res.json();
@@ -40,13 +45,14 @@
       {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${config.token}`,
           'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(config.token ? { 'Authorization': `Bearer ${config.token}` } : {})
         },
         body: JSON.stringify({
           message,
           content: btoa(unescape(encodeURIComponent(content))),
+          ...(config.branch ? { branch: config.branch } : {}),
           ...(sha ? { sha } : {})
         })
       },
@@ -149,7 +155,7 @@
     return JSON.parse(JSON.stringify(project));
   }
 
-  function defaultContextFiles() {
+  function fallbackContextFiles() {
     return cloneProject(global.DOVETELL_DEFAULT_CONTEXT_FILES || {
       tasks: 'tasks.md',
       decisions: 'decisions.md',
@@ -161,20 +167,75 @@
     });
   }
 
-  function defaultProjects() {
-    return (global.DOVETELL_DEFAULT_PROJECTS || global.DOVETELL_PROJECTS || []).map(cloneProject);
+  function normalizeAccountConfig(config) {
+    const source = config && typeof config === 'object' ? config : {};
+    const defaults = { ...fallbackContextFiles(), ...(source.defaultContextFiles || {}) };
+    const projects = (Array.isArray(source.projects) ? source.projects : [])
+      .map(project => normalizeProject(project, defaults))
+      .filter(project => project.id && project.owner && project.repo)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    return {
+      schemaVersion: Number(source.schemaVersion) || 1,
+      account: {
+        id: (source.account && source.account.id) || 'local',
+        name: (source.account && source.account.name) || 'Local',
+        defaultProjectId: (source.account && source.account.defaultProjectId) || (projects[0] && projects[0].id) || ''
+      },
+      configRepo: source.configRepo || {
+        owner: 'jchromchak',
+        repo: 'dovetell-tasks',
+        branch: 'main',
+        path: 'assets/config/account-projects.json'
+      },
+      defaultContextFiles: defaults,
+      projects
+    };
   }
 
-  function accountConfig() {
-    return cloneProject(global.DOVETELL_PROJECT_CONFIG || {
+  function baseAccountConfig() {
+    return normalizeAccountConfig(global.DOVETELL_PROJECT_CONFIG || {
       schemaVersion: 1,
       account: { id: 'local', name: 'Local', defaultProjectId: 'dovetell-sandbox' },
-      defaultContextFiles: defaultContextFiles(),
-      projects: defaultProjects()
+      defaultContextFiles: fallbackContextFiles(),
+      projects: global.DOVETELL_DEFAULT_PROJECTS || global.DOVETELL_PROJECTS || []
     });
   }
 
-  function readCustomProjects() {
+  function readWorkingAccountConfig() {
+    try {
+      const raw = localStorage.getItem(ACCOUNT_CONFIG_STORAGE_KEY);
+      return raw ? normalizeAccountConfig(JSON.parse(raw)) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveWorkingAccountConfig(config) {
+    const normalized = normalizeAccountConfig(config);
+    localStorage.setItem(ACCOUNT_CONFIG_STORAGE_KEY, JSON.stringify(normalized));
+    localStorage.setItem(CONFIG_SYNC_STORAGE_KEY, JSON.stringify({ state: 'pending', updatedAt: new Date().toISOString() }));
+    return normalized;
+  }
+
+  function clearWorkingAccountConfig() {
+    localStorage.removeItem(ACCOUNT_CONFIG_STORAGE_KEY);
+    localStorage.removeItem(CONFIG_SYNC_STORAGE_KEY);
+  }
+
+  function readConfigSyncStatus() {
+    try {
+      const raw = localStorage.getItem(CONFIG_SYNC_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : { state: 'synced' };
+    } catch {
+      return { state: 'unknown' };
+    }
+  }
+
+  function saveConfigSyncStatus(status) {
+    localStorage.setItem(CONFIG_SYNC_STORAGE_KEY, JSON.stringify({ ...status, updatedAt: new Date().toISOString() }));
+  }
+
+  function readLegacyDraftProjects() {
     try {
       let raw = localStorage.getItem(PROJECTS_STORAGE_KEY);
       if (!raw) {
@@ -188,20 +249,16 @@
     }
   }
 
-  function saveCustomProjects(projects) {
-    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects));
-  }
-
-  function clearCustomProjects() {
+  function clearLegacyDraftProjects() {
     localStorage.removeItem(PROJECTS_STORAGE_KEY);
     localStorage.removeItem(LEGACY_PROJECTS_STORAGE_KEY);
   }
 
-  function normalizeProject(project) {
+  function normalizeProject(project, contextDefaults = null) {
     const owner = (project.owner || '').trim();
     const repo = (project.repo || '').trim();
     const id = (project.id || `${owner}-${repo}`).trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
-    const contextFiles = { ...defaultContextFiles(), ...(project.contextFiles || {}) };
+    const contextFiles = { ...(contextDefaults || fallbackContextFiles()), ...(project.contextFiles || {}) };
     return {
       id,
       name: (project.name || repo || id).trim(),
@@ -213,43 +270,84 @@
     };
   }
 
+  function accountConfig() {
+    const working = readWorkingAccountConfig();
+    if (working) return cloneProject(working);
+    const base = baseAccountConfig();
+    const drafts = readLegacyDraftProjects();
+    if (!drafts.length) return cloneProject(base);
+    const projects = base.projects.filter(project => !drafts.some(draft => draft.id === project.id));
+    drafts.forEach(draft => projects.push(normalizeProject(draft, base.defaultContextFiles)));
+    return normalizeAccountConfig({ ...base, projects });
+  }
+
+  function defaultContextFiles() {
+    return cloneProject(accountConfig().defaultContextFiles || fallbackContextFiles());
+  }
+
+  function defaultProjects() {
+    return accountConfig().projects.map(cloneProject);
+  }
+
+  function baseDefaultProjects() {
+    return baseAccountConfig().projects.map(cloneProject);
+  }
+
+  function readCustomProjects() {
+    const baseIds = new Set(baseDefaultProjects().map(project => project.id));
+    return defaultProjects().filter(project => !baseIds.has(project.id));
+  }
+
+  function saveCustomProjects(projects) {
+    const base = accountConfig();
+    saveWorkingAccountConfig({ ...base, projects });
+  }
+
+  function clearCustomProjects() {
+    clearWorkingAccountConfig();
+    clearLegacyDraftProjects();
+  }
+
   function upsertCustomProject(project) {
-    const normalized = normalizeProject(project);
-    const projects = readCustomProjects().filter(item => item.id !== normalized.id);
+    const config = accountConfig();
+    const normalized = normalizeProject(project, config.defaultContextFiles);
+    const projects = config.projects.filter(item => item.id !== normalized.id);
     projects.push(normalized);
-    saveCustomProjects(projects);
+    saveWorkingAccountConfig({ ...config, projects });
     return normalized;
   }
 
   function deleteCustomProject(projectId) {
-    saveCustomProjects(readCustomProjects().filter(project => project.id !== projectId));
+    const config = accountConfig();
+    const projects = config.projects.filter(project => project.id !== projectId);
+    const nextDefault = config.account.defaultProjectId === projectId ? (projects[0] && projects[0].id) || '' : config.account.defaultProjectId;
+    saveWorkingAccountConfig({ ...config, account: { ...config.account, defaultProjectId: nextDefault }, projects });
   }
 
   function hasCustomProjects() {
-    return readCustomProjects().length > 0;
+    return Boolean(readWorkingAccountConfig()) || readLegacyDraftProjects().length > 0;
   }
 
   function projectIsCustom(projectId) {
-    return readCustomProjects().some(project => project.id === projectId);
-  }
-
-  function projectIsDefault(projectId) {
     return defaultProjects().some(project => project.id === projectId);
   }
 
+  function projectIsDefault(projectId) {
+    return baseDefaultProjects().some(project => project.id === projectId);
+  }
+
   function projectSource(projectId) {
-    const isDefault = projectIsDefault(projectId);
-    const isCustom = projectIsCustom(projectId);
-    if (isDefault && isCustom) return 'browser override';
-    if (isCustom) return 'browser draft';
+    const working = readWorkingAccountConfig();
+    if (!working && !readLegacyDraftProjects().length) return 'repo config';
+    const base = baseDefaultProjects().find(project => project.id === projectId);
+    const current = defaultProjects().find(project => project.id === projectId);
+    if (!base && current) return 'working config';
+    if (base && current && JSON.stringify(serializableProject(base)) !== JSON.stringify(serializableProject(current))) return 'working override';
     return 'repo config';
   }
 
   function allProjects() {
-    const merged = new Map();
-    defaultProjects().forEach(project => merged.set(project.id, project));
-    readCustomProjects().map(normalizeProject).forEach(project => merged.set(project.id, project));
-    return [...merged.values()];
+    return defaultProjects();
   }
 
   function serializableProject(project) {
@@ -277,6 +375,7 @@
         name: (base.account && base.account.name) || 'Local',
         defaultProjectId
       },
+      configRepo: base.configRepo,
       defaultContextFiles: { ...defaultContextFiles(), ...(base.defaultContextFiles || {}) },
       projects: serializedProjects
     };
@@ -284,6 +383,25 @@
 
   function accountProjectConfigJson(projects = allProjects()) {
     return `${JSON.stringify(buildAccountProjectConfig(projects), null, 2)}\n`;
+  }
+
+  function configRepo() {
+    const repo = accountConfig().configRepo || {};
+    return {
+      owner: repo.owner || 'jchromchak',
+      repo: repo.repo || 'dovetell-tasks',
+      branch: repo.branch || 'main',
+      path: repo.path || 'assets/config/account-projects.json'
+    };
+  }
+
+  async function pushAccountProjectConfig(token, message = 'Update account project configuration') {
+    const repo = configRepo();
+    const config = { owner: repo.owner, repo: repo.repo, branch: repo.branch, token };
+    const file = await githubGet(config, repo.path);
+    await githubPut(config, repo.path, accountProjectConfigJson(), file.sha, message);
+    saveConfigSyncStatus({ state: 'synced', repo: `${repo.owner}/${repo.repo}`, path: repo.path });
+    return repo;
   }
 
   function projectsForSource(sourceKey) {
@@ -484,6 +602,8 @@
 
   global.Dovetell = {
     TOKEN_KEY,
+    ACCOUNT_CONFIG_STORAGE_KEY,
+    CONFIG_SYNC_STORAGE_KEY,
     PROJECTS_STORAGE_KEY,
     nanoid,
     fetchWithTimeout,
@@ -503,7 +623,14 @@
     clearProjectToken,
     defaultContextFiles,
     defaultProjects,
+    baseDefaultProjects,
     accountConfig,
+    baseAccountConfig,
+    readWorkingAccountConfig,
+    saveWorkingAccountConfig,
+    clearWorkingAccountConfig,
+    readConfigSyncStatus,
+    saveConfigSyncStatus,
     readCustomProjects,
     saveCustomProjects,
     clearCustomProjects,
@@ -518,6 +645,8 @@
     serializableProject,
     buildAccountProjectConfig,
     accountProjectConfigJson,
+    configRepo,
+    pushAccountProjectConfig,
     projectsForSource,
     projectName,
     visibilityIcon,

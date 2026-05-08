@@ -5,6 +5,12 @@
     "name": "John",
     "defaultProjectId": "dovetell-sandbox"
   },
+  "configRepo": {
+    "owner": "jchromchak",
+    "repo": "dovetell-tasks",
+    "branch": "main",
+    "path": "assets/config/account-projects.json"
+  },
   "defaultContextFiles": {
     "tasks": "tasks.md",
     "decisions": "decisions.md",
