@@ -638,6 +638,20 @@
   action: updated
   summary: Standardized context template timestamp placeholders to YYYY-MM-DDTHH:mm:ssZ so minutes are not confused with month fields or normalized to midnight.
 
+- rev-2c7f9a11
+  date: 2026-05-08T18:27Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - assets/config/account-projects.json: updated
+    - assets/config/account-projects.fixture.json: updated
+    - assets/js/projects.js: updated
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+  action: updated
+  summary: Added source-profile defaults so asset-refinery repos use asset files instead of task-dashboard files, and kept the dashboard aggregation focused on dashboard-ready context sources.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

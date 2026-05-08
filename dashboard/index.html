@@ -277,15 +277,7 @@
     </div>
     <div class="project-form-section">Context file paths</div>
     <div class="project-hint">Defaults use the agnostic .project-context convention. Edit these only when the repo stores context files somewhere else.</div>
-    <div class="project-path-grid">
-      <div class="form-field"><label class="form-label">Tasks</label><input class="form-input" id="project-path-tasks"/></div>
-      <div class="form-field"><label class="form-label">Decisions</label><input class="form-input" id="project-path-decisions"/></div>
-      <div class="form-field"><label class="form-label">Risks</label><input class="form-input" id="project-path-risks"/></div>
-      <div class="form-field"><label class="form-label">Opportunities</label><input class="form-input" id="project-path-opportunities"/></div>
-      <div class="form-field"><label class="form-label">Rules</label><input class="form-input" id="project-path-rules"/></div>
-      <div class="form-field"><label class="form-label">Journal</label><input class="form-input" id="project-path-journal"/></div>
-      <div class="form-field"><label class="form-label">Changelog</label><input class="form-input" id="project-path-changelog"/></div>
-    </div>
+    <div class="project-path-grid" id="project-path-grid"></div>
     <div class="sheet-actions">
       <button class="btn-sheet-cancel" onclick="showProjectSourceList()">Back</button>
       <button class="btn-sheet-save" onclick="saveProjectSettings()">Save source</button>
@@ -334,11 +326,11 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-repo-type1"></script>
-<script src="../assets/js/projects.js?v=20260508-repo-type1"></script>
+<script src="../assets/js/shared.js?v=20260508-source-profile1"></script>
+<script src="../assets/js/projects.js?v=20260508-source-profile1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
-const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
+const DASHBOARD_SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000
 let dashboardState = { journals: [], journalFiles: new Map(), taskFiles: new Map(), sourceStates: [] }
 let pendingJournalTask = null
@@ -791,7 +783,8 @@ function emptyPanel(text) {
 
 function selectedJournalProject() {
   const requested = localStorage.getItem('dovetell_project_journal')
-  const match = PROJECTS.find(project => project.id === requested) || PROJECTS[0] || null
+  const sources = journalProjects()
+  const match = sources.find(project => project.id === requested) || sources[0] || null
   if (match) localStorage.setItem('dovetell_project_journal', match.id)
   return match
 }
@@ -809,7 +802,7 @@ function renderJournalRail(journals) {
         <a class="panel-link" href="#journal-list">${projectJournals.length}</a>
       </div>
       <select class="journal-select" id="journal-project" onchange="selectJournalProject(this.value)">
-        ${PROJECTS.map(project => `<option value="${escHtml(project.id)}" ${selected && selected.id === project.id ? 'selected' : ''}>${visibilityIcon(project)} ${escHtml(projectName(project))}</option>`).join('')}
+        ${journalProjects().map(project => `<option value="${escHtml(project.id)}" ${selected && selected.id === project.id ? 'selected' : ''}>${visibilityIcon(project)} ${escHtml(projectName(project))}</option>`).join('')}
       </select>
     </div>
     <div class="summary-panel journal-composer">
@@ -833,7 +826,7 @@ function renderJournalSheetBody(journals) {
   const projectJournals = selected ? journals.filter(entry => entry.project && entry.project.id === selected.id) : []
   body.innerHTML = `
     <select class="journal-select" id="journal-project-mobile" onchange="selectJournalProject(this.value)">
-      ${PROJECTS.map(project => `<option value="${escHtml(project.id)}" ${selected && selected.id === project.id ? 'selected' : ''}>${visibilityIcon(project)} ${escHtml(projectName(project))}</option>`).join('')}
+      ${journalProjects().map(project => `<option value="${escHtml(project.id)}" ${selected && selected.id === project.id ? 'selected' : ''}>${visibilityIcon(project)} ${escHtml(projectName(project))}</option>`).join('')}
     </select>
     <div class="journal-composer" style="margin-top:12px">
       <textarea class="journal-input" id="journal-content-mobile" placeholder="Capture a thought..."></textarea>
@@ -1211,8 +1204,16 @@ function findProject(projectId) {
   return PROJECTS.find(project => project.id === projectId)
 }
 
+function dashboardProjects() {
+  return PROJECTS.filter(project => Dovetell.sourceSupportsDashboard(project))
+}
+
+function journalProjects() {
+  return dashboardProjects().filter(project => project.contextFiles && project.contextFiles.journal)
+}
+
 function missingTokenProjects() {
-  return PROJECTS.filter(project => project.visibility === 'private' && !Dovetell.readProjectToken(project))
+  return dashboardProjects().filter(project => project.visibility === 'private' && !Dovetell.readProjectToken(project))
 }
 
 async function saveProjectToken(projectId) {
@@ -1243,20 +1244,41 @@ function clearProjectToken(projectId) {
   loadDashboard()
 }
 
-function projectPathKeys() {
-  return ['tasks', 'decisions', 'risks', 'opportunities', 'rules', 'journal', 'changelog']
+function contextFileLabel(key) {
+  return key.replace(/([A-Z])/g, ' $1').replace(/^./, char => char.toUpperCase())
 }
 
-function projectContextDefaults() {
-  return {
-    tasks: '.project-context/tasks.md',
-    decisions: '.project-context/decisions.md',
-    risks: '.project-context/risks.md',
-    opportunities: '.project-context/opportunities.md',
-    rules: '.project-context/rules.md',
-    journal: '.project-context/journal.md',
-    changelog: '.project-context/changelog.md'
-  }
+function projectPathEntries(repoType = 'project-context') {
+  const defaults = Dovetell.sourceContextFiles(repoType)
+  return Object.keys(defaults).map(key => ({ key, label: contextFileLabel(key), path: defaults[key] }))
+}
+
+function projectPathKeys(repoType = 'project-context') {
+  return projectPathEntries(repoType).map(entry => entry.key)
+}
+
+function projectContextDefaults(repoType = 'project-context') {
+  return Dovetell.sourceContextFiles(repoType)
+}
+
+function readProjectPathFormValues() {
+  const values = {}
+  document.querySelectorAll('#project-path-grid input[data-context-key]').forEach(input => {
+    values[input.dataset.contextKey] = input.value.trim()
+  })
+  return values
+}
+
+function renderProjectPathFields(repoType = 'project-context', contextFiles = {}) {
+  const grid = document.getElementById('project-path-grid')
+  if (!grid) return
+  const defaults = projectContextDefaults(repoType)
+  grid.innerHTML = projectPathEntries(repoType).map(entry => `
+    <div class="form-field">
+      <label class="form-label">${escHtml(entry.label)}</label>
+      <input class="form-input" id="project-path-${escHtml(entry.key)}" data-context-key="${escHtml(entry.key)}" value="${escHtml(contextFiles[entry.key] || defaults[entry.key] || '')}"/>
+    </div>
+  `).join('')
 }
 
 function projectSlug(value) {
@@ -1304,6 +1326,15 @@ function wireProjectForm() {
       input.dataset.manualWired = 'true'
     }
   })
+  const repoType = document.getElementById('project-repo-type')
+  if (repoType && !repoType.dataset.wired) {
+    repoType.addEventListener('change', () => {
+      const currentPaths = readProjectPathFormValues()
+      renderProjectPathFields(repoType.value, currentPaths)
+      setProjectVerify()
+    })
+    repoType.dataset.wired = 'true'
+  }
 }
 
 function openProjectSettings(projectId = '') {
@@ -1449,19 +1480,18 @@ function findProjectForSettings(projectId) {
 }
 
 function fillProjectForm(project) {
-  const defaults = projectContextDefaults()
+  const repoType = (project && project.repoType) || 'project-context'
+  const defaults = projectContextDefaults(repoType)
   const data = project || { contextFiles: defaults, visibility: 'private' }
   document.getElementById('project-id').value = data.id || ''
   document.getElementById('project-id').dataset.generated = project ? 'false' : 'true'
   document.getElementById('project-name').value = data.name || ''
   document.getElementById('project-owner').value = data.owner || ''
   document.getElementById('project-repo').value = data.repo || ''
-  document.getElementById('project-repo-type').value = data.repoType || 'project-context'
+  document.getElementById('project-repo-type').value = repoType
   document.getElementById('project-visibility').value = data.visibility || 'unknown'
   document.getElementById('project-token').value = ''
-  projectPathKeys().forEach(key => {
-    document.getElementById(`project-path-${key}`).value = (data.contextFiles && data.contextFiles[key]) || defaults[key] || ''
-  })
+  renderProjectPathFields(repoType, { ...defaults, ...(data.contextFiles || {}) })
   setProjectVerify(project ? `Editing ${Dovetell.projectSource(project.id)} metadata. Add a token only if you want to replace the saved browser token.` : 'Enter an owner and repo. Save updates the browser working config, then tries to sync repo JSON.', 'warning')
   syncProjectGeneratedFields()
 }
@@ -1473,7 +1503,8 @@ async function verifyProjectAccess(project, token) {
   if (repoRes.status === 401 || repoRes.status === 403) throw new Error(`GitHub ${repoRes.status}: token cannot access this repo`)
   if (repoRes.status === 404) throw new Error('GitHub 404: repo not found or token cannot see it')
   if (!repoRes.ok) throw new Error(`GitHub ${repoRes.status}: ${repoRes.statusText}`)
-  const firstPath = project.contextFiles.tasks
+  const firstPath = Object.values(project.contextFiles || {}).find(Boolean)
+  if (!firstPath) return 'Repo verified. No context file paths are configured yet.'
   const pathRes = await Dovetell.fetchWithTimeout(`https://api.github.com/repos/${project.owner}/${project.repo}/contents/${firstPath}`, { headers }, 15000)
   if (pathRes.ok) return `Repo verified and ${firstPath} is readable.`
   if (pathRes.status === 404) return `Repo verified. ${firstPath} does not exist yet; the first write can create it.`
@@ -1488,11 +1519,9 @@ async function saveProjectSettings() {
     setProjectVerify('Owner and repo are required.', 'error')
     return
   }
-  const contextFiles = {}
-  projectPathKeys().forEach(key => {
-    contextFiles[key] = document.getElementById(`project-path-${key}`).value.trim()
-  })
-  const missingPaths = projectPathKeys().filter(key => !contextFiles[key])
+  const repoType = document.getElementById('project-repo-type').value
+  const contextFiles = readProjectPathFormValues()
+  const missingPaths = projectPathKeys(repoType).filter(key => !contextFiles[key])
   if (missingPaths.length) {
     setProjectVerify(`Missing context paths: ${missingPaths.join(', ')}`, 'error')
     return
@@ -1509,7 +1538,7 @@ async function saveProjectSettings() {
     name: document.getElementById('project-name').value.trim(),
     owner,
     repo,
-    repoType: document.getElementById('project-repo-type').value,
+    repoType,
     visibility: document.getElementById('project-visibility').value,
     contextFiles
   })
@@ -1587,13 +1616,19 @@ async function loadDashboard() {
     document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No context sources configured.</div></div>`
     return
   }
+  const sources = dashboardProjects()
+  if (!sources.length) {
+    updateConnectionStatus('connected', 'No dashboard sources configured')
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="empty-icon">!</div><div class="empty-text">No dashboard-ready context sources configured.</div></div>`
+    return
+  }
   if (missingTokenProjects().length) {
     renderTokenPrompt()
     return
   }
   updateConnectionStatus('updating')
   try {
-    const entries = await Promise.all(PROJECTS.flatMap(project => SOURCE_KEYS.map(async key => {
+    const entries = await Promise.all(sources.flatMap(project => DASHBOARD_SOURCE_KEYS.map(async key => {
       const path = project.contextFiles && project.contextFiles[key]
       if (!path) return { project, key, path: key, ok: false, status: 'Missing path', content: '' }
       const projectConfig = { ...project, token: Dovetell.readProjectToken(project) }
@@ -1614,7 +1649,7 @@ async function loadDashboard() {
       renderAuthError(failures[0].status)
       return
     }
-    const byProject = PROJECTS.map(project => {
+    const byProject = sources.map(project => {
       const projectEntries = entries.filter(entry => entry.project.id === project.id)
       const raw = Object.fromEntries(projectEntries.map(entry => [entry.key, entry.content]))
       return {

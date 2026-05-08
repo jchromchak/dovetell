@@ -8,6 +8,41 @@
     journal: 'journal.md',
     changelog: 'changelog.md'
   };
+  const PROJECT_CONTEXT_FILES = {
+    tasks: '.project-context/tasks.md',
+    decisions: '.project-context/decisions.md',
+    risks: '.project-context/risks.md',
+    opportunities: '.project-context/opportunities.md',
+    rules: '.project-context/rules.md',
+    journal: '.project-context/journal.md',
+    changelog: '.project-context/changelog.md'
+  };
+  const SOURCE_PROFILES = {
+    'project-context': { contextFiles: PROJECT_CONTEXT_FILES },
+    'business-context': { contextFiles: FALLBACK_CONTEXT_FILES },
+    'asset-refinery': {
+      contextFiles: {
+        changelog: '.project-context/changelog.md',
+        commands: '.project-context/commands.md',
+        contextMap: '.project-context/context-map.md',
+        contextStructure: '.project-context/context-structure.md',
+        patternCandidates: '.project-context/pattern-candidates.md',
+        promotionLifecycle: '.project-context/promotion-lifecycle.md'
+      }
+    },
+    'canonical-assets': {
+      contextFiles: {
+        schema: 'schema/README.md',
+        promptTemplates: 'prompts/README.md',
+        auditPrompts: 'audits/README.md',
+        guides: 'guides/README.md',
+        conventions: 'conventions/README.md',
+        changelog: 'CHANGELOG.md'
+      }
+    },
+    docs: { contextFiles: { index: 'README.md', changelog: 'CHANGELOG.md' } },
+    app: { contextFiles: { readme: 'README.md', changelog: 'CHANGELOG.md' } }
+  };
 
   function configUrl() {
     const params = new URL(global.location.href).searchParams;
@@ -17,8 +52,18 @@
     return new URL('../config/account-projects.json', src || global.location.href).href;
   }
 
-  function mergeContextFiles(contextFiles, fallback = FALLBACK_CONTEXT_FILES) {
-    return { ...fallback, ...(contextFiles || {}) };
+  function normalizeRepoType(repoType) {
+    return String(repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context';
+  }
+
+  function sourceContextFiles(repoType, fallback = FALLBACK_CONTEXT_FILES) {
+    const key = normalizeRepoType(repoType);
+    if (key === 'business-context') return { ...SOURCE_PROFILES['business-context'].contextFiles, ...(fallback || {}) };
+    return { ...((SOURCE_PROFILES[key] || SOURCE_PROFILES['project-context']).contextFiles) };
+  }
+
+  function mergeContextFiles(contextFiles, repoType, fallback = FALLBACK_CONTEXT_FILES) {
+    return { ...sourceContextFiles(repoType, fallback), ...(contextFiles || {}) };
   }
 
   function normalizeProjectConfig(project, fallbackContextFiles) {
@@ -36,10 +81,10 @@
       name: String(project.name || repo || id).trim(),
       owner,
       repo,
-      repoType: String(project.repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context',
+      repoType: normalizeRepoType(project.repoType),
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
       legacyTokenKey: project.tokenKey ? String(project.tokenKey).replace(/[^a-zA-Z0-9_:-]/g, '_') : null,
-      contextFiles: mergeContextFiles(project.contextFiles, fallbackContextFiles)
+      contextFiles: mergeContextFiles(project.contextFiles, project.repoType, fallbackContextFiles)
     };
   }
 

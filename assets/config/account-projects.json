@@ -63,13 +63,12 @@
       "repoType": "asset-refinery",
       "visibility": "private",
       "contextFiles": {
-        "tasks": ".project-context/tasks.md",
-        "decisions": ".project-context/decisions.md",
-        "risks": ".project-context/risks.md",
-        "opportunities": ".project-context/opportunities.md",
-        "rules": ".project-context/rules.md",
-        "journal": ".project-context/journal.md",
-        "changelog": ".project-context/changelog.md"
+        "changelog": ".project-context/changelog.md",
+        "commands": ".project-context/commands.md",
+        "contextMap": ".project-context/context-map.md",
+        "contextStructure": ".project-context/context-structure.md",
+        "patternCandidates": ".project-context/pattern-candidates.md",
+        "promotionLifecycle": ".project-context/promotion-lifecycle.md"
       }
     }
   ]

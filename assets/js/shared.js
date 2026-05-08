@@ -4,6 +4,76 @@
   const CONFIG_SYNC_STORAGE_KEY = 'dvtl:account-project-config:sync';
   const PROJECTS_STORAGE_KEY = 'dvtl:projects:drafts';
   const LEGACY_PROJECTS_STORAGE_KEY = 'dovetell_projects_custom';
+  const STANDARD_CONTEXT_FILES = {
+    tasks: 'tasks.md',
+    decisions: 'decisions.md',
+    risks: 'risks.md',
+    opportunities: 'opportunities.md',
+    rules: 'business-rules.md',
+    journal: 'journal.md',
+    changelog: 'changelog.md'
+  };
+  const PROJECT_CONTEXT_FILES = {
+    tasks: '.project-context/tasks.md',
+    decisions: '.project-context/decisions.md',
+    risks: '.project-context/risks.md',
+    opportunities: '.project-context/opportunities.md',
+    rules: '.project-context/rules.md',
+    journal: '.project-context/journal.md',
+    changelog: '.project-context/changelog.md'
+  };
+  const SOURCE_PROFILES = {
+    'project-context': {
+      label: 'Project context',
+      dashboard: true,
+      contextFiles: PROJECT_CONTEXT_FILES
+    },
+    'business-context': {
+      label: 'Business context',
+      dashboard: true,
+      contextFiles: STANDARD_CONTEXT_FILES
+    },
+    'asset-refinery': {
+      label: 'Asset refinery',
+      dashboard: false,
+      contextFiles: {
+        changelog: '.project-context/changelog.md',
+        commands: '.project-context/commands.md',
+        contextMap: '.project-context/context-map.md',
+        contextStructure: '.project-context/context-structure.md',
+        patternCandidates: '.project-context/pattern-candidates.md',
+        promotionLifecycle: '.project-context/promotion-lifecycle.md'
+      }
+    },
+    'canonical-assets': {
+      label: 'Canonical assets',
+      dashboard: false,
+      contextFiles: {
+        schema: 'schema/README.md',
+        promptTemplates: 'prompts/README.md',
+        auditPrompts: 'audits/README.md',
+        guides: 'guides/README.md',
+        conventions: 'conventions/README.md',
+        changelog: 'CHANGELOG.md'
+      }
+    },
+    docs: {
+      label: 'Docs',
+      dashboard: false,
+      contextFiles: {
+        index: 'README.md',
+        changelog: 'CHANGELOG.md'
+      }
+    },
+    app: {
+      label: 'App',
+      dashboard: false,
+      contextFiles: {
+        readme: 'README.md',
+        changelog: 'CHANGELOG.md'
+      }
+    }
+  };
 
   function nanoid(len = 8) {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -170,15 +240,28 @@
   }
 
   function fallbackContextFiles() {
-    return cloneProject(global.DOVETELL_DEFAULT_CONTEXT_FILES || {
-      tasks: 'tasks.md',
-      decisions: 'decisions.md',
-      risks: 'risks.md',
-      opportunities: 'opportunities.md',
-      rules: 'business-rules.md',
-      journal: 'journal.md',
-      changelog: 'changelog.md'
-    });
+    return cloneProject(global.DOVETELL_DEFAULT_CONTEXT_FILES || STANDARD_CONTEXT_FILES);
+  }
+
+  function normalizeRepoType(repoType) {
+    return (repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context';
+  }
+
+  function sourceProfile(repoType = 'project-context') {
+    const key = normalizeRepoType(repoType);
+    return SOURCE_PROFILES[key] || SOURCE_PROFILES['project-context'];
+  }
+
+  function sourceContextFiles(repoType = 'project-context', contextDefaults = null) {
+    const key = normalizeRepoType(repoType);
+    if (key === 'business-context' && contextDefaults) {
+      return cloneProject({ ...SOURCE_PROFILES['business-context'].contextFiles, ...contextDefaults });
+    }
+    return cloneProject(sourceProfile(key).contextFiles);
+  }
+
+  function sourceSupportsDashboard(project) {
+    return Boolean(sourceProfile(project && project.repoType).dashboard);
   }
 
   function normalizeAccountConfig(config) {
@@ -272,13 +355,14 @@
     const owner = (project.owner || '').trim();
     const repo = (project.repo || '').trim();
     const id = (project.id || `${owner}-${repo}`).trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
-    const contextFiles = { ...(contextDefaults || fallbackContextFiles()), ...(project.contextFiles || {}) };
+    const repoType = normalizeRepoType(project.repoType);
+    const contextFiles = { ...sourceContextFiles(repoType, contextDefaults), ...(project.contextFiles || {}) };
     return {
       id,
       name: (project.name || repo || id).trim(),
       owner,
       repo,
-      repoType: (project.repoType || 'project-context').trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-') || 'project-context',
+      repoType,
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
       legacyTokenKey: project.legacyTokenKey || project.tokenKey || null,
       contextFiles
@@ -641,6 +725,10 @@
     readConfigToken,
     saveConfigToken,
     clearConfigToken,
+    sourceProfiles: () => cloneProject(SOURCE_PROFILES),
+    sourceProfile,
+    sourceContextFiles,
+    sourceSupportsDashboard,
     defaultContextFiles,
     defaultProjects,
     baseDefaultProjects,
