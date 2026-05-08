@@ -37,7 +37,7 @@
       owner,
       repo,
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
-      tokenKey: String(project.tokenKey || `dovetell_pat_${owner}_${repo}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
+      legacyTokenKey: project.tokenKey ? String(project.tokenKey).replace(/[^a-zA-Z0-9_:-]/g, '_') : null,
       contextFiles: mergeContextFiles(project.contextFiles, fallbackContextFiles)
     };
   }

@@ -21,7 +21,6 @@
       "owner": "dovetell-io",
       "repo": "dovetell-sandbox",
       "visibility": "public",
-      "tokenKey": "dovetell_pat",
       "contextFiles": {
         "tasks": "tasks.md",
         "decisions": "decisions.md",
@@ -38,7 +37,6 @@
       "owner": "jchromchak",
       "repo": "dovetell-private",
       "visibility": "private",
-      "tokenKey": "dovetell_pat_jchromchak_dovetell-private",
       "contextFiles": {
         "tasks": ".project-context/tasks.md",
         "decisions": ".project-context/decisions.md",

@@ -573,6 +573,24 @@
   action: completed
   summary: Migrated the private context repo to the agnostic .project-context directory and updated dashboard project paths to match.
 
+- rev-72f4a6d3
+  date: 2026-05-08T14:31Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - task-3c1d9f2a: completed
+    - assets/config/account-projects.json: updated
+    - assets/config/account-projects.fixture.json: updated
+    - assets/js/projects.js: updated
+    - assets/js/shared.js: updated
+    - dashboard/index.html: updated
+    - tasks-completed.md: updated
+    - changelog.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Cleaned up project PAT storage by deriving localStorage keys from project IDs and keeping legacy token keys as migration fallback only.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

@@ -227,16 +227,10 @@
       </select>
     </div>
   </div>
-  <div class="project-form-section">Local identifiers</div>
-  <div class="form-row-2">
-    <div class="form-field">
-      <label class="form-label">Project ID</label>
-      <input class="form-input" id="project-id" placeholder="auto-generated"/>
-    </div>
-    <div class="form-field">
-      <label class="form-label">Token key</label>
-      <input class="form-input" id="project-token-key" placeholder="auto-generated"/>
-    </div>
+  <div class="project-form-section">Project identity</div>
+  <div class="form-field">
+    <label class="form-label">Project ID</label>
+    <input class="form-input" id="project-id" placeholder="auto-generated"/>
   </div>
   <div class="form-field">
     <label class="form-label">GitHub token for this repo</label>
@@ -1213,10 +1207,6 @@ function suggestedProjectId(owner, repo) {
   return projectSlug(`${owner}-${repo}`)
 }
 
-function suggestedTokenKey(owner, repo) {
-  return `dovetell_pat_${owner}_${repo}`.replace(/[^a-zA-Z0-9_-]/g, '_')
-}
-
 function setProjectVerify(message = '', state = '') {
   const box = document.getElementById('project-verify')
   if (!box) return
@@ -1228,14 +1218,9 @@ function syncProjectGeneratedFields() {
   const owner = document.getElementById('project-owner').value.trim()
   const repo = document.getElementById('project-repo').value.trim()
   const idInput = document.getElementById('project-id')
-  const tokenInput = document.getElementById('project-token-key')
   if (owner && repo && (!idInput.value.trim() || idInput.dataset.generated === 'true')) {
     idInput.value = suggestedProjectId(owner, repo)
     idInput.dataset.generated = 'true'
-  }
-  if (owner && repo && (!tokenInput.value.trim() || tokenInput.dataset.generated === 'true')) {
-    tokenInput.value = suggestedTokenKey(owner, repo)
-    tokenInput.dataset.generated = 'true'
   }
   const nameInput = document.getElementById('project-name')
   if (repo && !nameInput.value.trim()) nameInput.value = repo.replace(/[-_]+/g, ' ')
@@ -1252,7 +1237,7 @@ function wireProjectForm() {
       input.dataset.wired = 'true'
     }
   })
-  ;['project-id', 'project-token-key'].forEach(id => {
+  ;['project-id'].forEach(id => {
     const input = document.getElementById(id)
     if (input && !input.dataset.manualWired) {
       input.addEventListener('input', () => { input.dataset.generated = 'false' })
@@ -1331,13 +1316,11 @@ function fillProjectForm(project) {
   document.getElementById('project-owner').value = data.owner || ''
   document.getElementById('project-repo').value = data.repo || ''
   document.getElementById('project-visibility').value = data.visibility || 'unknown'
-  document.getElementById('project-token-key').value = data.tokenKey || ''
-  document.getElementById('project-token-key').dataset.generated = project ? 'false' : 'true'
   document.getElementById('project-token').value = ''
   projectPathKeys().forEach(key => {
     document.getElementById(`project-path-${key}`).value = (data.contextFiles && data.contextFiles[key]) || defaults[key] || ''
   })
-  setProjectVerify(project ? 'Editing an existing local source. Add a new token only if you want to replace the saved one.' : 'Enter an owner and repo. The project ID, token key, and context paths are generated locally.', 'warning')
+  setProjectVerify(project ? 'Editing an existing local source. Add a new token only if you want to replace the saved one.' : 'Enter an owner and repo. The project ID and context paths are generated locally.', 'warning')
   syncProjectGeneratedFields()
 }
 
@@ -1385,7 +1368,6 @@ async function saveProjectSettings() {
     owner,
     repo,
     visibility: document.getElementById('project-visibility').value,
-    tokenKey: document.getElementById('project-token-key').value.trim(),
     contextFiles
   })
   if (token) Dovetell.saveProjectToken(project, token)

@@ -463,6 +463,30 @@
   completion-notes:
     Migrated jchromchak/dovetell-private context files from .dovetell-tasks-context into .project-context so the retrospective and context files live under one agnostic folder. Updated assets/config/account-projects.json so the dashboard private project source reads tasks, decisions, risks, opportunities, rules, journal, and changelog from .project-context paths.
 
+- [x] Clean project profile token storage boundary
+  id: task-3c1d9f2a
+  priority: now
+  revisionId: rev-72f4a6d3
+  created: 2026-05-08T14:31Z
+  completed: 2026-05-08T14:31Z
+  completed-session: codex-7588c8e2
+
+  owner: john
+  persona: none
+  decision: decision-55bcfc5c
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - ctx:global
+
+  notes:
+    User wanted to clean up the remaining project profile/token storage wonkiness before adding dovetell-assets-private as another configured project source.
+
+  completion-notes:
+    Removed tokenKey from account-projects.json and account-projects.fixture.json. Runtime now derives PAT storage from stable project IDs using dvtl:project:{projectId}:pat. Existing legacy token keys such as dovetell_pat_owner_repo are still read and copied forward to the canonical key so saved tokens are preserved. The dashboard project sheet no longer asks for or exports token keys, and generated account-projects.json remains token-storage-key free.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

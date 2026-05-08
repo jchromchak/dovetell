@@ -108,14 +108,30 @@
     return `${config.owner}/${config.repo}`;
   }
 
-  function projectTokenKey(project) {
+  function legacyProjectTokenKey(project) {
+    if (project && project.legacyTokenKey) return project.legacyTokenKey;
     if (project && project.tokenKey) return project.tokenKey;
     if (!project) return TOKEN_KEY;
     return `dovetell_pat_${repoSlug(project).replace(/[^a-zA-Z0-9]/g, '_')}`;
   }
 
+  function projectTokenKey(project) {
+    if (!project) return TOKEN_KEY;
+    const projectId = (project.id || repoSlug(project)).replace(/[^a-zA-Z0-9_-]/g, '-');
+    return `dvtl:project:${projectId}:pat`;
+  }
+
   function readProjectToken(project) {
-    return localStorage.getItem(projectTokenKey(project));
+    const canonicalKey = projectTokenKey(project);
+    const token = localStorage.getItem(canonicalKey);
+    if (token) return token;
+    const legacyKey = legacyProjectTokenKey(project);
+    const legacyToken = legacyKey && legacyKey !== canonicalKey ? localStorage.getItem(legacyKey) : null;
+    if (legacyToken) {
+      localStorage.setItem(canonicalKey, legacyToken);
+      return legacyToken;
+    }
+    return null;
   }
 
   function saveProjectToken(project, token) {
@@ -124,6 +140,8 @@
 
   function clearProjectToken(project) {
     localStorage.removeItem(projectTokenKey(project));
+    const legacyKey = legacyProjectTokenKey(project);
+    if (legacyKey && legacyKey !== projectTokenKey(project)) localStorage.removeItem(legacyKey);
   }
 
   function cloneProject(project) {
@@ -180,7 +198,7 @@
       owner,
       repo,
       visibility: ['public', 'private', 'unknown'].includes(project.visibility) ? project.visibility : 'unknown',
-      tokenKey: (project.tokenKey || `dovetell_pat_${owner}_${repo}`).replace(/[^a-zA-Z0-9_-]/g, '_'),
+      legacyTokenKey: project.legacyTokenKey || project.tokenKey || null,
       contextFiles
     };
   }
@@ -228,7 +246,6 @@
       owner: normalized.owner,
       repo: normalized.repo,
       visibility: normalized.visibility,
-      tokenKey: normalized.tokenKey,
       contextFiles: normalized.contextFiles
     };
   }
@@ -465,6 +482,7 @@
     saveToken,
     clearToken,
     repoSlug,
+    legacyProjectTokenKey,
     projectTokenKey,
     readProjectToken,
     saveProjectToken,
