@@ -106,6 +106,9 @@
 .project-json-actions{display:flex;gap:8px;flex-wrap:wrap}
 .project-json-output{display:none;width:100%;min-height:150px;max-height:260px;resize:vertical;padding:10px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--mono);font-size:10px;line-height:1.45;outline:none}
 .project-json-output.visible{display:block}
+.project-config-connection{display:grid;gap:8px;margin:10px 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:rgba(18,27,43,0.54)}
+.project-config-meta{font-family:var(--mono);font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.project-config-token{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .project-hint{font-size:11px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
 .project-form-section{margin:14px 0 8px;font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)}
 .project-verify{display:none;margin:10px 0 0;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(18,27,43,0.54);font-size:12px;line-height:1.45;color:var(--muted-2)}
@@ -206,6 +209,14 @@
     <div class="project-settings-list" id="project-settings-list"></div>
     <div class="project-form-section">Repo JSON promotion</div>
     <div class="project-hint">Generate or copy the token-free account-projects.json working copy. Tokens are never written to config.</div>
+    <div class="project-config-connection">
+      <div class="project-config-meta" id="project-config-meta">Config repo</div>
+      <div class="project-config-token">
+        <input class="token-input" id="project-config-token" type="password" placeholder="config repo PAT" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')saveConfigConnectionToken()"/>
+        <button class="btn-action" onclick="saveConfigConnectionToken()">Connect config</button>
+        <button class="btn-action danger" onclick="clearConfigConnectionToken()">Clear</button>
+      </div>
+    </div>
     <div class="project-json-tools">
       <div class="project-json-actions">
         <button class="btn-action" onclick="previewProjectConfigJson()">Preview JSON</button>
@@ -312,8 +323,8 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="../assets/js/shared.js?v=20260508-token-bridge1"></script>
-<script src="../assets/js/projects.js?v=20260508-token-bridge1"></script>
+<script src="../assets/js/shared.js?v=20260508-config-connection1"></script>
+<script src="../assets/js/projects.js?v=20260508-config-connection1"></script>
 <script>
 const PROJECTS = Dovetell.allProjects()
 const SOURCE_KEYS = ['tasks', 'decisions', 'risks', 'opportunities', 'changelog', 'journal']
@@ -1285,12 +1296,56 @@ function wireProjectForm() {
 function openProjectSettings(projectId = '') {
   wireProjectForm()
   renderProjectSettingsList()
+  renderConfigConnection()
   if (projectId) {
     showProjectForm(findProject(projectId), 'edit')
   } else {
     showProjectSourceList()
   }
   Dovetell.openSheet('project-sheet', 'project-overlay')
+}
+
+function renderConfigConnection() {
+  const repo = Dovetell.configRepo()
+  const meta = document.getElementById('project-config-meta')
+  if (meta) {
+    const status = Dovetell.readConfigToken() ? 'connected for sync' : 'not connected for sync'
+    meta.textContent = `${repo.owner}/${repo.repo}:${repo.branch} · ${repo.path} · ${status}`
+  }
+  const input = document.getElementById('project-config-token')
+  if (input) input.value = ''
+}
+
+async function verifyConfigConnection(token) {
+  const repo = Dovetell.configRepo()
+  const file = await Dovetell.githubGet({ owner: repo.owner, repo: repo.repo, branch: repo.branch, token }, repo.path)
+  if (!file || !file.sha) throw new Error('Config file was readable, but GitHub did not return a file sha')
+  return repo
+}
+
+async function saveConfigConnectionToken() {
+  const input = document.getElementById('project-config-token')
+  const token = input ? input.value.trim() : ''
+  if (!token) {
+    setProjectVerify('Paste a PAT that can write the config repo.', 'warning')
+    return
+  }
+  Dovetell.saveConfigToken(token)
+  setProjectVerify('Checking config repo access...', 'warning')
+  try {
+    const repo = await verifyConfigConnection(token)
+    renderConfigConnection()
+    setProjectVerify(`Config repo connected: ${repo.owner}/${repo.repo} · ${repo.path}.`, 'success')
+  } catch (err) {
+    renderConfigConnection()
+    setProjectVerify(`Config token saved locally, but access check needs attention: ${err.message || 'Unable to verify config repo'}`, 'warning')
+  }
+}
+
+function clearConfigConnectionToken() {
+  Dovetell.clearConfigToken()
+  renderConfigConnection()
+  setProjectVerify('Config repo token cleared.', 'warning')
 }
 
 function closeProjectSettings() {
@@ -1447,7 +1502,7 @@ async function saveProjectSettings() {
   try {
     const message = await verifyProjectAccess(project, token || Dovetell.readProjectToken(project))
     localStorage.setItem('dovetell_project_tasks', project.id)
-    const syncMessage = await syncProjectConfig(token || Dovetell.readProjectToken(project), false)
+    const syncMessage = await syncProjectConfig(bestConfigToken(), false)
     setProjectVerify(`${message} ${syncMessage} Reloading...`, 'success')
     setTimeout(() => window.location.reload(), 900)
   } catch (err) {
@@ -1484,17 +1539,14 @@ function resetProjectWorkingConfig() {
 }
 
 function bestConfigToken() {
-  for (const project of Dovetell.allProjects()) {
-    const token = Dovetell.readProjectToken(project)
-    if (token) return token
-  }
-  return Dovetell.readToken && Dovetell.readToken()
+  return Dovetell.readConfigToken && Dovetell.readConfigToken()
 }
 
 async function syncProjectConfig(token, reload = false, toastPrefix = '') {
   if (!token) {
     if (Dovetell.saveConfigSyncStatus) Dovetell.saveConfigSyncStatus({ state: 'pending', reason: 'No writable token available' })
-    const message = 'Saved locally; sync is pending until a token with app-repo write access is available.'
+    const repo = Dovetell.configRepo()
+    const message = `Saved locally; sync is pending until the config repo is connected for ${repo.owner}/${repo.repo}.`
     if (reload) Dovetell.showToast(`${toastPrefix ? `${toastPrefix} · ` : ''}${message}`, 'warning')
     if (reload) setTimeout(() => window.location.reload(), 900)
     return message

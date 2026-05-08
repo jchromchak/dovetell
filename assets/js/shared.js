@@ -149,6 +149,22 @@
     if (legacyKey && legacyKey !== projectTokenKey(project)) localStorage.removeItem(legacyKey);
   }
 
+  function configTokenKey(repo = configRepo()) {
+    return `dvtl:config:${repoSlug(repo).replace(/[^a-zA-Z0-9_-]/g, '-')}:${repo.path.replace(/[^a-zA-Z0-9_-]/g, '-')}:pat`;
+  }
+
+  function readConfigToken() {
+    return localStorage.getItem(configTokenKey());
+  }
+
+  function saveConfigToken(token) {
+    localStorage.setItem(configTokenKey(), token);
+  }
+
+  function clearConfigToken() {
+    localStorage.removeItem(configTokenKey());
+  }
+
   function cloneProject(project) {
     return JSON.parse(JSON.stringify(project));
   }
@@ -619,6 +635,10 @@
     readProjectToken,
     saveProjectToken,
     clearProjectToken,
+    configTokenKey,
+    readConfigToken,
+    saveConfigToken,
+    clearConfigToken,
     defaultContextFiles,
     defaultProjects,
     baseDefaultProjects,
