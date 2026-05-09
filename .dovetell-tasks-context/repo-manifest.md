@@ -82,18 +82,20 @@
   current-role: app-context
   target-role: app-context
   visibility-intent: private
-  status: proposed
+  status: active
   notes:
-    - Proposed private context repo for the Dovetell app itself.
-    - Likely successor or rename target for current dovetell-private usage.
+    - Private context repo for the Dovetell app itself.
+    - User reported renaming this from jchromchak/dovetell-private on 2026-05-09.
+    - SSH access verified at main 740e6ce.
 
 - repo: jchromchak/dovetell-private
   current-role: app-context
-  target-role: app-context
+  target-role: superseded-by-dovetell-ctx-app-private
   visibility-intent: private
-  status: active
+  status: renamed-redirect
   notes:
-    - Current private context repo backing app work.
+    - Former private context repo backing app work.
+    - GitHub SSH URL still redirects to the renamed repo at 740e6ce.
     - Uses .project-context after migration from .dovetell-tasks-context.
 
 - repo: dovetell-io/dovetell-sandbox
@@ -427,6 +429,25 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
   notes:
     - Do not write new business-context objects to sandbox.
     - Do not use sandbox as an app project source except for historical audit if explicitly needed.
+
+---
+
+## Rename Updates
+
+- rename-2026-05-09T15:14:52Z
+  revisionId: rev-07b7f34e
+  old-repo: jchromchak/dovetell-private
+  new-repo: jchromchak/dovetell-ctx-app-private
+  status: completed
+  reported-by: john
+  verification:
+    - git ls-remote reaches jchromchak/dovetell-ctx-app-private main at 740e6ce.
+    - git ls-remote for jchromchak/dovetell-private also reaches main at 740e6ce, consistent with GitHub rename redirect behavior.
+  config-update:
+    - assets/config/account-projects.json now points the app-context source at jchromchak/dovetell-ctx-app-private.
+    - assets/config/account-projects.fixture.json now points the fixture app-context source at jchromchak/dovetell-ctx-app-private.
+  notes:
+    - Historical mentions of jchromchak/dovetell-private in changelog and completed task records were preserved as history.
 
 ---
 

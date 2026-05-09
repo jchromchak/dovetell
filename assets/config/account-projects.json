@@ -22,10 +22,10 @@
   },
   "projects": [
     {
-      "id": "dovetell-private",
-      "name": "dovetell private",
+      "id": "dovetell-ctx-app-private",
+      "name": "dovetell app context",
       "owner": "jchromchak",
-      "repo": "dovetell-private",
+      "repo": "dovetell-ctx-app-private",
       "repoType": "project-context",
       "visibility": "private",
       "contextFiles": {

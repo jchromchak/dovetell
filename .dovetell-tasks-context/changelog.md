@@ -1016,6 +1016,22 @@
   action: updated
   summary: Recorded user-reported archive of private dovetell-sandbox after GTM migration; dovetell-gtm is now the sole active business-context source.
 
+- rev-07b7f34e
+  date: 2026-05-09T15:14:52Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - jchromchak/dovetell-ctx-app-private: renamed
+    - jchromchak/dovetell-private: superseded
+    - assets/config/account-projects.json: updated
+    - assets/config/account-projects.fixture.json: updated
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded app-context repo rename from dovetell-private to dovetell-ctx-app-private and updated project source config to the new canonical repo name.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
