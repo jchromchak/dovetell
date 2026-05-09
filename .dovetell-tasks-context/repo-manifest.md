@@ -112,11 +112,12 @@
   current-role: business-context
   target-role: business-context
   visibility-intent: private
-  status: created-pending-access-verification
+  status: active-pending-migration
   notes:
     - User reported creating this private repo on 2026-05-09.
     - Intended home for Dovetell startup, product, GTM, and operating context.
-    - Connector and current SSH path could not verify access yet; install/permissions may need to be updated before Codex can read or write it.
+    - SSH access verified on 2026-05-09.
+    - Initial private context scaffold pushed at e68c675.
 
 - repo: dovetell-io/dovetell-internal
   current-role: unknown
@@ -307,7 +308,7 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
 - migration-2026-05-09T14:44:49Z
   revisionId: rev-4f177bde
   scope: sandbox-to-gtm
-  status: blocked-on-gtm-access
+  status: ready-for-private-content-migration
   source: dovetell-io/dovetell-sandbox
   target: dovetell-io/dovetell-gtm
   source-structure-observed:
@@ -334,9 +335,9 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - assets/config/account-projects.json now treats jchromchak/dovetell-assets-private as asset-refinery rather than project-context.
     - assets/config/account-projects.fixture.json was aligned with the same sandbox/gtm role and visibility changes.
   migration-sequence:
-    - 1. Verify Codex or local SSH access to private dovetell-gtm.
-    - 2. Initialize target files in dovetell-gtm with matching flat context filenames if they do not exist.
-    - 3. Compare sandbox and gtm path lists before reading contents.
+    - 1. Verify Codex or local SSH access to private dovetell-gtm. completed 2026-05-09T14:52:27Z.
+    - 2. Initialize target files in dovetell-gtm with matching flat context filenames if they do not exist. completed at dovetell-gtm e68c675.
+    - 3. Compare sandbox and gtm path lists before reading contents. completed by filename-only structure checks.
     - 4. Move or curate context object bodies only inside private repos.
     - 5. Preserve object IDs, revisionId fields, and changelog lineage wherever possible.
     - 6. Add a private migration note to sandbox after content is protected.
@@ -345,6 +346,28 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - This plan was drafted from filenames only.
     - Do not expose GTM/business object contents in public repos, public docs, or broad summaries.
     - If public docs need a reference later, describe only the existence of a private business-context source, not its substance.
+
+---
+
+## Scaffold Updates
+
+- scaffold-2026-05-09T14:52:27Z
+  revisionId: rev-d58648cb
+  repo: dovetell-io/dovetell-gtm
+  status: completed
+  commit: e68c675
+  files-created:
+    - business-rules.md
+    - changelog.md
+    - decisions.md
+    - journal.md
+    - opportunities.md
+    - risks.md
+    - tasks.md
+  files-updated:
+    - README.md
+  summary:
+    Initialized the private GTM repo with empty flat context files and a privacy note. No sandbox content was copied in this scaffold step.
 
 ---
 

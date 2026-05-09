@@ -188,9 +188,9 @@
   id: task-1f9c6b8a
   priority: next
   status: in-progress
-  revisionId: rev-4f177bde
+  revisionId: rev-d58648cb
   created: 2026-05-09T03:22:00Z
-  updated: 2026-05-09T14:44:49Z
+  updated: 2026-05-09T14:52:27Z
   due: none
 
   owner: john
@@ -210,8 +210,8 @@
     Current target map: dovetell-io/dovetell = landing; dovetell-io/docs = docs; dovetell-io/dovetell-assets = canonical-assets; jchromchak/dovetell-assets-private = asset-refinery; jchromchak/dovetell-ctx-app or current app repo = app; jchromchak/dovetell-ctx-app-private / current dovetell-private = app-context; dovetell-sandbox / future dovetell-gtm = private business-context; famframe-private and dogfood-private = project/experiment context. Cleanup should happen through inventory, role assignment, migration notes, then rename/privacy changes. Avoid moving or exposing secrets and do not rename until target roles are clear.
 
   blocked-by:
-    - Codex access verification for private dovetell-io/dovetell-gtm
-    - execution of migration-2026-05-09T14:44:49Z after access is available
+    - private-to-private content migration from sandbox into dovetell-gtm
+    - sandbox archive/redirect decision after migration
 
 - [ ] Design context rank index and ctx:rank command
   id: task-8a7d2c19
