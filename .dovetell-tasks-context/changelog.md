@@ -1032,6 +1032,22 @@
   action: updated
   summary: Recorded app-context repo rename from dovetell-private to dovetell-ctx-app-private and updated project source config to the new canonical repo name.
 
+- rev-8c28de00
+  date: 2026-05-09T15:19:50Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - task-1f9c6b8a: completed
+    - task-08030ad5: created
+    - repo-manifest.md: updated
+    - tasks.md: updated
+    - tasks-completed.md: updated
+    - rank.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Closed repo role cleanup, deferred clean dovetell-ctx-app creation, and promoted shape clean React app shell into canonical task-08030ad5.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

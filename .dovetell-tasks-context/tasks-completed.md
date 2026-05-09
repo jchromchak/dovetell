@@ -487,6 +487,30 @@
   completion-notes:
     Removed tokenKey from account-projects.json and account-projects.fixture.json. Runtime now derives PAT storage from stable project IDs using dvtl:project:{projectId}:pat. Existing legacy token keys such as dovetell_pat_owner_repo are still read and copied forward to the canonical key so saved tokens are preserved. The dashboard project sheet no longer asks for or exports token keys, and generated account-projects.json remains token-storage-key free.
 
+- [x] Audit and clean up Dovetell repo roles
+  id: task-1f9c6b8a
+  priority: next
+  revisionId: rev-8c28de00
+  created: 2026-05-09T03:22:00Z
+  completed: 2026-05-09T15:19:50Z
+  completed-session: codex-53476bae
+
+  owner: john
+  persona: none
+  decision: decision-5c8e2a74
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Inventory the active Dovetell repos, assign each a repo role, and plan cleanup/rename/privacy changes. Make dovetell-sandbox / future dovetell-gtm private because it represents business-context rather than public demo storage.
+
+  completion-notes:
+    Moved local work out of Codex/iCloud-managed Documents into /Users/johnchromchak/projects/dovetell-context-workbench. Made dovetell-sandbox private, created dovetell-gtm, migrated private sandbox context into dovetell-gtm, archived sandbox, renamed dovetell-private to dovetell-ctx-app-private, updated source config, and clarified that dovetell-tasks remains prototype/workbench/history. Deferred clean dovetell-ctx-app creation until task-08030ad5 shapes the React app shell.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

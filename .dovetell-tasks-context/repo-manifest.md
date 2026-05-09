@@ -62,20 +62,22 @@
   current-role: app
   target-role: app
   visibility-intent: public-or-product
-  status: proposed
+  status: deferred-pending-react-shell-shape
   notes:
-    - Proposed future name for the app formerly known as dovetell-tasks.
-    - Current work may continue in the existing app repo until React/product objectives outgrow the prototype.
+    - Future clean product app repo.
+    - Do not rename jchromchak/dovetell-tasks into this repo.
+    - Creation is deferred until task-08030ad5 shapes the clean React app shell and clarifies what should be born clean versus promoted from prototype history.
 
 - repo: local dovetell-context-workbench
   current-role: app-prototype
-  target-role: app
+  target-role: prototype-workbench
   visibility-intent: working
-  status: active
+  status: active-workbench
   notes:
     - Current static dashboard/prototype and context dogfood workspace.
     - Local path: /Users/johnchromchak/projects/dovetell-context-workbench.
     - Moved out of Codex/iCloud-managed Documents storage as step 0 local housing cleanup before repo role cleanup.
+    - Treat as prototype/workbench/history, not the clean product app repo.
     - Static pages should become reference/demo artifacts once React shell begins.
 
 - repo: jchromchak/dovetell-ctx-app-private
@@ -448,6 +450,21 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - assets/config/account-projects.fixture.json now points the fixture app-context source at jchromchak/dovetell-ctx-app-private.
   notes:
     - Historical mentions of jchromchak/dovetell-private in changelog and completed task records were preserved as history.
+
+---
+
+## Deferred Repo Decisions
+
+- defer-2026-05-09T15:19:50Z
+  revisionId: rev-8c28de00
+  scope: dovetell-ctx-app
+  status: deferred
+  decision:
+    Defer creating or renaming into jchromchak/dovetell-ctx-app until the clean React app shell is shaped.
+  rationale:
+    The current dovetell-tasks/workbench repo contains useful prototype history, context experiments, artifact ingestion, source configuration, and cleanup records. Renaming it into the product app would drag prototype assumptions into the clean app. The better path is to keep the workbench as prototype/history and start the product app clean once the shell is defined.
+  follow-up-task:
+    - task-08030ad5
 
 ---
 

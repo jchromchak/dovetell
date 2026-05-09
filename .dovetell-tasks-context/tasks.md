@@ -184,19 +184,19 @@
   blocked-by:
     - user concept uploads
 
-- [ ] Audit and clean up Dovetell repo roles
-  id: task-1f9c6b8a
+- [ ] Shape clean React app shell
+  id: task-08030ad5
   priority: next
-  status: in-progress
-  revisionId: rev-07b7f34e
-  created: 2026-05-09T03:22:00Z
-  updated: 2026-05-09T15:14:52Z
+  status: open
+  revisionId: rev-8c28de00
+  created: 2026-05-09T15:19:50Z
+  updated: 2026-05-09T15:19:50Z
   due: none
 
   owner: john
   persona: none
-  decision: decision-5c8e2a74
-  rule: none
+  decision: decision-9d2e6a41
+  rule: rule-6b1f2c9d
   process: none
   opp: none
   risk: none
@@ -204,13 +204,13 @@
     - dovetell:global
 
   notes:
-    Inventory the active Dovetell repos, assign each a repo role, and plan cleanup/rename/privacy changes. Make dovetell-sandbox / future dovetell-gtm private because it represents business-context rather than public demo storage.
+    Define the first clean React product shell for Dovetell before creating or initializing jchromchak/dovetell-ctx-app.
 
   context:
-    Current target map: dovetell-io/dovetell = landing; dovetell-io/docs = docs; dovetell-io/dovetell-assets = canonical-assets; jchromchak/dovetell-assets-private = asset-refinery; jchromchak/dovetell-ctx-app or current app repo = app; jchromchak/dovetell-ctx-app-private / current dovetell-private = app-context; dovetell-sandbox / future dovetell-gtm = private business-context; famframe-private and dogfood-private = project/experiment context. Cleanup should happen through inventory, role assignment, migration notes, then rename/privacy changes. Avoid moving or exposing secrets and do not rename until target roles are clear.
+    User decided not to turn dovetell-tasks into the product app repo. Treat dovetell-tasks / local dovetell-context-workbench as prototype, workbench, and history. Shape what the clean React app should be born with: source connection model, context source portfolio, review queue entry point, activity/awareness surface, route structure, state boundaries, what to reuse from the static prototype, and what to leave behind. Keep rule-6b1f2c9d active: the shell should support context governance and awareness, not become a work hub.
 
   blocked-by:
-    - future clean app repo decision for dovetell-ctx-app
+    - none
 
 - [ ] Design context rank index and ctx:rank command
   id: task-8a7d2c19
