@@ -100,24 +100,27 @@
   current-role: business-context
   target-role: archive-or-redirect
   visibility-intent: private
-  status: private-pending-migration
+  status: migrated-private-archive-pending
   notes:
     - Originally public as a convenient storage point.
     - User reported making this repo private on 2026-05-09.
     - Connector access now returns 404 while git ls-remote over SSH still reaches main at 9fa8f85, consistent with private repo visibility plus connector installation/access limits.
-    - Should be migrated/curated into private dovetell-gtm, then archived or redirected after sensitive content is protected.
+    - Context files were migrated into private dovetell-gtm at 6c32e01.
+    - Private migration note was added at 53fd481.
+    - Treat as archive-or-redirect pending final cleanup.
     - Governed by decision-5c8e2a74.
 
 - repo: dovetell-io/dovetell-gtm
   current-role: business-context
   target-role: business-context
   visibility-intent: private
-  status: active-pending-migration
+  status: active
   notes:
     - User reported creating this private repo on 2026-05-09.
     - Intended home for Dovetell startup, product, GTM, and operating context.
     - SSH access verified on 2026-05-09.
     - Initial private context scaffold pushed at e68c675.
+    - Private sandbox context migrated at 6c32e01.
 
 - repo: dovetell-io/dovetell-internal
   current-role: unknown
@@ -308,7 +311,7 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
 - migration-2026-05-09T14:44:49Z
   revisionId: rev-4f177bde
   scope: sandbox-to-gtm
-  status: ready-for-private-content-migration
+  status: completed
   source: dovetell-io/dovetell-sandbox
   target: dovetell-io/dovetell-gtm
   source-structure-observed:
@@ -338,10 +341,10 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - 1. Verify Codex or local SSH access to private dovetell-gtm. completed 2026-05-09T14:52:27Z.
     - 2. Initialize target files in dovetell-gtm with matching flat context filenames if they do not exist. completed at dovetell-gtm e68c675.
     - 3. Compare sandbox and gtm path lists before reading contents. completed by filename-only structure checks.
-    - 4. Move or curate context object bodies only inside private repos.
-    - 5. Preserve object IDs, revisionId fields, and changelog lineage wherever possible.
-    - 6. Add a private migration note to sandbox after content is protected.
-    - 7. Mark sandbox archive-or-redirect only after gtm contains the needed business-context continuity.
+    - 4. Move or curate context object bodies only inside private repos. completed at dovetell-gtm 6c32e01.
+    - 5. Preserve object IDs, revisionId fields, and changelog lineage wherever possible. completed by direct private file copy for matching context files.
+    - 6. Add a private migration note to sandbox after content is protected. completed at dovetell-sandbox 53fd481.
+    - 7. Mark sandbox archive-or-redirect only after gtm contains the needed business-context continuity. status updated to migrated-private-archive-pending.
   data-boundary:
     - This plan was drafted from filenames only.
     - Do not expose GTM/business object contents in public repos, public docs, or broad summaries.
@@ -368,6 +371,40 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - README.md
   summary:
     Initialized the private GTM repo with empty flat context files and a privacy note. No sandbox content was copied in this scaffold step.
+
+---
+
+## Migration Executions
+
+- migration-execution-2026-05-09T14:56:25Z
+  revisionId: rev-80db0d78
+  scope: sandbox-to-gtm
+  status: completed
+  source: dovetell-io/dovetell-sandbox
+  target: dovetell-io/dovetell-gtm
+  source-commit-before-note: 9fa8f85
+  target-commit: 6c32e01
+  source-note-commit: 53fd481
+  files-migrated-by-direct-private-copy:
+    - business-rules.md
+    - changelog.md
+    - decisions.md
+    - journal.md
+    - opportunities.md
+    - risks.md
+    - tasks.md
+  files-preserved-as-private-reference:
+    - README.md copied to dovetell-gtm as README.migrated-from-sandbox.md
+  files-left-in-target:
+    - README.md kept as the private GTM privacy/source note
+  verification:
+    - SHA-1 file hashes matched between sandbox and gtm for all seven copied context files before commit.
+    - dovetell-gtm pushed migration commit 6c32e01.
+    - dovetell-sandbox pushed private migration note commit 53fd481.
+  data-boundary:
+    - Migration was private-to-private.
+    - Sandbox object contents were not printed or summarized in the workbench conversation.
+    - Do not copy migrated GTM/business content into public docs or public assets without explicit review and promotion.
 
 ---
 

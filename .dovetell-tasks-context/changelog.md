@@ -989,6 +989,20 @@
   action: updated
   summary: Verified SSH access to private dovetell-gtm and pushed initial private GTM context scaffold at e68c675.
 
+- rev-80db0d78
+  date: 2026-05-09T14:56:25Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - dovetell-io/dovetell-gtm: updated
+    - dovetell-io/dovetell-sandbox: updated
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Completed private-to-private sandbox-to-gtm context migration, pushed GTM migration commit 6c32e01, and marked sandbox with private migration note commit 53fd481.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
