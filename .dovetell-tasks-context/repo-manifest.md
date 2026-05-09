@@ -67,13 +67,15 @@
     - Proposed future name for the app formerly known as dovetell-tasks.
     - Current work may continue in the existing app repo until React/product objectives outgrow the prototype.
 
-- repo: current local dovetell-tasks repo
+- repo: local dovetell-context-workbench
   current-role: app-prototype
   target-role: app
   visibility-intent: working
   status: active
   notes:
     - Current static dashboard/prototype and context dogfood workspace.
+    - Local path: /Users/johnchromchak/projects/dovetell-context-workbench.
+    - Moved out of Codex/iCloud-managed Documents storage as step 0 local housing cleanup before repo role cleanup.
     - Static pages should become reference/demo artifacts once React shell begins.
 
 - repo: jchromchak/dovetell-ctx-app-private

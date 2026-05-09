@@ -890,6 +890,30 @@
   action: updated
   summary: Ran a ctx:close-style handoff checkpoint capturing artifact provenance work, ctx:ingest-artifacts, Google Drive outputs, validation, and next-session restart pointers.
 
+- rev-cd98dbc4
+  date: 2026-05-09T12:18:01Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - local dovetell-context-workbench: moved
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Moved the local workspace out of the Codex session folder into Documents/projects/dovetell-context-workbench as step 0 housing cleanup before repo role cleanup.
+
+- rev-ab0b5656
+  date: 2026-05-09T12:39:45Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - local dovetell-context-workbench: moved
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Moved the local workspace from iCloud-managed Documents/projects into /Users/johnchromchak/projects/dovetell-context-workbench and resumed the step 0 housing cleanup checkpoint there.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
