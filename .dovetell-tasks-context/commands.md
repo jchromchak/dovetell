@@ -119,6 +119,60 @@
     - Do not make rank.md the canonical task list.
     - Include no-task-* placeholders only when work clearly exists but has not been promoted into a canonical task yet.
 
+- ctx:ingest-artifacts
+  status: proposed
+  purpose:
+    Process files from a filesystem queue, assign or preserve provenance IDs, copy them into the correct artifact library location, and update artifact-index.md.
+
+  default-queue:
+    - /Users/johnchromchak/Downloads/dovetell-processing/enqueued
+    - /Users/johnchromchak/Downloads/dovetell-processing/done
+    - /Users/johnchromchak/Downloads/dovetell-processing/errored
+
+  reads:
+    - /Users/johnchromchak/Downloads/dovetell-processing/enqueued
+    - artifact-index.md
+    - visual-concepts.md when images imply new or updated concepts
+    - repo-manifest.md when routing depends on repo/domain role
+
+  writes:
+    - artifact-index.md
+    - visual-concepts.md when new concepts are captured
+    - changelog.md
+    - Google Drive dovetell-assets folder when the local sync path is available
+    - /Users/johnchromchak/Downloads/dovetell-processing/done
+    - /Users/johnchromchak/Downloads/dovetell-processing/errored
+
+  output:
+    A batch summary with counts for processed, copied, indexed, needs-review, errored, and skipped files.
+
+  routing:
+    - promotion-pipeline -> dovetell-assets/visual-artifacts/promotion-pipeline
+    - repo-operating-model -> dovetell-assets/visual-artifacts/repo-operating-model
+    - context-change-request or context-change-management -> dovetell-assets/visual-artifacts/context-change-management
+    - unknown images -> dovetell-assets/visual-artifacts/_needs-review if available, otherwise mark needs-review and leave in errored
+
+  id-rules:
+    - If a valid dovetell:image-[8char] watermark or filename ID exists, preserve it.
+    - If no ID exists, generate a new random image ID and mark the artifact needs-review.
+    - If an ID collides with a different slug or artifact, do not overwrite; mark the new artifact needs-review.
+    - If OCR is unavailable, rely on filename and visible user-provided context; do not pretend the watermark was machine-verified.
+
+  file-naming:
+    - image-[8char]__[slug]__YYYY-MM-DD.png
+    - image-[8char]__[slug]__YYYY-MM-DD__needs-review.png for assigned IDs without embedded provenance
+
+  movement:
+    - Copy the artifact to the target library first.
+    - Move the original queued file to done only after copy and index update succeed.
+    - Move the original queued file to errored if classification, copy, or indexing fails.
+
+  guardrails:
+    - Never delete source files during ingestion.
+    - Do not overwrite an existing Drive/library file with the same name unless explicitly requested.
+    - Do not treat assigned IDs as embedded provenance.
+    - Record drive-path or drive-url when a durable Drive copy exists.
+
 - ctx:handoff
   status: proposed
   purpose:

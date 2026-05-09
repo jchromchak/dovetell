@@ -176,7 +176,9 @@ image_artifact:
     - filenamePattern
 
 notes:
-  - The suggested watermark format is dovetell:image-[8char] / [slug] / YYYY-MM-DD.
+  - The required watermark format is dovetell:image-[8char] / [slug] / YYYY-MM-DD.
+  - Generate the image ID before creating the image prompt, then reuse the exact same ID in the prompt, watermark, filename, and artifact registry.
+  - Image-generation prompts should explicitly ask for the watermark in tiny readable text in the lower-right corner.
   - A future ingestion flow can OCR the watermark, find or create the artifact record, and route it into the right source.
 
 ---

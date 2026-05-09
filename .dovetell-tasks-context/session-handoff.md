@@ -1,4 +1,52 @@
 session: codex-7588c8e2
+closeout: 2026-05-09T11:52:00Z
+command: ctx:close/manual-v0.1
+scope: Artifact provenance, ingestion workflow, repo operating model, and context continuity.
+context-loaded:
+  - launcher.md
+  - .dovetell-tasks-context/commands.md
+  - .dovetell-tasks-context/artifact-index.md
+  - .dovetell-tasks-context/visual-concepts.md
+  - .dovetell-tasks-context/rank.md
+  - .dovetell-tasks-context/changelog.md
+files-updated:
+  - .dovetell-tasks-context/artifact-index.md
+  - .dovetell-tasks-context/visual-concepts.md
+  - .dovetell-tasks-context/commands.md
+  - .dovetell-tasks-context/object-model.md
+  - .dovetell-tasks-context/operating-model.md
+  - .dovetell-tasks-context/changelog.md
+  - .dovetell-tasks-context/session-handoff.md
+external-artifacts:
+  - /Users/johnchromchak/Library/CloudStorage/GoogleDrive-dovetellio@gmail.com/My Drive/dovetell-assets/README.md
+  - /Users/johnchromchak/Library/CloudStorage/GoogleDrive-dovetellio@gmail.com/My Drive/dovetell-assets/visual-artifacts/promotion-pipeline/image-9b4f2e7c__promotion-pipeline-v0.1__2026-05-09.png
+current-state:
+  - Image artifacts are now treated as provenance-bearing context artifacts.
+  - Image prompts should include a pre-generated watermark in the form `dovetell:image-[8char] · [slug] · YYYY-MM-DD`.
+  - The corrected promotion-pipeline visual is indexed as artifact-9b4f2e7c and copied into the Google Drive dovetell-assets library.
+  - The local processing queue is defined at /Users/johnchromchak/Downloads/dovetell-processing with enqueued, done, and errored folders.
+  - ctx:ingest-artifacts is defined as the queue-processing command for preserving IDs, assigning review IDs, routing files, updating indexes, and moving source files.
+  - The latest architectural truth is still: Dovetell is a context governance layer, not a task manager or work hub.
+validation:
+  - git diff --check passed after the ctx:ingest-artifacts writeup.
+  - Processing queue folders were confirmed on disk.
+  - Google Drive local sync folder was confirmed and the corrected promotion visual copy was verified.
+next-session-prompt:
+  - "ctx:start"
+top-next:
+  - task-1f9c6b8a: Repo role cleanup and reconciliation across Dovetell-related repos.
+  - task-9f1a62d0: Refactor project config boot to async loading.
+  - task-8a7d2c19: Convert the rank command from documented pattern into repeatable workflow.
+  - no-task-react-shell: Decide when to start the React-based app shell.
+  - no-task-review-queue-mvp: Shape the first trust-making review queue workflow.
+open-risks:
+  - The repo/domain cleanup is still conceptually ahead of the app implementation.
+  - The Google Drive artifact flow is currently local-sync based; a connector/API upload flow is not yet implemented.
+  - Assigned image IDs without embedded watermarks must remain needs-review until provenance is visually or programmatically confirmed.
+
+---
+
+session: codex-7588c8e2
 date: 2026-05-06
 source: codex-7588c8e2
 scope: Extracted shared CSS, shared GitHub/auth utilities, shared shell interaction helpers, the first brand-aligned shell layer, a dashboard overview route, and configured public/private project dashboard loading from the static pages without changing markdown data formats or existing GitHub write semantics.

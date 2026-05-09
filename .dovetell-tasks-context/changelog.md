@@ -820,6 +820,76 @@
   action: updated
   summary: Reframed launcher.md as the root bootstrap and aligned session startup with the pointer-first ctx:start flow and ctx:close closeout pattern.
 
+- rev-4f91c8b2
+  date: 2026-05-09T04:42:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - operating-model.md: updated
+    - object-model.md: updated
+  action: updated
+  summary: Clarified image artifact provenance rules so image-generation prompts must include a pre-generated image ID in the watermark, filename, and artifact record.
+
+- rev-8c2f1a9d
+  date: 2026-05-09T10:42:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - artifact-index.md: created
+    - visual-concepts.md: updated
+    - concept-d4a8c7f2: created
+    - concept-3f7a9d1e: created
+    - concept-7f3b8c29: created
+  action: created
+  summary: Captured generated promotion, repo operating model, and context change request images as provenance-bearing artifacts and noted a duplicate image-id collision for one alternate promotion render.
+
+- rev-6d73e4a1
+  date: 2026-05-09T10:49:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - artifact-9b4f2e7c: created
+    - artifact-index.md: updated
+    - visual-concepts.md: updated
+  action: created
+  summary: Captured the corrected promotion-pipeline image render with unique provenance ID dovetell:image-9b4f2e7c.
+
+- rev-2f8c0d41
+  date: 2026-05-09T11:12:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - artifact-9b4f2e7c: updated
+    - artifact-index.md: updated
+    - Google Drive dovetell-assets README.md: created
+  action: updated
+  summary: Created the Google Drive dovetell-assets README and copied the corrected promotion-pipeline image into visual-artifacts/promotion-pipeline with its provenance filename.
+
+- rev-5e7b91c4
+  date: 2026-05-09T11:24:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - commands.md: updated
+    - artifact-index.md: updated
+  action: updated
+  summary: Added ctx:ingest-artifacts and documented the dovetell-processing enqueued/done/errored filesystem queue for artifact ingestion.
+
+- rev-3b8f1d0a
+  date: 2026-05-09T11:52:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - session-handoff.md: updated
+  action: updated
+  summary: Ran a ctx:close-style handoff checkpoint capturing artifact provenance work, ctx:ingest-artifacts, Google Drive outputs, validation, and next-session restart pointers.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

@@ -428,6 +428,102 @@
     - decision-9d2e6a41
     - rule-6b1f2c9d
 
+- concept-d4a8c7f2
+  title: Promotion pipeline from local signal to canonical asset
+  status: active
+  source: user-rendered-image
+  created: 2026-05-09T10:42:00Z
+  updated: 2026-05-09T10:42:00Z
+  flags:
+    - dovetell:global
+
+  visual-summary:
+    A dark git-branch inspired diagram shows local signals becoming ctx:global tagged candidates, entering the asset refinery, being reviewed and shaped into reusable asset types, passing a promotion gate, becoming canonical assets, and distributing into docs, templates, app behavior, and onboarding guides.
+
+  product-meaning:
+    Promotion is curation, not copying. Reusable assets should be distilled from evidence, reviewed, shaped, versioned, and then published into canonical surfaces.
+
+  interface-implications:
+    - Promotion candidates should show evidence, asset type, readiness, and target distribution surfaces.
+    - The asset refinery should make "not yet" a normal state, not a failure.
+    - Distribution should remain downstream of canonical acceptance.
+
+  architecture-implications:
+    - Promotion candidates need source evidence, target asset type, maturity, review state, and distribution targets.
+    - Canonical assets should preserve source trace back to local context evidence.
+
+  guardrails:
+    - Do not promote local observations directly into canonical assets without review and shaping.
+
+  references:
+    - artifact-d4a8c7f2
+    - artifact-9b4f2e7c
+    - operating-model.md
+    - object-model.md
+
+- concept-3f7a9d1e
+  title: Repository operating model
+  status: active
+  source: user-rendered-image
+  created: 2026-05-09T10:42:00Z
+  updated: 2026-05-09T10:42:00Z
+  flags:
+    - dovetell:global
+
+  visual-summary:
+    A three-layer repository map shows public/canonical repos, the private asset refinery, and working context sources. Candidate learnings flow upward from private working contexts into the refinery, curated assets promote to canonical assets, and docs/app behavior render from the canonical layer.
+
+  product-meaning:
+    The repo ecosystem needs explicit domains. Private learning can stay candid, the refinery can shape reusable assets, and public repos should only expose intentionally promoted truth.
+
+  interface-implications:
+    - Repo source management should display repo role and visibility intent.
+    - Docs and app surfaces should be shown as renderers/consumers, not as the private working memory layer.
+
+  architecture-implications:
+    - repo-manifest.md is the source map for repo cleanup and future app ingestion.
+    - Business/GTM context should be private before it becomes public docs or assets.
+
+  guardrails:
+    - Do not use public repos as casual storage for candid GTM or private working context.
+
+  references:
+    - artifact-3f7a9d1e
+    - repo-manifest.md
+    - decision-5c8e2a74
+
+- concept-7f3b8c29
+  title: Context change request truth branch
+  status: active
+  source: user-rendered-image
+  created: 2026-05-09T10:42:00Z
+  updated: 2026-05-09T10:42:00Z
+  flags:
+    - dovetell:global
+
+  visual-summary:
+    A light-mode branch diagram shows current truth in decisions.md, a contributor or agent proposing a candidate, an unvetted queue, a Dovetell review gate, rejected and accepted paths, and new vetted truth written back to decisions.md.
+
+  product-meaning:
+    This is the clearest visual shorthand for Dovetell's trust-making workflow: propose, review, accept, truth. Unvetted does not equal truth; review is where truth is made.
+
+  interface-implications:
+    - Review items should show source, author, type, confidence, status, and reviewer action.
+    - Rejection reasons should be recorded as first-class evidence.
+    - Accepted items should visibly preserve source trace.
+
+  architecture-implications:
+    - Review queue state and context item state need explicit separation.
+    - Accepted changes should write back with timestamp, source, reviewer, and status.
+
+  guardrails:
+    - Never silently promote unvetted context into accepted truth.
+
+  references:
+    - artifact-7f3b8c29
+    - demo-review-2f5e8c77
+    - operating-model.md
+
 ---
 
 ## Cross-Concept Product Truths
@@ -444,6 +540,9 @@
 - The competitive wedge is official plus accessible: audit-grade enough to trust, simple enough for non-technical stakeholders.
 - The architecture should support developer tools, non-technical views, and future MCP/query surfaces over the same source-traced context.
 - A future context graph may be valuable, but the near-term product should first harden sources, review, assembly, provenance, and sync.
+- Promotion is curation, not copying.
+- Repo roles define where context belongs before promotion can be trusted.
+- Unvetted context is useful signal, not accepted truth.
 
 ---
 

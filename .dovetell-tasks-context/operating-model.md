@@ -262,6 +262,8 @@ artifact-types:
 image-artifact-pattern:
   watermark: dovetell:image-[8char] · [slug] · YYYY-MM-DD
   filename: image-[8char]__[slug]__YYYY-MM-DD.png
+  prompt-rule: Every image-generation prompt should explicitly ask the model to place the watermark in tiny readable text in the lower-right corner and to preserve the exact image ID in any returned filename or artifact note when the tool allows it.
+  hash-rule: Generate the image ID before prompting, reuse that same ID in the prompt, watermark, filename, and later artifact record, and do not let the image tool invent a different ID.
 
 ---
 
