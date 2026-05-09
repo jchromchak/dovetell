@@ -1048,6 +1048,22 @@
   action: updated
   summary: Closed repo role cleanup, deferred clean dovetell-ctx-app creation, and promoted shape clean React app shell into canonical task-08030ad5.
 
+- rev-50f791be
+  date: 2026-05-09T15:27:01Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - cleanup-playbook.md: created
+    - opp-5580c40a: created
+    - task-26be1c6d: created
+    - opportunities.md: updated
+    - tasks.md: updated
+    - rank.md: updated
+    - session-handoff.md: updated
+  action: created
+  summary: Started a working cleanup and partitioning master doc and queued asset-refinery refinement so reusable cleanup learnings can become package candidates.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

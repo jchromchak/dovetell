@@ -117,6 +117,40 @@
     - source: codex-7588c8e2
     - date: 2026-05-09T03:42:00Z
 
+- opp-5580c40a
+  title: Reusable cleanup and partitioning playbooks
+  status: elevated
+  revisionId: rev-50f791be
+  created: 2026-05-09T15:27:01Z
+  updated: 2026-05-09T15:27:01Z
+
+  description:
+    Turn cleanup, migration, repo partitioning, privacy protection, source configuration, and context closeout work into reusable Dovetell playbooks that can later become sellable package assets.
+
+  persona: none
+    Serves future Dovetell implementers, buyers, and internal agents who need repeatable cleanup workflows rather than one-off chat history.
+
+  signal:
+    User explicitly wants to track cleanup and utility steps so they can become future Gumroad or package assets, and called for a master doc that preserves reusable learnings without relearning them.
+
+  scope-check:
+    This is in scope as asset-refinery material if it captures reusable context governance workflows and does not expose sensitive GTM/business content.
+    verdict: in-scope
+
+  effort: medium
+  value: high
+
+  elevation:
+    decision: none
+    date: 2026-05-09T15:27:01Z
+
+  notes:
+    - Initial working master doc created at cleanup-playbook.md.
+    - Promote into asset-refinery after the first pass is refined into templates/checklists.
+    - Related to artifact-index queue patterns, repo-manifest cleanup decisions, and context closeout discipline.
+    - source: codex-53476bae
+    - date: 2026-05-09T15:27:01Z
+
 ---
 
 *opportunities.md — Dogfood POC — v0.1*

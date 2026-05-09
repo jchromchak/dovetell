@@ -212,6 +212,34 @@
   blocked-by:
     - none
 
+- [ ] Refine cleanup playbook into asset-refinery package candidate
+  id: task-26be1c6d
+  priority: next
+  status: open
+  revisionId: rev-50f791be
+  created: 2026-05-09T15:27:01Z
+  updated: 2026-05-09T15:27:01Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: none
+  rule: rule-6b1f2c9d
+  process: none
+  opp: opp-5580c40a
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Refine cleanup-playbook.md into a reusable asset-refinery candidate for repo cleanup, privacy-first migration, source config updates, and prototype-to-product partitioning.
+
+  context:
+    User wants cleanup and utility steps preserved for future package sales or reusable deployments. The first working master doc is .dovetell-tasks-context/cleanup-playbook.md. Next pass should turn it into a structured private asset-refinery candidate, likely with checklist sections, prompts, target audience notes, examples, and a promotion path to canonical assets. Do not include sensitive GTM/business object contents.
+
+  blocked-by:
+    - none
+
 - [ ] Design context rank index and ctx:rank command
   id: task-8a7d2c19
   priority: later
