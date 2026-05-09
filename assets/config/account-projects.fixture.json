@@ -3,7 +3,7 @@
   "account": {
     "id": "fixture",
     "name": "Fixture",
-    "defaultProjectId": "dovetell-sandbox"
+    "defaultProjectId": "dovetell-gtm"
   },
   "configRepo": {
     "owner": "jchromchak",
@@ -27,7 +27,24 @@
       "owner": "dovetell-io",
       "repo": "dovetell-sandbox",
       "repoType": "business-context",
-      "visibility": "public",
+      "visibility": "private",
+      "contextFiles": {
+        "tasks": "tasks.md",
+        "decisions": "decisions.md",
+        "risks": "risks.md",
+        "opportunities": "opportunities.md",
+        "rules": "business-rules.md",
+        "journal": "journal.md",
+        "changelog": "changelog.md"
+      }
+    },
+    {
+      "id": "dovetell-gtm",
+      "name": "dovetell GTM",
+      "owner": "dovetell-io",
+      "repo": "dovetell-gtm",
+      "repoType": "business-context",
+      "visibility": "private",
       "contextFiles": {
         "tasks": "tasks.md",
         "decisions": "decisions.md",

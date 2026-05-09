@@ -1,7 +1,7 @@
 session: codex-53476bae
-closeout: 2026-05-09T14:24:21Z
+closeout: 2026-05-09T14:44:49Z
 command: ctx:close/manual-v0.1
-scope: Recorded external GitHub admin execution for sandbox privacy and GTM repo creation.
+scope: Sandbox-to-GTM migration planning and source config cleanup.
 context-loaded:
   - launcher.md
   - .dovetell-tasks-context/commands.md
@@ -10,30 +10,35 @@ context-loaded:
   - .dovetell-tasks-context/repo-manifest.md
   - .dovetell-tasks-context/changelog.md
   - .dovetell-tasks-context/tasks.md
+  - assets/config/account-projects.json
+  - assets/config/account-projects.fixture.json
 files-updated:
   - .dovetell-tasks-context/repo-manifest.md
   - .dovetell-tasks-context/changelog.md
   - .dovetell-tasks-context/session-handoff.md
   - .dovetell-tasks-context/tasks.md
+  - assets/config/account-projects.json
+  - assets/config/account-projects.fixture.json
 current-state:
   - The local Dovetell workbench lives at /Users/johnchromchak/projects/dovetell-context-workbench.
   - task-1f9c6b8a remains in progress.
-  - User reported dovetell-io/dovetell-sandbox is now private.
-  - User reported dovetell-io/dovetell-gtm has been created as the private GTM/business context repo.
-  - Connector access now returns 404 for sandbox, while SSH still reaches sandbox main; this is consistent with the privacy change and connector access limits.
-  - Codex could not verify dovetell-gtm access yet through connector or SSH from this environment.
+  - dovetell-sandbox is treated as private business-context pending migration/archive.
+  - dovetell-gtm is now represented in account-projects config as private business-context and default project source, but Codex still cannot verify access.
+  - jchromchak/dovetell-assets-private is now represented as asset-refinery in the main project config.
+  - A filename-only sandbox-to-gtm migration plan lives in repo-manifest.md as migration-2026-05-09T14:44:49Z.
 validation:
-  - GitHub connector _get_repo returns 404 for dovetell-io/dovetell-sandbox after user made it private.
-  - git ls-remote over SSH reaches dovetell-io/dovetell-sandbox main at 9fa8f85.
-  - GitHub connector _get_repo returns 404 for dovetell-io/dovetell-gtm.
-  - git ls-remote over SSH returns repository not found for dovetell-io/dovetell-gtm.
+  - Cloned dovetell-sandbox with --filter=blob:none --no-checkout into /private/tmp for structure-only inspection.
+  - Observed sandbox path list only: README.md, business-rules.md, changelog.md, decisions.md, journal.md, opportunities.md, risks.md, tasks.md.
+  - Did not read or summarize sandbox GTM/business file contents.
+  - dovetell-gtm remains inaccessible from this environment via connector and SSH.
 top-next:
-  - Enable Codex/GitHub app/SSH access to private dovetell-io/dovetell-gtm so the repo can be verified.
-  - Once access is verified, inspect structure only and draft the sandbox-to-gtm migration plan.
-  - Continue with likely rename of jchromchak/dovetell-private to jchromchak/dovetell-ctx-app-private after GTM privacy/migration path is stable.
+  - Enable Codex/GitHub app/SSH access to private dovetell-gtm.
+  - Once access works, initialize or verify matching target files in dovetell-gtm.
+  - Execute migration-2026-05-09T14:44:49Z inside private repos only.
+  - After GTM path is stable, continue with likely rename of jchromchak/dovetell-private to jchromchak/dovetell-ctx-app-private.
 open-risks:
-  - DATA BOUNDARY: Even with sandbox now private, do not expose GTM/business content in public repos, broad summaries, or README redirects.
-  - dovetell-gtm creation is user-reported but not yet accessible to Codex for verification.
-  - Local main had an existing unpushed commit before this checkpoint: 82f3f49 Add routed artifact intake queues.
-pending: Verify private dovetell-gtm access, then draft a careful migration plan from sandbox to gtm.
-next-session-start-here: Start in /Users/johnchromchak/projects/dovetell-context-workbench and run ctx:start. First check whether Codex can access dovetell-io/dovetell-gtm. If access works, inspect only repo structure and migration needs, then plan sandbox-to-gtm migration without quoting or exposing sensitive GTM/business content.
+  - DATA BOUNDARY: Do not expose GTM/business object contents in public repos, public docs, public redirects, or broad summaries.
+  - account-projects.json now points defaultProjectId to dovetell-gtm, but app access will fail until the user/token/connector can access that private repo.
+  - The sandbox structure clone remains in /private/tmp/dovetell-sandbox-structure for this machine session; it contains no checked-out working tree because clone used --no-checkout.
+pending: Verify dovetell-gtm access and execute the private migration plan.
+next-session-start-here: Start in /Users/johnchromchak/projects/dovetell-context-workbench and run ctx:start. First check whether Codex can access dovetell-io/dovetell-gtm. If access works, initialize or verify the private GTM context files and migrate/curate from sandbox using migration-2026-05-09T14:44:49Z without exposing contents publicly.

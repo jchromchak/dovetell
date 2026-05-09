@@ -962,6 +962,20 @@
   action: updated
   summary: Recorded the user-reported GitHub admin execution: sandbox made private and dovetell-gtm created, with Codex access verification still pending for the new private GTM repo.
 
+- rev-4f177bde
+  date: 2026-05-09T14:44:49Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - assets/config/account-projects.json: updated
+    - assets/config/account-projects.fixture.json: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Added the sandbox-to-gtm migration plan from filename-only structure inspection and updated project source config for private sandbox, private gtm, and asset-refinery roles.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

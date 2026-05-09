@@ -302,5 +302,51 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
 
 ---
 
+## Migration Plans
+
+- migration-2026-05-09T14:44:49Z
+  revisionId: rev-4f177bde
+  scope: sandbox-to-gtm
+  status: blocked-on-gtm-access
+  source: dovetell-io/dovetell-sandbox
+  target: dovetell-io/dovetell-gtm
+  source-structure-observed:
+    - README.md
+    - business-rules.md
+    - changelog.md
+    - decisions.md
+    - journal.md
+    - opportunities.md
+    - risks.md
+    - tasks.md
+  target-structure-proposed:
+    - README.md
+    - business-rules.md
+    - changelog.md
+    - decisions.md
+    - journal.md
+    - opportunities.md
+    - risks.md
+    - tasks.md
+  config-update:
+    - assets/config/account-projects.json now treats dovetell-sandbox as private business-context.
+    - assets/config/account-projects.json now adds dovetell-gtm as private business-context and sets it as the default project source.
+    - assets/config/account-projects.json now treats jchromchak/dovetell-assets-private as asset-refinery rather than project-context.
+    - assets/config/account-projects.fixture.json was aligned with the same sandbox/gtm role and visibility changes.
+  migration-sequence:
+    - 1. Verify Codex or local SSH access to private dovetell-gtm.
+    - 2. Initialize target files in dovetell-gtm with matching flat context filenames if they do not exist.
+    - 3. Compare sandbox and gtm path lists before reading contents.
+    - 4. Move or curate context object bodies only inside private repos.
+    - 5. Preserve object IDs, revisionId fields, and changelog lineage wherever possible.
+    - 6. Add a private migration note to sandbox after content is protected.
+    - 7. Mark sandbox archive-or-redirect only after gtm contains the needed business-context continuity.
+  data-boundary:
+    - This plan was drafted from filenames only.
+    - Do not expose GTM/business object contents in public repos, public docs, or broad summaries.
+    - If public docs need a reference later, describe only the existence of a private business-context source, not its substance.
+
+---
+
 *repo-manifest.md - Dovetell - v0.1*
 *This is the map of the repo universe, not the content itself.*

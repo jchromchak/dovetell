@@ -188,9 +188,9 @@
   id: task-1f9c6b8a
   priority: next
   status: in-progress
-  revisionId: rev-ef092435
+  revisionId: rev-4f177bde
   created: 2026-05-09T03:22:00Z
-  updated: 2026-05-09T14:24:21Z
+  updated: 2026-05-09T14:44:49Z
   due: none
 
   owner: john
@@ -211,7 +211,7 @@
 
   blocked-by:
     - Codex access verification for private dovetell-io/dovetell-gtm
-    - migration plan for moving/curating GTM context out of sandbox
+    - execution of migration-2026-05-09T14:44:49Z after access is available
 
 - [ ] Design context rank index and ctx:rank command
   id: task-8a7d2c19
