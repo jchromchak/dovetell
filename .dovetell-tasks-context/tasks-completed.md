@@ -511,6 +511,33 @@
   completion-notes:
     Moved local work out of Codex/iCloud-managed Documents into /Users/johnchromchak/projects/dovetell-context-workbench. Made dovetell-sandbox private, created dovetell-gtm, migrated private sandbox context into dovetell-gtm, archived sandbox, renamed dovetell-private to dovetell-ctx-app-private, updated source config, and clarified that dovetell-tasks remains prototype/workbench/history. Deferred clean dovetell-ctx-app creation until task-08030ad5 shapes the React app shell.
 
+- [x] Refine cleanup playbook into asset-refinery package candidate
+  id: task-26be1c6d
+  priority: next
+  revisionId: rev-2b73f0c8
+  created: 2026-05-09T15:27:01Z
+  completed: 2026-05-09T15:43:39Z
+  completed-session: codex-53476bae
+
+  owner: john
+  persona: none
+  decision: none
+  rule: rule-6b1f2c9d
+  process: none
+  opp: opp-5580c40a
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Refine cleanup-playbook.md into a reusable asset-refinery candidate for repo cleanup, privacy-first migration, source config updates, and prototype-to-product partitioning.
+
+  context:
+    User wants cleanup and utility steps preserved for future package sales or reusable deployments. The first working master doc is .dovetell-tasks-context/cleanup-playbook.md. Next pass should turn it into a structured private asset-refinery candidate, likely with checklist sections, prompts, target audience notes, examples, and a promotion path to canonical assets. Do not include sensitive GTM/business object contents.
+
+  completion-notes:
+    Refined .dovetell-tasks-context/cleanup-playbook.md into a docs-style working master doc, then promoted a sanitized package candidate into /Users/johnchromchak/projects/dovetell-assets/packages/workspace-cleanup-playbook/README.md. The candidate includes goals, non-goals, source roles, workflows, prompt templates, validation, and promotion guidance. Sensitive GTM/business object contents were not included.
+
 ---
 
 *completed-tasks.md — Dogfood POC — v0.1*

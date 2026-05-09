@@ -1064,6 +1064,33 @@
   action: created
   summary: Started a working cleanup and partitioning master doc and queued asset-refinery refinement so reusable cleanup learnings can become package candidates.
 
+- rev-9c80595c
+  date: 2026-05-09T15:32:40Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - cleanup-playbook.md: updated
+    - task-26be1c6d: updated
+    - rank.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Refined cleanup-playbook.md into a more package-ready, docs-style playbook with goals, non-goals, roles, workflows, package candidates, prompt templates, promotion path, and validation checklist.
+
+- rev-2b73f0c8
+  date: 2026-05-09T15:43:39Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - cleanup-playbook.md: updated
+    - task-26be1c6d: completed
+    - tasks-completed.md: updated
+    - rank.md: updated
+    - session-handoff.md: updated
+  action: completed
+  summary: Promoted the cleanup playbook into the private asset refinery as packages/workspace-cleanup-playbook/README.md and marked the asset-refinery refinement task complete.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
