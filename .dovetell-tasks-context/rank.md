@@ -3,7 +3,7 @@
 # Derived pointer index for what matters next.
 # Rebuild with ctx:rank. Do not treat as a canonical source of truth.
 
-generated: 2026-05-09T15:43:39Z
+generated: 2026-05-09T15:54:10Z
 method: ctx:rank/manual-v0.1
 scope: dovetell-app-and-context-system
 status: derived
@@ -13,12 +13,13 @@ status: derived
 ## Top Action Points
 
 1. task-08030ad5
-   reason: The repo cleanup deliberately deferred dovetell-ctx-app creation until the clean React shell is shaped; this is now the next product-definition blocker.
+   reason: The first clean shell shape is drafted; finish turning it into the app repo creation and scaffold plan.
    refs:
      - decision-9d2e6a41
      - rule-6b1f2c9d
      - operating-model.md
      - object-model.md
+     - react-app-shell.md
 
 2. task-9f1a62d0
    reason: Async source config is needed before source management and React shell work can scale beyond synchronous static loading.

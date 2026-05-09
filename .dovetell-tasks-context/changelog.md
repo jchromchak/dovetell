@@ -1091,6 +1091,19 @@
   action: completed
   summary: Promoted the cleanup playbook into the private asset refinery as packages/workspace-cleanup-playbook/README.md and marked the asset-refinery refinement task complete.
 
+- rev-6d2f914e
+  date: 2026-05-09T15:54:10Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - react-app-shell.md: created
+    - task-08030ad5: updated
+    - rank.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Started shaping the clean React app shell with route structure, navigation, source model, review queue entry point, activity surface, state boundaries, prototype reuse guidance, and validation checks.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

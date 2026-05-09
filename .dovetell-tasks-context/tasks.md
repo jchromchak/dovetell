@@ -187,10 +187,10 @@
 - [ ] Shape clean React app shell
   id: task-08030ad5
   priority: next
-  status: open
-  revisionId: rev-8c28de00
+  status: in-progress
+  revisionId: rev-6d2f914e
   created: 2026-05-09T15:19:50Z
-  updated: 2026-05-09T15:19:50Z
+  updated: 2026-05-09T15:54:10Z
   due: none
 
   owner: john
@@ -208,6 +208,8 @@
 
   context:
     User decided not to turn dovetell-tasks into the product app repo. Treat dovetell-tasks / local dovetell-context-workbench as prototype, workbench, and history. Shape what the clean React app should be born with: source connection model, context source portfolio, review queue entry point, activity/awareness surface, route structure, state boundaries, what to reuse from the static prototype, and what to leave behind. Keep rule-6b1f2c9d active: the shell should support context governance and awareness, not become a work hub.
+
+    Initial shell shape is captured in .dovetell-tasks-context/react-app-shell.md. Next pass should either turn it into a repo scaffold plan or create the clean React app repo after confirming the target repo name and package stack.
 
   blocked-by:
     - none
