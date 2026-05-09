@@ -98,21 +98,25 @@
 
 - repo: dovetell-io/dovetell-sandbox
   current-role: business-context
-  target-role: business-context
+  target-role: archive-or-redirect
   visibility-intent: private
-  status: needs-cleanup
+  status: private-pending-migration
   notes:
     - Originally public as a convenient storage point.
-    - Should become private or be replaced by private dovetell-gtm because GTM/business context needs candid working space.
+    - User reported making this repo private on 2026-05-09.
+    - Connector access now returns 404 while git ls-remote over SSH still reaches main at 9fa8f85, consistent with private repo visibility plus connector installation/access limits.
+    - Should be migrated/curated into private dovetell-gtm, then archived or redirected after sensitive content is protected.
     - Governed by decision-5c8e2a74.
 
 - repo: dovetell-io/dovetell-gtm
-  current-role: none
+  current-role: business-context
   target-role: business-context
   visibility-intent: private
-  status: proposed
+  status: created-pending-access-verification
   notes:
-    - Proposed renamed/replacement home for Dovetell startup, product, GTM, and operating context.
+    - User reported creating this private repo on 2026-05-09.
+    - Intended home for Dovetell startup, product, GTM, and operating context.
+    - Connector and current SSH path could not verify access yet; install/permissions may need to be updated before Codex can read or write it.
 
 - repo: dovetell-io/dovetell-internal
   current-role: unknown
@@ -269,6 +273,32 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
   data-boundary:
     - Do not inspect, quote, move, or promote GTM/business content from dovetell-sandbox into any public surface before sandbox is private and dovetell-gtm exists.
     - Do not create public redirects or README summaries that reveal sensitive business context.
+
+---
+
+## Execution Updates
+
+- execution-2026-05-09T14:24:21Z
+  revisionId: rev-ef092435
+  scope: task-1f9c6b8a
+  status: partial-external-execution
+  reported-by: john
+  actions-reported:
+    - dovetell-io/dovetell-sandbox made private.
+    - dovetell-io/dovetell-gtm created.
+  verification:
+    - GitHub connector _get_repo now returns 404 for dovetell-io/dovetell-sandbox after the reported privacy change.
+    - git ls-remote over SSH still reaches dovetell-io/dovetell-sandbox main at 9fa8f85.
+    - This is consistent with sandbox being private while the connector lacks private repo installation/access.
+    - GitHub connector _get_repo returns 404 for dovetell-io/dovetell-gtm.
+    - git ls-remote over SSH returns repository not found for dovetell-io/dovetell-gtm from this environment.
+  interpretation:
+    - Treat sandbox privacy as externally completed but not connector-visible.
+    - Treat dovetell-gtm creation as user-reported and pending Codex access verification.
+  next-actions:
+    - Update GitHub app/connector or SSH access so Codex can verify and work with private dovetell-gtm.
+    - Do not migrate or summarize GTM/business context until dovetell-gtm access is verified.
+    - Once access is available, inspect only structure and migration needs first; avoid exposing sensitive GTM details in public repos or broad summaries.
 
 ---
 

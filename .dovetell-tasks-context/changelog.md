@@ -950,6 +950,18 @@
   action: updated
   summary: Added route-based artifact intake paths so ctx:ingest-artifacts can use /Users/johnchromchak/Downloads/{route}/dovetell-processing for dovetell, famframe, and legacy queues.
 
+- rev-ef092435
+  date: 2026-05-09T14:24:21Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded the user-reported GitHub admin execution: sandbox made private and dovetell-gtm created, with Codex access verification still pending for the new private GTM repo.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
