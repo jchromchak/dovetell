@@ -914,6 +914,18 @@
   action: updated
   summary: Moved the local workspace from iCloud-managed Documents/projects into /Users/johnchromchak/projects/dovetell-context-workbench and resumed the step 0 housing cleanup checkpoint there.
 
+- rev-14606fe1
+  date: 2026-05-09T13:05:29Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Started the repo role cleanup with a read-only remote reachability inventory and marked task-1f9c6b8a in progress.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

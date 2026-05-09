@@ -164,5 +164,38 @@
 
 ---
 
+## Inventory Snapshots
+
+- snapshot-2026-05-09T13:05:29Z
+  revisionId: rev-14606fe1
+  method: git-ls-remote-read-only
+  scope: task-1f9c6b8a
+  notes:
+    - This inventory confirms remote reachability and branch names only; it does not prove intended visibility where GitHub metadata was unavailable.
+    - Repository not found can mean nonexistent, renamed, inaccessible, or private without the current key.
+    - No repositories were renamed, made private, deleted, or otherwise changed.
+  reachable:
+    - dovetell-io/dovetell: main at b9c6cce
+    - dovetell-io/docs: main at 07749b0
+    - dovetell-io/dovetell-assets: main at 6a76bb9
+    - jchromchak/dovetell-assets-private: main at 97ebafb
+    - jchromchak/dovetell-private: main at 740e6ce
+    - dovetell-io/dovetell-sandbox: main at 9fa8f85
+    - jchromchak/famframe-private: main at 7d7cfd6
+    - jchromchak/dogfood-private: main at 9072a2d
+    - jchromchak/dovetell-tasks: main at 1a3c9d9; asset-refinery-overview at 52bc7cf
+  not-found-or-no-access:
+    - jchromchak/dovetell-ctx-app
+    - jchromchak/dovetell-ctx-app-private
+    - dovetell-io/dovetell-gtm
+    - dovetell-io/dovetell-internal
+  preliminary-cleanup-reads:
+    - jchromchak/dovetell-tasks is the current app-prototype remote and local workbench source, not yet renamed to dovetell-ctx-app.
+    - jchromchak/dovetell-private is reachable and currently fills the app-context role until a rename or successor is chosen.
+    - dovetell-io/dovetell-sandbox is reachable and remains the business-context cleanup concern from decision-5c8e2a74.
+    - dovetell-io/dovetell-gtm and dovetell-io/dovetell-internal are not actionable without user confirmation because they were not reachable with the current access path.
+
+---
+
 *repo-manifest.md - Dovetell - v0.1*
 *This is the map of the repo universe, not the content itself.*
