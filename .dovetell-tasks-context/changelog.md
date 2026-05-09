@@ -926,6 +926,18 @@
   action: updated
   summary: Started the repo role cleanup with a read-only remote reachability inventory and marked task-1f9c6b8a in progress.
 
+- rev-8a171e7a
+  date: 2026-05-09T13:26:00Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - task-1f9c6b8a: updated
+    - repo-manifest.md: updated
+    - session-handoff.md: updated
+  action: updated
+  summary: Recorded the approved repo cleanup direction and the execution boundary that repo administration changes require unavailable GitHub visibility/create/rename/archive tooling.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

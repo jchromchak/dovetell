@@ -157,9 +157,6 @@
 
 ## Open Questions
 
-- Does dovetell-io/dovetell-sandbox become private in place, or does it migrate into a new private dovetell-gtm repo?
-- Does jchromchak/dovetell-private rename to dovetell-ctx-app-private?
-- When should current local dovetell-tasks become jchromchak/dovetell-ctx-app?
 - Should repo-manifest become JSON later for app ingestion, or stay markdown until the model stabilizes?
 
 ---
@@ -194,6 +191,42 @@
     - jchromchak/dovetell-private is reachable and currently fills the app-context role until a rename or successor is chosen.
     - dovetell-io/dovetell-sandbox is reachable and remains the business-context cleanup concern from decision-5c8e2a74.
     - dovetell-io/dovetell-gtm and dovetell-io/dovetell-internal are not actionable without user confirmation because they were not reachable with the current access path.
+
+---
+
+## Cleanup Decisions
+
+- decision-set-2026-05-09T13:26:00Z
+  revisionId: rev-8a171e7a
+  status: approved-direction
+  scope: task-1f9c6b8a
+  decisions:
+    - dovetell-io/dovetell-sandbox should be made private in place immediately.
+    - Create a new private dovetell-io/dovetell-gtm repo for GTM/business context.
+    - Start the future app repo clean instead of automatically renaming jchromchak/dovetell-tasks.
+    - Lean toward renaming jchromchak/dovetell-private to jchromchak/dovetell-ctx-app-private.
+    - Treat /Users/johnchromchak/projects/dovetell-context-workbench as a local cleanup/workbench/dumping-ground repo; if it becomes remote-backed later, it should be a private backup/project repo rather than the product app repo.
+    - Keep dovetell-io/dovetell-assets as the public/sellable canonical asset library.
+    - Keep jchromchak/dovetell-assets-private as the private asset refinery.
+    - Keep dovetell-io/docs as the public docs-as-code home.
+    - Archive dovetell-io/dovetell-internal if it exists and is reachable for administration.
+    - Push the local context commits to origin/main after recording this planning checkpoint.
+  execution-boundary:
+    - GitHub connector metadata confirmed dovetell-io/dovetell-sandbox is public and the connected account has admin permission.
+    - This environment does not currently expose gh, a shell GitHub token, or connector tools for repo visibility changes, repo creation, repo rename, or archive operations.
+    - No GitHub repo administration changes were executed in this session.
+  approved-execute-order:
+    - 1. Make dovetell-io/dovetell-sandbox private immediately.
+    - 2. Create private dovetell-io/dovetell-gtm.
+    - 3. Migrate/curate GTM and business context from sandbox into dovetell-gtm only after sandbox privacy is protected.
+    - 4. Rename jchromchak/dovetell-private to jchromchak/dovetell-ctx-app-private after confirming app-context continuity.
+    - 5. Start a clean app repo later rather than turning dovetell-tasks directly into the app repo.
+    - 6. Treat current workbench as local cleanup/backstop and possible future private backup.
+    - 7. Archive dovetell-internal after its identity/access/content are confirmed.
+    - 8. Update account-projects.json, repo-manifest.md, docs, and README migration notes after actual GitHub repo changes.
+  data-boundary:
+    - Do not inspect, quote, move, or promote GTM/business content from dovetell-sandbox into any public surface before sandbox is private and dovetell-gtm exists.
+    - Do not create public redirects or README summaries that reveal sensitive business context.
 
 ---
 

@@ -1,7 +1,7 @@
 session: codex-53476bae
-closeout: 2026-05-09T13:05:29Z
+closeout: 2026-05-09T13:26:00Z
 command: ctx:close/manual-v0.1
-scope: Step 0 local housing cleanup, branch stabilization, and first read-only repo role inventory.
+scope: Approved repo cleanup direction and execution boundary for task-1f9c6b8a.
 context-loaded:
   - launcher.md
   - .dovetell-tasks-context/commands.md
@@ -19,23 +19,22 @@ files-updated:
   - .dovetell-tasks-context/tasks.md
 current-state:
   - The local Dovetell workbench lives at /Users/johnchromchak/projects/dovetell-context-workbench.
-  - The repo is on main and was rebased cleanly onto origin/main.
-  - Local main is ahead of origin/main by three commits: context operating model and continuity, artifact ingestion workflow, and local workbench housing.
-  - The accidental truncation in assets/js/projects.js was restored to the committed version; the refinery/source-profile code remains intact.
-  - task-1f9c6b8a is now in progress after a read-only git-ls-remote inventory.
+  - task-1f9c6b8a is in progress.
+  - The user approved the cleanup direction: make sandbox private, create private dovetell-gtm, start future app clean, likely rename dovetell-private to dovetell-ctx-app-private, keep canonical assets/docs/refinery roles, and archive internal if it exists.
+  - GitHub metadata confirmed dovetell-io/dovetell-sandbox is public and the connector has admin permission.
+  - No GitHub repo administration changes were executed because this environment lacks gh, a shell API token, and connector tools for visibility changes, repo creation, repo rename, or archive operations.
 validation:
-  - git status responded quickly from /Users/johnchromchak/projects/dovetell-context-workbench.
-  - node --check assets/js/projects.js passed after restoring the truncated file.
-  - git rebase origin/main completed successfully and skipped two duplicate cherry-picked commits.
-  - git-ls-remote checked manifest repo reachability without changing any GitHub repo.
+  - git status was clean before recording this checkpoint.
+  - GitHub connector _get_repo verified dovetell-io/dovetell-sandbox metadata and admin permission.
+  - printenv found no GH_TOKEN/GITHUB_TOKEN/GITHUB_PAT.
+  - gh is not installed in the shell.
 top-next:
-  - task-1f9c6b8a: Convert the reachability inventory into a cleanup plan with explicit keep, rename, create, make-private, archive, and defer actions.
-  - task-9f1a62d0: Refactor project config boot to async loading after repo role cleanup is clearer.
-  - task-8a7d2c19: Convert the rank command from documented pattern into repeatable workflow.
-  - task-c9e2fb64: Design the multi-team context audit view after concept uploads.
+  - Execute the GitHub admin steps from a tool/account with repo administration capability: make dovetell-sandbox private, create private dovetell-gtm, then rename dovetell-private if confirmed.
+  - Push the local context commits to origin/main after this checkpoint commit.
+  - After repo admin steps, update account-projects.json, repo-manifest.md, README migration notes, and run ctx:rank.
 open-risks:
-  - GitHub visibility metadata was not available through gh because gh is not installed; current inventory distinguishes reachable from not-found/no-access, not public/private truth.
-  - The repo/domain cleanup is still conceptually ahead of the app implementation.
-  - The Google Drive artifact flow is currently local-sync based; a connector/API upload flow is not yet implemented.
-pending: Confirm the cleanup plan for task-1f9c6b8a before renaming, creating, privatizing, archiving, or moving any repo content.
-next-session-start-here: Start in /Users/johnchromchak/projects/dovetell-context-workbench and run ctx:start. Continue task-1f9c6b8a by turning the inventory snapshot in repo-manifest.md into an action plan, especially around dovetell-sandbox versus future dovetell-gtm, dovetell-tasks versus dovetell-ctx-app, and dovetell-private versus dovetell-ctx-app-private. Keep rule-6b1f2c9d in mind: Dovetell is the context governance layer, not the work hub.
+  - DATA BOUNDARY: dovetell-io/dovetell-sandbox is public right now, so do not inspect, quote, migrate, or summarize GTM/business content until privacy is fixed.
+  - The connector can see sandbox admin permission but does not expose the needed repo administration actions.
+  - dovetell-io/dovetell-internal was not reachable via git-ls-remote; archive only after identity/access/content are confirmed.
+pending: GitHub admin execution is blocked on a capable tool or manual GitHub UI/API action.
+next-session-start-here: Start in /Users/johnchromchak/projects/dovetell-context-workbench and run ctx:start. First priority is still task-1f9c6b8a: make dovetell-io/dovetell-sandbox private, then create private dovetell-io/dovetell-gtm. If those actions happen manually, immediately update repo-manifest.md and changelog.md with the resulting repo state.
