@@ -98,16 +98,17 @@
 
 - repo: dovetell-io/dovetell-sandbox
   current-role: business-context
-  target-role: archive-or-redirect
+  target-role: archive
   visibility-intent: private
-  status: migrated-private-archive-pending
+  status: archived
   notes:
     - Originally public as a convenient storage point.
     - User reported making this repo private on 2026-05-09.
     - Connector access now returns 404 while git ls-remote over SSH still reaches main at 9fa8f85, consistent with private repo visibility plus connector installation/access limits.
     - Context files were migrated into private dovetell-gtm at 6c32e01.
     - Private migration note was added at 53fd481.
-    - Treat as archive-or-redirect pending final cleanup.
+    - User reported archiving this repo on 2026-05-09.
+    - Treat as historical private archive only. Do not use as an active business-context source.
     - Governed by decision-5c8e2a74.
 
 - repo: dovetell-io/dovetell-gtm
@@ -405,6 +406,27 @@ route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
     - Migration was private-to-private.
     - Sandbox object contents were not printed or summarized in the workbench conversation.
     - Do not copy migrated GTM/business content into public docs or public assets without explicit review and promotion.
+
+---
+
+## Archive Updates
+
+- archive-2026-05-09T15:05:35Z
+  revisionId: rev-c5fd4961
+  repo: dovetell-io/dovetell-sandbox
+  status: archived
+  reported-by: john
+  verification:
+    - GitHub connector still returns 404 because it cannot see the private org repo.
+    - git ls-remote over SSH still reaches main at 53fd481, which is expected for a readable archived repository.
+    - Archive state itself is user-reported because current tools cannot read private GitHub repo settings.
+  role-after-archive:
+    - historical-private-archive
+  active-successor:
+    - dovetell-io/dovetell-gtm
+  notes:
+    - Do not write new business-context objects to sandbox.
+    - Do not use sandbox as an app project source except for historical audit if explicitly needed.
 
 ---
 
