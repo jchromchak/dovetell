@@ -665,6 +665,161 @@
   action: created
   summary: Added an initial asset refinery view for asset-refinery sources, including file presence status, source metadata, and a first-pass promotion candidate reader.
 
+- rev-4a91d6e2
+  date: 2026-05-09T00:11:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-9d2e6a41: created
+    - rule-6b1f2c9d: created
+    - decisions.md: updated
+    - rules.md: updated
+    - product-profile.md: updated
+  action: created
+  summary: Documented the core product guardrail that Dovetell should remain a shared context awareness and governance layer rather than becoming a task manager, project operating system, or one-stop work hub.
+
+- rev-b73e9d14
+  date: 2026-05-09T00:29:04Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - visual-concepts.md: created
+    - concept-1a7c3d9e: created
+    - concept-4e8b2f10: created
+    - concept-7f2d91a6: created
+    - concept-3c0a5b72: created
+    - concept-9e4f6d28: created
+    - concept-5b8a13c4: created
+  action: created
+  summary: Captured rendered product concept images as durable context covering onboarding, console/portfolio views, repo-owned context architecture, service blueprint, competitive positioning, and non-technical review queue.
+
+- rev-d8f3a0b6
+  date: 2026-05-09T02:02:30Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - demo-references.md: created
+    - demo-feed-a4c9e213: created
+    - demo-projects-6d0b31a8: created
+    - demo-review-2f5e8c77: created
+  action: created
+  summary: Captured Claude-created app demo files as implementation-adjacent references for activity feed, multi-project portfolio, and non-technical review queue concepts.
+
+- rev-6e19c4a2
+  date: 2026-05-09T02:21:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - operating-model.md: created
+  action: created
+  summary: Added a first operating model that connects product guardrails, context ownership, lifecycle stages, trust states, review flow, activity feed semantics, health signals, asset refinery, and artifact provenance.
+
+- rev-0c8b2f79
+  date: 2026-05-09T02:32:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - object-model.md: created
+  action: created
+  summary: Added a draft context governance object model for sources, context items, review items, activity events, artifacts, provenance, promotion candidates, sync state, and relationship edges.
+
+- rev-3f74a9e1
+  date: 2026-05-09T02:54:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - visual-concepts.md: updated
+    - operating-model.md: updated
+    - concept-8d42f6a1: created
+    - concept-2f9b70c4: created
+    - concept-6c81d3b7: created
+    - concept-1e5a9b2d: created
+    - concept-4b7c0e91: created
+    - concept-0a63d8ef: created
+  action: updated
+  summary: Added prompt assembly, import/extraction, agent-harness positioning, integration, and living-context concept evidence; updated the operating model with a governed prompt assembly layer.
+
+- rev-5a2c8d31
+  date: 2026-05-09T03:08:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - opp-7d3a1f5b: created
+    - opportunities.md: updated
+    - operating-model.md: updated
+  action: created
+  summary: Captured the docs-as-code markdown viewer opportunity and added docs/presentation as an operating-model layer for rendering governed context into human-readable, source-traced documentation.
+
+- rev-8b4d1f62
+  date: 2026-05-09T03:22:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - decision-5c8e2a74: created
+    - task-1f9c6b8a: created
+    - decisions.md: updated
+    - tasks.md: updated
+  action: created
+  summary: Documented the repo-role cleanup direction and the decision to treat dovetell-sandbox / future dovetell-gtm as a private business-context repo rather than a public storage point.
+
+- rev-2d6f4a90
+  date: 2026-05-09T03:42:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - dashboard/index.html: updated
+    - opp-4c2e9a71: created
+    - task-8a7d2c19: created
+    - opportunities.md: updated
+    - tasks.md: updated
+  action: updated
+  summary: Moved the mobile dashboard Activity Feed ahead of Hot Items and captured the context rank index / ctx:rank command idea as a future prioritization workflow.
+
+- rev-1e7a6c4d
+  date: 2026-05-09T04:05:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - _retrospective.md: created
+    - context-transmissibility.md: created
+    - repo-manifest.md: created
+    - rank.md: created
+    - commands.md: created
+    - operating-model.md: updated
+  action: created
+  summary: Added pointer-first continuity artifacts for cross-tool context transmissibility, including a retrospective, repo manifest, rank index, command registry, and operating-model section for portable memory.
+
+- rev-9b3a0d6e
+  date: 2026-05-09T04:18:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - commands.md: updated
+    - context-transmissibility.md: updated
+  action: updated
+  summary: Added ctx:command, ctx:start, and ctx:close to the command registry and tied start/close to the session continuity read-write pattern.
+
+- rev-6a91f2c8
+  date: 2026-05-09T04:26:00Z
+  user: john
+  origin: codex
+  codex-session: codex-7588c8e2
+  objects:
+    - launcher.md: updated
+  action: updated
+  summary: Reframed launcher.md as the root bootstrap and aligned session startup with the pointer-first ctx:start flow and ctx:close closeout pattern.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

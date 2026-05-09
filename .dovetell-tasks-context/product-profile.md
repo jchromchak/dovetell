@@ -72,6 +72,14 @@ success-indicators:
 out-of-scope:
   [What is explicitly not this product's job?]
 
+product-guardrails:
+  - Dovetell is not a task manager, project operating system, or one-stop work hub.
+  - Dovetell is the place where shared context stays true enough for work to happen elsewhere.
+  - Prefer features that improve context fidelity, traceability, auditability, reusable learning, and governance.
+  - For features that primarily assign, schedule, optimize, or manage work execution, prefer integration or reference over native replacement.
+  - governing-decision: decision-9d2e6a41
+  - governing-rule: rule-6b1f2c9d
+
 ---
 
 ## 6. Constraints
@@ -95,6 +103,7 @@ resource:
 [Reference IDs only — full entries live in decisions.md]
 
 - decision-[8char]: [one-line summary]
+- decision-9d2e6a41: Keep Dovetell focused on context governance instead of work management
 
 ---
 
@@ -103,6 +112,7 @@ resource:
 [Reference IDs only — full entries live in rules.md]
 
 - rule-[8char]: [one-line summary]
+- rule-6b1f2c9d: Dovetell must remain a context governance layer, not a work hub
 
 ---
 
@@ -119,6 +129,7 @@ resource:
 [Flat append log — newest at bottom]
 
 - YYYY-MM-DDTHH:mm:ssZ (codex-[hash]): [what changed and why]
+- 2026-05-09T00:11:00Z (codex-7588c8e2): Added the core product guardrail that Dovetell should remain a shared context awareness and governance layer rather than becoming a general task manager or one-stop work hub.
 
 ---
 

@@ -184,6 +184,62 @@
   blocked-by:
     - user concept uploads
 
+- [ ] Audit and clean up Dovetell repo roles
+  id: task-1f9c6b8a
+  priority: next
+  status: open
+  revisionId: rev-8b4d1f62
+  created: 2026-05-09T03:22:00Z
+  updated: 2026-05-09T03:22:00Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: decision-5c8e2a74
+  rule: none
+  process: none
+  opp: none
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Inventory the active Dovetell repos, assign each a repo role, and plan cleanup/rename/privacy changes. Make dovetell-sandbox / future dovetell-gtm private because it represents business-context rather than public demo storage.
+
+  context:
+    Current target map: dovetell-io/dovetell = landing; dovetell-io/docs = docs; dovetell-io/dovetell-assets = canonical-assets; jchromchak/dovetell-assets-private = asset-refinery; jchromchak/dovetell-ctx-app or current app repo = app; jchromchak/dovetell-ctx-app-private / current dovetell-private = app-context; dovetell-sandbox / future dovetell-gtm = private business-context; famframe-private and dogfood-private = project/experiment context. Cleanup should happen through inventory, role assignment, migration notes, then rename/privacy changes. Avoid moving or exposing secrets and do not rename until target roles are clear.
+
+  blocked-by:
+    - repo inventory confirmation
+
+- [ ] Design context rank index and ctx:rank command
+  id: task-8a7d2c19
+  priority: later
+  status: open
+  revisionId: rev-2d6f4a90
+  created: 2026-05-09T03:42:00Z
+  updated: 2026-05-09T03:42:00Z
+  due: none
+
+  owner: john
+  persona: none
+  decision: none
+  rule: none
+  process: none
+  opp: opp-4c2e9a71
+  risk: none
+  flags:
+    - dovetell:global
+
+  notes:
+    Define a derived rank file and ctx:rank workflow that orders active context action points by priority, dependency, urgency, risk, and strategic value.
+
+  context:
+    The user proposed a rank or sort-order layer to make prioritization easier across many context files. The first version should probably be a simple markdown index of canonical IDs with rank number, rationale, and last-ranked timestamp. The command should rerank tasks, opportunities, risks, review items, and promotion candidates without duplicating full object content. Treat the rank file as rebuildable derived state, not the source of truth.
+
+  blocked-by:
+    - none
+
 ---
 
 *tasks.md — Dogfood POC — v0.1*

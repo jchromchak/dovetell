@@ -1,6 +1,6 @@
 # launcher.md
 # Context Governance — Session Launcher
-# Lives at project root. Loaded into ChatGPT project once. Governs every session.
+# Lives at project root. Root bootstrap for context-managed sessions.
 
 ---
 
@@ -10,16 +10,29 @@ project: dovetell-tasks
 context-folder: .dovetell-tasks-context/
 status: active
 version: 0.1
+launcher-role: root bootstrap
+command-registry: .dovetell-tasks-context/commands.md
 
 dovetell-tasks is the project tracking surface for Dovetell work. It pairs a
 static task/decision/rule viewer with markdown governance files that preserve
 AI-session context, decisions, rules, risks, and handoffs.
 
+Current operating convention:
+  - use ctx:start to orient a new session
+  - use ctx:command to inspect available commands
+  - use ctx:close to write durable closeout context
+  - treat repo context as durable memory and chat history as working memory
+
 ---
 
 ## 2. Session Initialization
 
-At the start of every session, before doing anything else:
+At the start of every session, prefer the pointer-first command flow:
+
+  ctx:start
+
+If the user does not explicitly say ctx:start, use the same behavior:
+read pointer files before broad searching.
 
 ### Step 1 — Generate session hash
 Generate a session hash using:
@@ -41,22 +54,36 @@ Output the following before any work begins:
   SESSION START
   Hash: codex-[generated hash]
   Scope: [restate what the user asked to work on]
-  Reading: launcher → session-handoff → seed → [scope-relevant files]
+  Reading: launcher → commands → rank → session-handoff → repo-manifest → operating-model → object-model → recent changelog → [scope-relevant IDs]
   Confirm scope before proceeding? [yes/no]
   ---
 
-Do not proceed until scope is confirmed.
+For short continuation work, do not block on confirmation unless the scope is ambiguous or risky.
 
 ### Step 3 — Read in order
 1. launcher.md (this file — already loaded)
-2. .dovetell-tasks-context/session-handoff.md — where did the last session leave off?
-3. .dovetell-tasks-context/seed.md — full project context
-4. Scope-relevant files only — do not load all files unless explicitly asked
+2. .dovetell-tasks-context/commands.md — what context commands exist?
+3. .dovetell-tasks-context/rank.md — what matters next?
+4. .dovetell-tasks-context/session-handoff.md — where did the last session leave off?
+5. .dovetell-tasks-context/repo-manifest.md — which repos exist and what roles do they serve?
+6. .dovetell-tasks-context/operating-model.md — what is the product/system model?
+7. .dovetell-tasks-context/object-model.md — what data shapes are implied?
+8. recent .dovetell-tasks-context/changelog.md entries
+9. Scope-relevant canonical IDs only — do not load all files unless explicitly asked
 
 ### Step 4 — Declare active context
 After reading, output a one-line summary of what context was loaded:
 
   Context loaded: [files read] | Last session: [codex-hash from handoff] | Pending: [count of pending tasks]
+
+### Step 5 — Closeout
+At the end of a meaningful session, use ctx:close:
+
+  - update canonical object files for decisions, tasks, risks, opportunities, commands, concepts, or repo mappings
+  - update changelog.md
+  - update session-handoff.md
+  - update rank.md if priorities changed
+  - commit meaningful context with related implementation work when appropriate
 
 ---
 

@@ -150,7 +150,7 @@
 @media (max-width: 1280px){.dashboard-layout{grid-template-columns:1fr}.dashboard-content{display:block}.dashboard-hero{display:grid;grid-template-columns:1fr 210px;gap:16px;margin-bottom:16px;align-items:stretch}.dash-grid,.journal-rail{grid-column:auto;grid-row:auto}.journal-rail{grid-template-columns:1fr}.journal-list{max-height:none}.dashboard-main{max-width:1220px}}
 @media (max-width: 1120px){.dashboard-hero{grid-template-columns:1fr 210px}.session-panel{grid-column:1/-1}.dash-grid{grid-template-columns:1fr 1fr}.dash-grid>.dash-panel:last-child{grid-column:1/-1}.project-chip{max-width:180px}}
 @media (max-width: 900px){.dashboard-hero,.dash-grid{grid-template-columns:1fr}.session-panel{grid-column:auto}.health-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;justify-content:stretch}.health-label{grid-column:1/-1;margin-bottom:0}.health-gauge{width:112px;height:58px;margin:0}.health-gauge path{stroke-width:9}.health-value{justify-content:flex-end}.health-score{font-size:34px}}
-@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.row-title{-webkit-line-clamp:2}.project-chip{max-width:calc(100vw - 170px)}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid,#project-sheet .form-row-2{grid-template-columns:1fr}.project-settings-item{grid-template-columns:1fr}.project-settings-actions{justify-content:flex-start;flex-wrap:wrap}.journal-rail{display:none}.journal-mobile-trigger{display:block}}
+@media (max-width: 720px){.dashboard-main{padding-top:16px}.dashboard-title{font-size:25px}.summary-panel{padding:14px}.health-gauge{width:100px;height:52px}.health-gauge path{stroke-width:8}.health-score{font-size:31px}.health-denom{font-size:13px}.session-id{font-size:15px}.dash-row{grid-template-columns:auto minmax(0,1fr)}.dash-row .row-meta,.dash-row .status-chip,.dash-row .rev-chip{grid-column:2;justify-self:start}.row-title{-webkit-line-clamp:2}.project-chip{max-width:calc(100vw - 170px)}.token-card{margin:48px 0;max-width:calc(100vw - 24px)}.token-copy{font-size:12px;max-width:240px;margin-left:auto;margin-right:auto;overflow-wrap:anywhere}.token-form{flex-direction:column}.token-save{width:100%}.token-project-head>div{min-width:0}.token-project-repo{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-path-grid,#project-sheet .form-row-2{grid-template-columns:1fr}.project-settings-item{grid-template-columns:1fr}.project-settings-actions{justify-content:flex-start;flex-wrap:wrap}.journal-rail{display:none}.journal-mobile-trigger{display:block}.activity-feed-panel{order:1}.hot-items-panel{order:2}.context-stack-panel{order:3}}
 @media (max-width: 720px){#journal-sheet .journal-actions{display:grid;grid-template-columns:1fr;gap:8px}#journal-sheet .journal-save{width:100%}}
 </style>
 <link rel="stylesheet" href="../assets/css/shared.css?v=20260506-projects5"/>
@@ -748,11 +748,11 @@ function renderDashboard(data, sourceStates = []) {
         </section>
         <button class="journal-mobile-trigger" onclick="openJournalSheet()">Open journal</button>
         <section class="dash-grid">
-          <div class="dash-panel">
+          <div class="dash-panel hot-items-panel">
             <div class="panel-head"><div class="panel-title">Hot Items <span class="panel-count">${hotTasks.length}</span></div><a class="panel-link" href="../tasks/">View all</a></div>
             <div class="dash-list">${hotTasks.length ? hotTasks.map(renderTaskRow).join('') : emptyPanel('No open tasks')}</div>
           </div>
-          <div class="dash-stack">
+          <div class="dash-stack context-stack-panel">
             <div class="dash-panel">
               <div class="panel-head"><div class="panel-title">Active Risks <span class="panel-count">${activeRisks.length}</span></div><a class="panel-link" href="../risks/">View all</a></div>
               <div class="dash-list">${activeRisks.length ? activeRisks.map(renderRiskRow).join('') : emptyPanel('No active risks')}</div>
@@ -762,7 +762,7 @@ function renderDashboard(data, sourceStates = []) {
               <div class="dash-list">${recentDecisions.length ? recentDecisions.map(renderDecisionRow).join('') : emptyPanel('No decisions loaded')}</div>
             </div>
           </div>
-          <div class="dash-panel">
+          <div class="dash-panel activity-feed-panel">
             <div class="panel-head"><div class="panel-title">Activity Feed <span class="panel-count">${recentActivity.length}</span></div><span class="panel-kicker">Recent</span></div>
             <div class="dash-list">${recentActivity.length ? recentActivity.map(renderActivityRow).join('') : emptyPanel('No activity loaded')}</div>
           </div>

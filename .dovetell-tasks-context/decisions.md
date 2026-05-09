@@ -338,6 +338,96 @@
     - source: codex-7588c8e2
     - date: 2026-05-08T17:06Z
 
+- decision-9d2e6a41
+  title: Keep Dovetell focused on context governance instead of work management
+  status: active
+  revisionId: rev-4a91d6e2
+  created: 2026-05-09T00:11:00Z
+  updated: 2026-05-09T00:11:00Z
+  flags:
+    - dovetell:global
+
+  context:
+    As the refinery, source configuration, journal, task reconciliation, and promotion flows matured, the product started touching areas that could resemble task management or a project operating system. The user explicitly wants Dovetell to avoid becoming ClickUp, a one-stop shop, or the place where all work happens.
+
+  decision:
+    Dovetell should remain a context awareness and governance layer for agentic and human work. It should connect to the places where work already happens, observe and reconcile context changes, preserve decisions and risks, and help teams promote useful learnings into trusted shared context. It should not position itself as a general work hub or execution-management suite.
+
+  rationale:
+    The stronger product thesis is that teams do not need another task tracker as much as they need shared contextual memory with controlled promotion from "thing we learned" to "thing we now trust." This keeps Dovetell distinct from execution tools and aligned with context fidelity, traceability, auditability, cross-project learning, and governance.
+
+  constraints:
+    Future features should be tested against whether they help teams understand, trust, govern, or reuse context. Features whose primary purpose is assigning, scheduling, optimizing, or managing execution should usually be integrations, references, exports, or reconciliation surfaces rather than native work-management replacements.
+
+  outcomes:
+    Add rule-6b1f2c9d as an active product guardrail. Reference this decision during roadmap discussion, app-flow design, asset-refinery workflow design, and any future request that could expand Dovetell into execution management.
+
+  persona: none
+
+  rule: rule-6b1f2c9d
+
+  task: none
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - Shorthand: Dovetell is the place where shared context stays true enough for work to happen elsewhere.
+    - source: codex-7588c8e2
+    - date: 2026-05-09T00:11:00Z
+
+- decision-5c8e2a74
+  title: Make Dovetell GTM/business context private
+  status: active
+  revisionId: rev-8b4d1f62
+  created: 2026-05-09T03:22:00Z
+  updated: 2026-05-09T03:22:00Z
+  flags:
+    - dovetell:global
+
+  context:
+    The repo currently referred to as dovetell-sandbox was originally public because it acted as a convenient storage point for business/product context. As the system evolved, that public storage role became risky and misleading: GTM, startup, product strategy, and operating context can contain sensitive or half-formed thinking that should not be public by default.
+
+  decision:
+    Treat dovetell-sandbox / future dovetell-gtm as a private business-context repo. Do not use a public repo as the working storage point for GTM, startup, or internal business context.
+
+  rationale:
+    Public visibility encourages the wrong kind of content discipline for a living business context repo. Making the repo private preserves room for candid strategy, messy learning, and internal synthesis while keeping public-facing material reserved for the landing site, docs site, and canonical assets that have been intentionally promoted.
+
+  constraints:
+    Public docs, marketing pages, and canonical sellable assets still need public homes. The cleanup should preserve links or migration notes so old public demo references do not become ambiguous. Do not expose secrets, PATs, private customer context, or unreviewed GTM thinking during migration.
+
+  outcomes:
+    Repo cleanup should classify dovetell-sandbox as business-context, likely rename or replace it with dovetell-gtm, and make the target repo private. Public-facing GTM outputs should be promoted intentionally to dovetell-io/dovetell, dovetell-io/docs, or dovetell-io/dovetell-assets as appropriate.
+
+  persona: none
+
+  rule: none
+
+  task: task-1f9c6b8a
+
+  process: none
+
+  opp: none
+
+  risk: none
+
+  supersedes: none
+
+  superseded-by: none
+
+  notes:
+    - The user described the public sandbox storage point as having gotten perverted quickly, which is the key operating lesson.
+    - source: codex-7588c8e2
+    - date: 2026-05-09T03:22:00Z
+
 ---
 
 *decisions.md — Dogfood POC — v0.1*
