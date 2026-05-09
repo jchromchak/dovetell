@@ -938,6 +938,18 @@
   action: updated
   summary: Recorded the approved repo cleanup direction and the execution boundary that repo administration changes require unavailable GitHub visibility/create/rename/archive tooling.
 
+- rev-42c7d91f
+  date: 2026-05-09T13:40:00Z
+  user: john
+  origin: codex
+  codex-session: codex-53476bae
+  objects:
+    - repo-manifest.md: updated
+    - artifact-index.md: updated
+    - commands.md: updated
+  action: updated
+  summary: Added route-based artifact intake paths so ctx:ingest-artifacts can use /Users/johnchromchak/Downloads/{route}/dovetell-processing for dovetell, famframe, and legacy queues.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*

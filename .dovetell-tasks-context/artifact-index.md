@@ -132,7 +132,11 @@
 
 ## Processing Queue
 
-default-root: /Users/johnchromchak/Downloads/dovetell-processing
+route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
+default-routes:
+  - dovetell: /Users/johnchromchak/Downloads/dovetell/dovetell-processing
+  - famframe: /Users/johnchromchak/Downloads/famframe/dovetell-processing
+legacy-root: /Users/johnchromchak/Downloads/dovetell-processing
 
 folders:
   - enqueued: files waiting for ingestion
@@ -140,8 +144,8 @@ folders:
   - errored: original files that could not be classified, copied, or indexed cleanly
 
 workflow:
-  - Drop files into enqueued.
-  - Run ctx:ingest-artifacts.
+  - Drop files into the route-specific enqueued folder.
+  - Run ctx:ingest-artifacts with the route when needed.
   - Preserve existing provenance IDs when present.
   - Assign new IDs only when no valid ID exists, and mark those artifacts needs-review.
   - Copy artifacts into the durable asset library with provenance filenames.
@@ -149,7 +153,11 @@ workflow:
   - Move source files to done or errored.
 
 notes:
-  - The queue is a global template for local file processing.
+  - The queue folder shape is a shared template for local file processing.
+  - The route folder is the project or source namespace.
+  - Use the dovetell route for Dovetell operating-model, repo-model, promotion, docs, and asset-refinery visuals.
+  - Use the famframe route for Famframe-specific project artifacts and visual concepts.
+  - The legacy root can be treated as an intake fallback during migration, but new drops should use a route-specific folder.
   - It is intentionally simple and Kanban-like.
   - The queue state is operational; artifact-index.md is the durable provenance index.
 

@@ -161,6 +161,48 @@
 
 ---
 
+## Local Artifact Intake Routes
+
+route-pattern: /Users/johnchromchak/Downloads/{route}/dovetell-processing
+
+- route: dovetell
+  root: /Users/johnchromchak/Downloads/dovetell/dovetell-processing
+  owner-domain: Dovetell
+  intended-use:
+    - Dovetell operating-model visuals
+    - repo operating-model visuals
+    - promotion-pipeline visuals
+    - docs, app, and asset-refinery artifacts
+  queue-folders:
+    - enqueued
+    - done
+    - errored
+
+- route: famframe
+  root: /Users/johnchromchak/Downloads/famframe/dovetell-processing
+  owner-domain: Famframe
+  intended-use:
+    - Famframe project visuals
+    - Famframe-specific context artifacts
+    - reusable learnings that may later be tagged for promotion
+  queue-folders:
+    - enqueued
+    - done
+    - errored
+
+- route: legacy
+  root: /Users/johnchromchak/Downloads/dovetell-processing
+  owner-domain: unscoped
+  intended-use:
+    - Backward-compatible intake only.
+    - New artifact drops should use a route-specific folder.
+  queue-folders:
+    - enqueued
+    - done
+    - errored
+
+---
+
 ## Inventory Snapshots
 
 - snapshot-2026-05-09T13:05:29Z

@@ -125,12 +125,17 @@
     Process files from a filesystem queue, assign or preserve provenance IDs, copy them into the correct artifact library location, and update artifact-index.md.
 
   default-queue:
-    - /Users/johnchromchak/Downloads/dovetell-processing/enqueued
-    - /Users/johnchromchak/Downloads/dovetell-processing/done
-    - /Users/johnchromchak/Downloads/dovetell-processing/errored
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/enqueued
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/done
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/errored
+
+  routes:
+    - dovetell: Dovetell operating-model, repo-model, promotion, docs, app, and asset-refinery artifacts.
+    - famframe: Famframe-specific project artifacts and visual concepts.
+    - legacy: /Users/johnchromchak/Downloads/dovetell-processing for older un-namespaced intake.
 
   reads:
-    - /Users/johnchromchak/Downloads/dovetell-processing/enqueued
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/enqueued
     - artifact-index.md
     - visual-concepts.md when images imply new or updated concepts
     - repo-manifest.md when routing depends on repo/domain role
@@ -140,8 +145,8 @@
     - visual-concepts.md when new concepts are captured
     - changelog.md
     - Google Drive dovetell-assets folder when the local sync path is available
-    - /Users/johnchromchak/Downloads/dovetell-processing/done
-    - /Users/johnchromchak/Downloads/dovetell-processing/errored
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/done
+    - /Users/johnchromchak/Downloads/{route}/dovetell-processing/errored
 
   output:
     A batch summary with counts for processed, copied, indexed, needs-review, errored, and skipped files.
@@ -151,6 +156,12 @@
     - repo-operating-model -> dovetell-assets/visual-artifacts/repo-operating-model
     - context-change-request or context-change-management -> dovetell-assets/visual-artifacts/context-change-management
     - unknown images -> dovetell-assets/visual-artifacts/_needs-review if available, otherwise mark needs-review and leave in errored
+
+  route-selection:
+    - If the user names a route, process that route.
+    - If no route is named and exactly one route has queued files, process that route.
+    - If multiple routes have queued files, report the routes and ask which one to process.
+    - Prefer route-specific queues over the legacy root.
 
   id-rules:
     - If a valid dovetell:image-[8char] watermark or filename ID exists, preserve it.
