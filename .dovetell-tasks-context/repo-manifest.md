@@ -71,6 +71,8 @@
 - repo: local dovetell-context-workbench
   current-role: app-prototype
   target-role: prototype-workbench
+  alias: dovetell-context-workbench
+  alias-prefix: workbench
   visibility-intent: working
   status: active-workbench
   notes:

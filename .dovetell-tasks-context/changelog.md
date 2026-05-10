@@ -1104,6 +1104,86 @@
   action: updated
   summary: Started shaping the clean React app shell with route structure, navigation, source model, review queue entry point, activity surface, state boundaries, prototype reuse guidance, and validation checks.
 
+- rev-workbench-alias-governance-001
+  date: 2026-05-10T01:29:32Z
+  user: john
+  origin: codex
+  objects:
+    - repo-manifest.md: updated
+    - tasks.md: updated
+  action: updated
+  summary: Added alias-prefix governance to the workbench repo manifest and assigned local aliases and slugs to active workbench tasks.
+
+- rev-workbench-task-migration-001
+  date: 2026-05-10T01:41:39Z
+  user: john
+  origin: codex
+  objects:
+    - task-08030ad5: migrated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the clean React app shell task as migrated to dovetell-ctx-app-private while preserving workbench provenance.
+
+- rev-workbench-task-migration-002
+  date: 2026-05-10T02:05:00Z
+  user: john
+  origin: codex
+  objects:
+    - task-8a7d2c19: migrated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the context rank index and ctx:rank command task as migrated to dovetell-assets while preserving workbench provenance.
+
+- rev-workbench-task-migration-003
+  date: 2026-05-10T02:41:57Z
+  user: john
+  origin: codex
+  objects:
+    - task-c9e2fb64: migrated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the multi-team context audit view task as migrated to app-private while preserving workbench concept provenance.
+
+- rev-workbench-task-migration-004
+  date: 2026-05-10T02:46:35Z
+  user: john
+  origin: codex
+  objects:
+    - task-d7a3e014: migrated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the Activity Feed filtering task as migrated to app-private while preserving workbench prototype provenance.
+
+- rev-workbench-task-migration-005
+  date: 2026-05-10T02:51:19Z
+  user: john
+  origin: codex
+  objects:
+    - task-4dd0b71e: migrated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the active-project tracker feed task as migrated to app-private while preserving workbench prototype provenance.
+
+- rev-workbench-task-migration-006
+  date: 2026-05-10T03:02:16Z
+  user: john
+  origin: codex
+  objects:
+    - task-6e8d4b25: migrated
+    - task-9f1a62d0: updated
+    - tasks.md: updated
+  action: migrated
+  summary: Marked the create-decision reconciliation task as migrated to app-private and documented that async config boot remains workbench-owned implementation cleanup.
+
+- rev-workbench-closeout-001
+  date: 2026-05-10T04:15:10Z
+  user: john
+  origin: codex
+  objects:
+    - session-handoff.md: updated
+  action: updated
+  summary: Ran ctx:close for workbench after task migration, leaving only async project-config boot as workbench-owned implementation cleanup.
+
 ---
 
 *changelog.md — dovetell-tasks — v0.1*
